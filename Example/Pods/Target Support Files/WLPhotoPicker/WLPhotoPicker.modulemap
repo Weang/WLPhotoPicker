@@ -1,0 +1,6 @@
+framework module WLPhotoPicker {
+  umbrella header "WLPhotoPicker-umbrella.h"
+
+  export *
+  module * { export * }
+}

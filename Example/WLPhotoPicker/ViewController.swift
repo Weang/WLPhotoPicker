@@ -1,0 +1,220 @@
+//
+//  ViewController.swift
+//  WLPhotoPicker
+//
+//  Created by Weang on 01/18/2022.
+//  Copyright (c) 2022 Weang. All rights reserved.
+//
+
+import UIKit
+import WLPhotoPicker
+import Photos
+import Eureka
+
+class ViewController: FormViewController {
+    
+    let config = WLPhotoConfig()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.navigationItem.title = "WLPhotoPicker"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Picker", style: .done, target: self, action: #selector(openPicker))
+        
+        form +++ Section("Picker")
+        
+        <<< PickerInputRow<String>() { row in
+            row.title = "一行的列数"
+            row.options = ["3", "4", "5"]
+            row.value = "4"
+        }.onChange({ row in
+            self.config.pickerConfig.columnsOfPhotos = Int(row.value ?? "4") ?? 4
+        })
+        
+        <<< MultipleSelectorRow<String>() { row in
+            row.title = "可选择资源类型"
+            row.options = ["照片", "视频", "动图", "实况"]
+            row.value = ["照片", "视频", "动图", "实况"]
+        }.onChange({ row in
+            var type: PhotoPickerSelectionType = []
+            let value = row.value ?? Set<String>()
+            if value.contains("照片") {
+                type.insert(.photo)
+            }
+            if value.contains("视频") {
+                type.insert(.video)
+            }
+            if value.contains("动图") {
+                type.insert(.GIF)
+            }
+            if value.contains("实况") {
+                type.insert(.livePhoto)
+            }
+            self.config.pickerConfig.selectableType = type
+        }).onPresent { from, to in
+                to.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: from, action: #selector(ViewController.multipleSelectorDone(_:)))
+            }
+        
+        <<< PickerInputRow<String>() { row in
+            row.title = "排序方式"
+            row.options = ["升序", "降序"]
+            row.value = "升序"
+        }.onChange({ row in
+            self.config.pickerConfig.sortType = row.value == "升序" ? .asc : .desc
+        })
+        
+        <<< IntRow() { row in
+            row.title = "可选择的最长视频时长"
+            row.value = 120
+        }.onChange({ row in
+            self.config.pickerConfig.pickerMaximumVideoDuration = TimeInterval(row.value ?? 0)
+        })
+        
+        <<< PickerInputRow<String>() { row in
+            row.title = "选择个数限制"
+            row.options = (1...9).map{ String($0) }
+            row.value = "9"
+        }.onChange({ row in
+            self.config.pickerConfig.selectCountLimit = Int(row.value ?? "9") ?? 9
+        })
+        
+        <<< SwitchRow() { row in
+            row.title = "图片是否可编辑"
+            row.value = self.config.pickerConfig.allowEditPhoto
+        }.onChange { row in
+            self.config.pickerConfig.allowEditPhoto = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "是否显示添加更多照片"
+            row.value = self.config.pickerConfig.canAddMoreAssetWhenLimited
+        }.onChange { row in
+            self.config.pickerConfig.canAddMoreAssetWhenLimited = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "是否自动选中选择的照片"
+            row.value = self.config.pickerConfig.autoSelectAssetFromLimitedLibraryPicker
+        }.onChange { row in
+            self.config.pickerConfig.autoSelectAssetFromLimitedLibraryPicker = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "是否可选择原图"
+            row.value = self.config.pickerConfig.allowSelectOriginal
+        }.onChange { row in
+            self.config.pickerConfig.allowSelectOriginal = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "选取照片时是否存储到沙盒"
+            row.value = self.config.pickerConfig.saveImageToLocalWhenPick
+        }.onChange { row in
+            self.config.pickerConfig.saveImageToLocalWhenPick = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "选取视频时是否导出到本地"
+            row.value = self.config.pickerConfig.exportVideoToLocalWhenPick
+        }.onChange { row in
+            self.config.pickerConfig.exportVideoToLocalWhenPick = (row.value ?? false)
+        }
+        
+        <<< PickerInputRow<String>() { row in
+            row.title = "导出视频尺寸"
+            row.options = ["_640x480", "_960x540", "_1280x720", "_1920x1080", "_3840x2160"]
+            row.value = "_960x540"
+        }.onChange({ row in
+            let value: VideoCompressSize
+            switch (row.value ?? "_960x540") {
+            case "_640x480": value = ._640x480
+            case "_960x540": value = ._960x540
+            case "_1280x720": value = ._1280x720
+            case "_1920x1080": value = ._1920x1080
+            case "_3840x2160": value = ._3840x2160
+            default : value = ._960x540
+            }
+            self.config.pickerConfig.videoExportCompressSize = value
+        })
+        
+        <<< IntRow() { row in
+            row.title = "导出视频帧率"
+            row.value = 30
+        }.onChange({ row in
+            self.config.pickerConfig.videoExportFrameDuration = Float(row.value ?? 0)
+        })
+        
+        <<< SwitchRow() { row in
+            row.title = "导出原视频"
+            row.value = self.config.pickerConfig.videoExportOriginal
+        }.onChange { row in
+            self.config.pickerConfig.videoExportOriginal = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "点击确定是否自动关闭"
+            row.value = self.config.pickerConfig.autoDismissAfterDone
+        }.onChange { row in
+            self.config.pickerConfig.autoDismissAfterDone = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "是否保存编辑后的照片"
+            row.value = self.config.pickerConfig.saveEditedPhotoToAlbum
+        }.onChange { row in
+            self.config.pickerConfig.saveEditedPhotoToAlbum = (row.value ?? false)
+        }
+        
+        
+        
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+//        let config = WLPhotoConfig()
+//        config.pickerConfig.selectableType = [.photo, .video, .GIF]
+//        config.pickerConfig.saveImageToLocalWhenPick = true
+//        config.pickerConfig.exportVideoToLocalWhenPick = true
+//        config.pickerConfig.videoExportOriginal = true
+//        config.captureConfig.captureAspectRatio = .ratio16x9
+//        config.photoEditConfig.photoEditPasters = (1...18).map{ "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) }
+//        if #available(iOS 13.0, *) {
+//            config.captureConfig.captureVideoStabilizationMode = .cinematicExtended
+//        }
+//        let vc = WLPhotoPickerController(pickerConfig: config)
+//        vc.pickerDelegate = self
+//        self.present(vc, animated: true, completion: nil)
+    }
+    
+    @objc func multipleSelectorDone(_ item: UIBarButtonItem) {
+        _ = navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func openPicker() {
+        let vc = WLPhotoPickerController(pickerConfig: config)
+        vc.pickerDelegate = self
+        self.present(vc, animated: true, completion: nil)
+    }
+}
+
+extension ViewController: WLPhotoPickerControllerDelegate {
+    
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult result: [AssetPickerResult]) {
+        print(result)
+    }
+    
+    func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController) {
+        pickerController.dismiss(animated: true, completion: nil)
+    }
+    
+    func pickerController(_ pickerController: WLPhotoPickerController, didOccurredError error: WLPhotoError) {
+        let alert = UIAlertController.init(title: "错误", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(.init(title: "确定", style: .cancel, handler: { _ in
+            
+        }))
+        pickerController.present(alert, animated: true, completion: nil)
+    }
+}

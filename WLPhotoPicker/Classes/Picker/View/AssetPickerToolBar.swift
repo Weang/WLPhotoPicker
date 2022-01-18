@@ -1,0 +1,134 @@
+//
+//  AssetPickerToolBar.swift
+//  WLPhotoPicker
+//
+//  Created by Mr.Wang on 2021/12/13.
+//
+
+import UIKit
+
+public protocol AssetPickerToolBarDelegate: AnyObject {
+    func pickerToolBarDidClickPermissionLimitedView(_ toolBar: AssetPickerToolBar)
+    func pickerToolBarDidClickOrginButton(_ toolBar: AssetPickerToolBar, isOrigin: Bool)
+    func pickerToolBarDidClickDoneButton(_ toolBar: AssetPickerToolBar)
+}
+
+public class AssetPickerToolBar: VisualEffectView {
+    
+    private let limitedPermissionViewHeight: CGFloat = 64
+    private let toolBarHeight: CGFloat = 54
+    
+    public var isOrigin: Bool = false {
+        didSet {
+            originButton.isSelected = isOrigin
+        }
+    }
+    
+    public var isLimitedPermission: Bool = false {
+        didSet {
+            limitedPermissionView.isHidden = !isLimitedPermission
+            invalidateIntrinsicContentSize()
+        }
+    }
+    
+    public weak var delegate: AssetPickerToolBarDelegate?
+    
+    private let contentView = UIStackView()
+    private let originButton = NormalStyleButton()
+    private let doneButton = UIButton()
+    
+    private let limitedPermissionView = AssetPickerLimitedPermissionView()
+    
+    var isEnabled: Bool = false {
+        didSet {
+            doneButton.isEnabled = isEnabled
+        }
+    }
+    
+    var showOriginButton: Bool = false {
+        didSet {
+            originButton.isHidden = !showOriginButton
+        }
+    }
+    
+    let pickerConfig: PickerConfig
+    
+    init(pickerConfig: PickerConfig) {
+        self.pickerConfig = pickerConfig
+        super.init(frame: .zero)
+        
+        limitedPermissionView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(permissionLimitedViewClick)))
+        limitedPermissionView.isHidden = true
+        addSubview(limitedPermissionView)
+        limitedPermissionView.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+            make.height.equalTo(limitedPermissionViewHeight)
+        }
+        
+        contentView.axis = .horizontal
+        contentView.distribution = .equalSpacing
+        contentView.alignment = .center
+        addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.left.equalTo(16)
+            make.right.equalTo(-16)
+            make.bottom.equalTo(-keyWindowSafeAreaInsets.bottom)
+            make.height.equalTo(toolBarHeight)
+        }
+        
+        if pickerConfig.allowSelectOriginal {
+            originButton.setImage(BundleHelper.imageNamed("select_normal"), for: .normal)
+            originButton.setImage(BundleHelper.imageNamed("select_fill")?.withRenderingMode(.alwaysTemplate), for: .selected)
+            originButton.tintColor = WLPhotoPickerUIConfig.default.themeColor
+            originButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: -6)
+            originButton.setTitleColor(WLPhotoPickerUIConfig.default.textColor, for: .normal)
+            originButton.setTitle("原图", for: .normal)
+            originButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+            originButton.addTarget(self, action: #selector(originButtonClick), for: .touchUpInside)
+            contentView.addArrangedSubview(originButton)
+        } else {
+            contentView.addArrangedSubview(UIView())
+        }
+        
+        doneButton.isEnabled = false
+        doneButton.layer.cornerRadius = 4
+        doneButton.layer.masksToBounds = true
+        doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoPickerUIConfig.default.themeColor), for: .normal)
+        doneButton.setTitle("完成", for: .normal)
+        doneButton.setTitleColor(.white, for: .normal)
+        doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)
+        contentView.addArrangedSubview(doneButton)
+        doneButton.snp.makeConstraints { make in
+            make.height.equalTo(30)
+            make.width.equalTo(56)
+        }
+        
+    }
+    
+    @objc func permissionLimitedViewClick() {
+        delegate?.pickerToolBarDidClickPermissionLimitedView(self)
+    }
+    
+    @objc func originButtonClick() {
+        originButton.isSelected.toggle()
+        delegate?.pickerToolBarDidClickOrginButton(self, isOrigin: originButton.isSelected)
+    }
+    
+    @objc func doneButtonClick() {
+        delegate?.pickerToolBarDidClickDoneButton(self)
+    }
+    
+    public override var intrinsicContentSize: CGSize {
+        var height = toolBarHeight + keyWindowSafeAreaInsets.bottom
+        if isLimitedPermission {
+            height += limitedPermissionViewHeight
+        }
+        return CGSize(width: UIScreen.width, height: height)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
