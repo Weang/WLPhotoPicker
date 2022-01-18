@@ -27,6 +27,16 @@ public class PickerConfig {
     // 列间距
     public var pickerSectionInset: UIEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
     
+    // 是否显示选择按钮
+    public var showSelectButton: Bool = true
+    
+    // 是否显示完成按钮
+    public var showPickerDoneButton: Bool = true
+    
+    // 点击之后是否预览
+    // 如果为false，点击cell之后会调用选中方法
+    public var allowPreview: Bool = true
+    
     // MARK: Fetch config
     
     // 可选择资源类型
@@ -67,6 +77,7 @@ public class PickerConfig {
     public var saveImageToLocalWhenPick: Bool = false
     
     // 选取视频时是否导出到本地
+    // 如果为true，选择照片代理中AssetPickerResult的filePath会返回存储的路径
     public var exportVideoToLocalWhenPick: Bool = false
     
     // 导出视频尺寸

@@ -13,27 +13,15 @@ class AssetPreviewGIFCell: AssetPreviewCell {
         assetImageView.image = thumbnail
         
         let options = AssetFetchOptions()
-        options.progressHandler = defaultProgressHandle
+        
+        activityIndicator.startAnimating()
         
         assetRequest = AssetFetchTool.requestGIF(for: model.asset, options: options, completion: { [weak self] result, _ in
-            self?.setProgress(1)
-            switch result {
-            case .success(let respose):
-                self?.assetImageView.image = respose.image
-            case .failure: break
+            self?.activityIndicator.stopAnimating()
+            if case .success(let response) = result {
+                self?.assetImageView.image = response.image
             }
         })
-    }
-    
-    override func beginPanGes() {
-        super.beginPanGes()
-    }
-    
-    override func finishPanGes(dismiss: Bool) {
-        super.finishPanGes(dismiss: dismiss)
-        if !dismiss {
-            assetImageView.startAnimating()
-        }
     }
     
 }

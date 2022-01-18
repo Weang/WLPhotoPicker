@@ -43,7 +43,7 @@ public class AssetFetchTool: NSObject {
     public var albumsList: [AlbumModel] = []
     public var selectedAssets: [AssetModel] = []
     
-    public var isOrigin = false
+    public var isOriginal = false
     
     // 记录相机保存的localIdentifier，在刷新相册时选中
     var captureLocalIdentifier: String?

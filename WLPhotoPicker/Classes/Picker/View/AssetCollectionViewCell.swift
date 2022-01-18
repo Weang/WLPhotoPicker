@@ -66,26 +66,25 @@ public class AssetCollectionViewCell: UICollectionViewCell {
     }
     
     public func bind(_ model: AssetModel, pickerConfig: PickerConfig) {
-        cancelCurrentRequest()
+        selectedButton.isHidden = !pickerConfig.showSelectButton
         update(model, animated: false)
+        
+        cancelCurrentRequest()
         
         if let displayingImage = model.displayingImage {
             assetImageView.image = displayingImage
-            return
-        }
-        
-        let options = AssetFetchOptions()
-        let targetSize = pickerConfig.photoCollectionViewItemSize.width * UIScreen.main.scale
-        options.sizeOption = .specify(targetSize)
-        assetRequest = AssetFetchTool.requestImage(for: model.asset, options: options, completion: { [weak self] result, requestId in
-            switch result {
-            case let .success(respose):
-                if respose.isDegraded || (self?.assetRequest?.containsRequestId(requestId) ?? false) {
-                    self?.assetImageView.image = respose.image
+        } else {
+            let options = AssetFetchOptions()
+            let targetSize = pickerConfig.photoCollectionViewItemSize.width * UIScreen.main.scale
+            options.sizeOption = .specify(targetSize)
+            assetRequest = AssetFetchTool.requestImage(for: model.asset, options: options, completion: { [weak self] result, requestId in
+                if case .success(let respose) = result {
+                    if respose.isDegraded || (self?.assetRequest?.containsRequestId(requestId) ?? false) {
+                        self?.assetImageView.image = respose.image
+                    }
                 }
-            case .failure: break
-            }
-        })
+            })
+        }
     }
     
     public func update(_ model: AssetModel, animated: Bool) {

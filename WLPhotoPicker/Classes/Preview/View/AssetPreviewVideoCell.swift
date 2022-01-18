@@ -10,11 +10,13 @@ import AVKit
 
 class AssetPreviewVideoCell: AssetPreviewCell {
     
+    let iCloudView = AssetPreviewICloudView()
+    let playButton = UIButton()
+    
     var player: AVPlayer?
     var playerLayer: AVPlayerLayer?
     
-    let playButton = UIButton()
-    
+    var isVideoFinishLoading: Bool = false
     var isPlaying: Bool = false
     
     override init(frame: CGRect) {
@@ -24,7 +26,7 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         
         playButton.backgroundColor = .clear
         playButton.setBackgroundImage(BundleHelper.imageNamed("video_play"), for: .normal)
-        playButton.addTarget(self, action: #selector(playButtonClick), for: .touchUpInside)
+        playButton.isUserInteractionEnabled = false
         playButton.tintColor = .white
         contentView.addSubview(playButton)
         playButton.snp.makeConstraints { make in
@@ -32,12 +34,26 @@ class AssetPreviewVideoCell: AssetPreviewCell {
             make.center.equalToSuperview()
         }
         
+        iCloudView.isHidden = true
+        contentView.addSubview(iCloudView)
+        iCloudView.snp.makeConstraints { make in
+            make.left.equalTo(8)
+            make.top.equalTo(keyWindowSafeAreaInsets.top + 52)
+        }
+        
         NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidPlayToEndTime), name: .AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
     override func cellDidScroll() {
         super.cellDidScroll()
-        setPlayingStatus(false, changeToolbar: false)
+        setPlayingStatus(isPlaying: false, changeToolbar: false)
+    }
+    
+    func setICloudProgress(_ progress: Double) {
+        DispatchQueue.main.async { [weak self] in
+            self?.iCloudView.isHidden = progress == 1
+            self?.iCloudView.progress = progress
+        }
     }
     
     override func setAsset(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
@@ -49,15 +65,19 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         resetPlayer()
     }
     
-    override func requestOtherAssetData(_ model: AssetModel) {
+    func requestVideo() {
+        guard let model = self.model else {
+            return
+        }
         let options = AssetFetchOptions()
-        options.progressHandler = defaultProgressHandle
         options.videoDeliveryMode = .mediumQualityFormat
-        setProgress(0)
+        options.progressHandler = setICloudProgress
+        
         assetRequest = AssetFetchTool.requestAVAsset(for: model.asset, options: options) { [weak self] result, _ in
-            self?.setProgress(1)
+            self?.setICloudProgress(1)
             if case .success(let response) = result {
                 self?.setupPlayer(playerItem: response.playerItem)
+                self?.isVideoFinishLoading = true
             }
         }
     }
@@ -65,35 +85,32 @@ class AssetPreviewVideoCell: AssetPreviewCell {
     func setupPlayer(playerItem: AVPlayerItem) {
         player = AVPlayer(playerItem: playerItem)
         playerLayer = AVPlayerLayer(player: player)
+        playerLayer?.frame = assetImageView.layer.bounds
         playerLayer?.backgroundColor = UIColor.clear.cgColor
         playerLayer?.isHidden = true
         assetImageView.layer.addSublayer(playerLayer!)
-        layoutSubviews()
         if isPlaying {
-            setPlayingStatus(true, changeToolbar: true)
+            setPlayingStatus(isPlaying: true, changeToolbar: false)
         }
-    }
-    
-    func resetPlayer() {
-        player?.pause()
-        player = nil
-        playerLayer?.removeFromSuperlayer()
-        playerLayer = nil
     }
     
     @objc func playerItemDidPlayToEndTime() {
         player?.seek(to: .zero)
         player?.pause()
         playerLayer?.isHidden = true
-        setPlayingStatus(false, changeToolbar: true)
+        setPlayingStatus(isPlaying: false, changeToolbar: true)
     }
     
-    func setPlayingStatus(_ isPlaying: Bool, changeToolbar: Bool = true) {
+    func setPlayingStatus(isPlaying: Bool, changeToolbar: Bool) {
         self.isPlaying = isPlaying
         playButton.isHidden = isPlaying
         if isPlaying {
-            player?.play()
-            playerLayer?.isHidden = false
+            if isVideoFinishLoading {
+                player?.play()
+                playerLayer?.isHidden = false
+            } else {
+                requestVideo()
+            }
         } else {
             player?.pause()
         }
@@ -102,35 +119,35 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         }
     }
     
-    @objc func playButtonClick() {
-        setPlayingStatus(true)
+    override func handleSingleTapGesture() {
+        setPlayingStatus(isPlaying: !isPlaying, changeToolbar: true)
     }
     
-    override func handleSingleTapGes() {
-        setPlayingStatus(!self.isPlaying)
-    }
-    
-    override func beginPanGes() {
-        super.beginPanGes()
-        setPlayingStatus(false, changeToolbar: false)
+    override func beginPanGesture() {
+        super.beginPanGesture()
+        setPlayingStatus(isPlaying: false, changeToolbar: false)
         playButton.isHidden = true
     }
     
-    override func finishPanGes(dismiss: Bool) {
-        super.finishPanGes(dismiss: dismiss)
+    override func finishPanGesture(dismiss: Bool) {
+        super.finishPanGesture(dismiss: dismiss)
         if !dismiss {
-            setPlayingStatus(false, changeToolbar: false)
+            setPlayingStatus(isPlaying: false, changeToolbar: false)
         }
+    }
+    
+    func resetPlayer() {
+        player?.pause()
+        player = nil
+        playerLayer?.removeFromSuperlayer()
+        playerLayer = nil
+        isVideoFinishLoading = false
+        iCloudView.isHidden = true
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         resetPlayer()
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        playerLayer?.frame = assetImageView.layer.bounds
     }
     
     required init?(coder: NSCoder) {

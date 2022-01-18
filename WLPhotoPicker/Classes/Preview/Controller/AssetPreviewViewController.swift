@@ -15,7 +15,7 @@ protocol AssetPreviewViewControllerAnimateDataSource: AnyObject {
 protocol AssetPreviewViewControllerDelegate: AnyObject {
     func imageBrowser(_ imageBrowser: AssetPreviewViewController, didScrollTo indexPath: IndexPath)
     func imageBrowser(_ imageBrowser: AssetPreviewViewController, didClickDoneWithAssets assets: [AssetModel])
-    func imageBrowser(_ imageBrowser: AssetPreviewViewController, didChangeIsOrigin isOrigin: Bool)
+    func imageBrowser(_ imageBrowser: AssetPreviewViewController, didChangeIsOriginal isOriginal: Bool)
     func imageBrowser(_ imageBrowser: AssetPreviewViewController, didFinishEditImageAt indexPath: IndexPath)
 }
 
@@ -26,7 +26,7 @@ public class AssetPreviewViewController: UIViewController {
     let assetFetchTool: AssetFetchTool
     let config: WLPhotoConfig
     
-    let topToolBar = AssetPreviewNavigationBar()
+    let topToolBar: AssetPreviewNavigationBar
     let bottomToolBar: AssetPreviewToolBar
     let animateImageView = UIImageView()
     let collectionViewLayout = UICollectionViewFlowLayout()
@@ -50,6 +50,7 @@ public class AssetPreviewViewController: UIViewController {
     public init(config: WLPhotoConfig, assetFetchTool: AssetFetchTool) {
         self.config = config
         self.assetFetchTool = assetFetchTool
+        self.topToolBar = AssetPreviewNavigationBar(pickerConfig: config.pickerConfig)
         self.bottomToolBar = AssetPreviewToolBar(pickerConfig: config.pickerConfig)
         super.init(nibName: nil, bundle: nil)
         self.modalPresentationStyle = .custom
@@ -105,7 +106,7 @@ public class AssetPreviewViewController: UIViewController {
         }
         
         bottomToolBar.delegate = self
-        bottomToolBar.isOrigin = assetFetchTool.isOrigin
+        bottomToolBar.isOriginal = assetFetchTool.isOriginal
         bottomToolBar.setSelectedAssets(assetFetchTool.selectedAssets)
         view.addSubview(bottomToolBar)
         bottomToolBar.snp.makeConstraints { make in
@@ -324,11 +325,11 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
         }
     }
     
-    public func toolBarDidClickOriginButton(_ toolBar: AssetPreviewToolBar, isOrigin: Bool) {
-        assetFetchTool.isOrigin = isOrigin
-        deleagte?.imageBrowser(self, didChangeIsOrigin: isOrigin)
+    public func toolBarDidClickOriginButton(_ toolBar: AssetPreviewToolBar, isOriginal: Bool) {
+        assetFetchTool.isOriginal = isOriginal
+        deleagte?.imageBrowser(self, didChangeIsOriginal: isOriginal)
         
-        guard isOrigin, let albumModel = assetFetchTool.albumModel else {
+        guard isOriginal, let albumModel = assetFetchTool.albumModel else {
             return
         }
         let index = Int(collectionView.contentOffset.x / collectionView.width)

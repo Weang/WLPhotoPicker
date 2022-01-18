@@ -21,7 +21,7 @@ extension AssetFetchTool {
 //            completion(.failure(.invalidVideoUrl))
 //            return
 //        }
-//        VideoExportTool.exportVideo(avAsset: videoAsset, outputPath: videoOutputPath, config: pickerConfig, isOriginal: isOrigin) { progress in
+//        VideoExportTool.exportVideo(avAsset: videoAsset, outputPath: videoOutputPath, config: pickerConfig, isOriginal: isOriginal) { progress in
 //            options.progressHandler?(progress)
 //        } completion: { result in
 //            

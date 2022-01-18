@@ -15,7 +15,7 @@ public enum PhotoEditItemType: Equatable {
     // 添加文字
     case text
     // 裁剪
-    case crop
+//    case crop
     // 马赛克
     case mosaic
     // 滤镜
@@ -34,8 +34,8 @@ extension PhotoEditItemType {
             return BundleHelper.imageNamed("edit_paster")
         case .text:
             return BundleHelper.imageNamed("edit_text")
-        case .crop:
-            return BundleHelper.imageNamed("edit_crop")
+//        case .crop:
+//            return BundleHelper.imageNamed("edit_crop")
         case .mosaic:
             return BundleHelper.imageNamed("edit_mosaic")
         case .filter:
@@ -61,7 +61,7 @@ public extension PhotoEditItemType {
         [.graffiti,
          .paster,
          .text,
-         .crop,
+//         .crop,
          .mosaic,
          .filter,
          adjust]

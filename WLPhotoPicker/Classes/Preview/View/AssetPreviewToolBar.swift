@@ -10,7 +10,7 @@ import UIKit
 public protocol AssetPreviewToolBarDelegate: AnyObject {
     func toolBar(_ toolBar: AssetPreviewToolBar, didSelectAsset asset: AssetModel)
     func toolBarDidClickEditButton(_ toolBar: AssetPreviewToolBar)
-    func toolBarDidClickOriginButton(_ toolBar: AssetPreviewToolBar, isOrigin: Bool)
+    func toolBarDidClickOriginButton(_ toolBar: AssetPreviewToolBar, isOriginal: Bool)
     func toolBarDidClickDoneButton(_ toolBar: AssetPreviewToolBar)
 }
 
@@ -21,9 +21,9 @@ public class AssetPreviewToolBar: VisualEffectView {
     private let previewThumbnailHeight: CGFloat = 96
     private let toolBarHeight: CGFloat = 54
     
-    public var isOrigin: Bool = false {
+    public var isOriginal: Bool = false {
         didSet {
-            originButton.isSelected = isOrigin
+            originButton.isSelected = isOriginal
         }
     }
     
@@ -125,7 +125,7 @@ public class AssetPreviewToolBar: VisualEffectView {
     
     @objc func originButtonClick() {
         originButton.isSelected.toggle()
-        delegate?.toolBarDidClickOriginButton(self, isOrigin: originButton.isSelected)
+        delegate?.toolBarDidClickOriginButton(self, isOriginal: originButton.isSelected)
     }
     
     @objc func doneButtonClick() {

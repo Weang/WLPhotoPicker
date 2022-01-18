@@ -255,7 +255,7 @@ class AssetPickerController: UIViewController {
     func requestSelectedAssets(assets: [AssetModel]) {
         LoadingHUD.shared.showLoading()
         assetFetchTool.requestAssets(assets: assets) { progress in
-            
+            // TODO: progress hud
         } completionHandle: { [weak self] result in
             guard let self = self else { return }
             LoadingHUD.shared.hideLoading()
@@ -365,14 +365,19 @@ extension AssetPickerController: UICollectionViewDelegate, UICollectionViewDataS
             return
         }
         let indexPath = IndexPath(item: assetIndexFromCell(indexPath.item), section: 0)
-        if !albumModel.assets[indexPath.item].isEnabled {
+        let assetModel = albumModel.assets[indexPath.item]
+        if !assetModel.isEnabled {
             return
         }
-        let vc = AssetPreviewViewController(config: config, assetFetchTool: assetFetchTool)
-        vc.animateDataSource = self
-        vc.deleagte = self
-        vc.currentIndex = indexPath.item
-        self.present(vc, animated: true, completion: nil)
+        if config.pickerConfig.allowPreview {
+            let vc = AssetPreviewViewController(config: config, assetFetchTool: assetFetchTool)
+            vc.animateDataSource = self
+            vc.deleagte = self
+            vc.currentIndex = indexPath.item
+            self.present(vc, animated: true, completion: nil)
+        } else {
+            requestSelectedAssets(assets: [assetModel])
+        }
     }
 }
 
@@ -426,8 +431,8 @@ extension AssetPickerController: AssetPreviewViewControllerAnimateDataSource, As
     }
     
     // 预览页面点击是否原图按钮
-    func imageBrowser(_ imageBrowser: AssetPreviewViewController, didChangeIsOrigin isOrigin: Bool) {
-        bottomToolBar.isOrigin = assetFetchTool.isOrigin
+    func imageBrowser(_ imageBrowser: AssetPreviewViewController, didChangeIsOriginal isOriginal: Bool) {
+        bottomToolBar.isOriginal = assetFetchTool.isOriginal
     }
     
     func imageBrowser(_ imageBrowser: AssetPreviewViewController, didFinishEditImageAt indexPath: IndexPath) {
@@ -446,8 +451,8 @@ extension AssetPickerController: AssetPickerToolBarDelegate {
     }
     
     // 点击是否原图按钮
-    func pickerToolBarDidClickOrginButton(_ toolBar: AssetPickerToolBar, isOrigin: Bool) {
-        assetFetchTool.isOrigin = isOrigin
+    func pickerToolBarDidClickOrginButton(_ toolBar: AssetPickerToolBar, isOriginal: Bool) {
+        assetFetchTool.isOriginal = isOriginal
     }
     
     // 点击完成按钮

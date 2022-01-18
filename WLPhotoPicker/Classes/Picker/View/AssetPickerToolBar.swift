@@ -9,7 +9,7 @@ import UIKit
 
 public protocol AssetPickerToolBarDelegate: AnyObject {
     func pickerToolBarDidClickPermissionLimitedView(_ toolBar: AssetPickerToolBar)
-    func pickerToolBarDidClickOrginButton(_ toolBar: AssetPickerToolBar, isOrigin: Bool)
+    func pickerToolBarDidClickOrginButton(_ toolBar: AssetPickerToolBar, isOriginal: Bool)
     func pickerToolBarDidClickDoneButton(_ toolBar: AssetPickerToolBar)
 }
 
@@ -18,16 +18,15 @@ public class AssetPickerToolBar: VisualEffectView {
     private let limitedPermissionViewHeight: CGFloat = 64
     private let toolBarHeight: CGFloat = 54
     
-    public var isOrigin: Bool = false {
+    public var isOriginal: Bool = false {
         didSet {
-            originButton.isSelected = isOrigin
+            originButton.isSelected = isOriginal
         }
     }
     
     public var isLimitedPermission: Bool = false {
         didSet {
-            limitedPermissionView.isHidden = !isLimitedPermission
-            invalidateIntrinsicContentSize()
+            updateHidden()
         }
     }
     
@@ -86,24 +85,35 @@ public class AssetPickerToolBar: VisualEffectView {
             originButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
             originButton.addTarget(self, action: #selector(originButtonClick), for: .touchUpInside)
             contentView.addArrangedSubview(originButton)
-        } else {
-            contentView.addArrangedSubview(UIView())
         }
         
-        doneButton.isEnabled = false
-        doneButton.layer.cornerRadius = 4
-        doneButton.layer.masksToBounds = true
-        doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoPickerUIConfig.default.themeColor), for: .normal)
-        doneButton.setTitle("完成", for: .normal)
-        doneButton.setTitleColor(.white, for: .normal)
-        doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
-        doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)
-        contentView.addArrangedSubview(doneButton)
-        doneButton.snp.makeConstraints { make in
-            make.height.equalTo(30)
-            make.width.equalTo(56)
+        contentView.addArrangedSubview(UIView())
+        
+        if pickerConfig.showPickerDoneButton {
+            doneButton.isEnabled = false
+            doneButton.layer.cornerRadius = 4
+            doneButton.layer.masksToBounds = true
+            doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoPickerUIConfig.default.themeColor), for: .normal)
+            doneButton.setTitle("完成", for: .normal)
+            doneButton.setTitleColor(.white, for: .normal)
+            doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+            doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)
+            contentView.addArrangedSubview(doneButton)
+            doneButton.snp.makeConstraints { make in
+                make.height.equalTo(30)
+                make.width.equalTo(56)
+            }
         }
         
+        updateHidden()
+    }
+    
+    func updateHidden() {
+        contentView.isHidden = !pickerConfig.allowSelectOriginal && !pickerConfig.showPickerDoneButton
+        limitedPermissionView.isHidden = !isLimitedPermission
+        isHidden = contentView.isHidden && limitedPermissionView.isHidden
+        backgroundView.isHidden = isHidden
+        invalidateIntrinsicContentSize()
     }
     
     @objc func permissionLimitedViewClick() {
@@ -112,7 +122,7 @@ public class AssetPickerToolBar: VisualEffectView {
     
     @objc func originButtonClick() {
         originButton.isSelected.toggle()
-        delegate?.pickerToolBarDidClickOrginButton(self, isOrigin: originButton.isSelected)
+        delegate?.pickerToolBarDidClickOrginButton(self, isOriginal: originButton.isSelected)
     }
     
     @objc func doneButtonClick() {
@@ -120,7 +130,10 @@ public class AssetPickerToolBar: VisualEffectView {
     }
     
     public override var intrinsicContentSize: CGSize {
-        var height = toolBarHeight + keyWindowSafeAreaInsets.bottom
+        var height = keyWindowSafeAreaInsets.bottom
+        if !contentView.isHidden {
+            height += toolBarHeight
+        }
         if isLimitedPermission {
             height += limitedPermissionViewHeight
         }

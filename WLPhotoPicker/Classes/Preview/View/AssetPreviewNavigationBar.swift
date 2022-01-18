@@ -16,11 +16,14 @@ public class AssetPreviewNavigationBar: VisualEffectView {
     
     weak var delegate: AssetPreviewNavigationBarDelegate?
     
+    let pickerConfig: PickerConfig
+    
     private let cancelButton = UIButton()
     private let selectButton = CircleSelectedButton()
     
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(pickerConfig: PickerConfig) {
+        self.pickerConfig = pickerConfig
+        super.init(frame: .zero)
         
         cancelButton.setImage(BundleHelper.imageNamed("arrow_left")?.withRenderingMode(.alwaysTemplate), for: .normal)
         cancelButton.tintColor = WLPhotoPickerUIConfig.default.textColor
@@ -33,13 +36,15 @@ public class AssetPreviewNavigationBar: VisualEffectView {
             make.width.equalTo(32)
         }
         
-        selectButton.addTarget(self, action: #selector(selectButtonClick), for: .touchUpInside)
-        selectButton.isSelected = false
-        addSubview(selectButton)
-        selectButton.snp.makeConstraints { make in
-            make.centerY.equalTo(snp.bottom).offset(-22)
-            make.right.equalTo(-12)
-            make.height.width.equalTo(40)
+        if pickerConfig.showSelectButton {
+            selectButton.addTarget(self, action: #selector(selectButtonClick), for: .touchUpInside)
+            selectButton.isSelected = false
+            addSubview(selectButton)
+            selectButton.snp.makeConstraints { make in
+                make.centerY.equalTo(snp.bottom).offset(-22)
+                make.right.equalTo(-12)
+                make.height.width.equalTo(40)
+            }
         }
     }
     

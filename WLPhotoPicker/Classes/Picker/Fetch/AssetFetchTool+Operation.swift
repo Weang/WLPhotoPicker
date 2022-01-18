@@ -35,7 +35,7 @@ extension AssetFetchTool {
                 }
             }
             let operation = AssetFetchOperation(assetModel: asset,
-                                                isOrigin: isOrigin,
+                                                isOriginal: isOriginal,
                                                 config: config,
                                                 progress: progressClosure,
                                                 completion: completionClosure)
@@ -95,12 +95,12 @@ public class AssetFetchOperation: Operation {
     }
     
     init(assetModel: AssetModel,
-         isOrigin: Bool,
+         isOriginal: Bool,
          config: WLPhotoConfig,
          progress: AssetFetchOperationProgress? = nil,
          completion: AssetFetchOperationResult? = nil) {
         self.assetModel = assetModel
-        self.isOriginal = isOrigin
+        self.isOriginal = isOriginal
         self.config = config
         self.progress = progress
         self.completion = completion

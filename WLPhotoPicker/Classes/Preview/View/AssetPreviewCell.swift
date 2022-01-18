@@ -20,10 +20,11 @@ public class AssetPreviewCell: UICollectionViewCell {
     
     weak var delegate: AssetPreviewCellDelegate?
     
-    let iCloudView = AssetPreviewICloudView()
+    let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
     let assetImageView = UIImageView()
     let contentScrollView = UIScrollView()
     
+    var model: AssetModel?
     var assetRequest: AssetFetchRequest?
     
     let singleTapGesture = UITapGestureRecognizer()
@@ -52,95 +53,70 @@ public class AssetPreviewCell: UICollectionViewCell {
         assetImageView.contentMode = .scaleAspectFit
         contentScrollView.addSubview(assetImageView)
         
-        iCloudView.isHidden = true
-        contentView.addSubview(iCloudView)
-        iCloudView.snp.makeConstraints { make in
-            make.left.equalTo(8)
-            make.top.equalTo(100)
+        activityIndicator.hidesWhenStopped = true
+        contentView.addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
         
-        singleTapGesture.addTarget(self, action: #selector(handleSingleTapGes))
+        singleTapGesture.addTarget(self, action: #selector(handleSingleTapGesture))
         contentScrollView.addGestureRecognizer(singleTapGesture)
         
-        doubleTapGesture.addTarget(self, action: #selector(handleDoubleTapGes(_:)))
+        doubleTapGesture.addTarget(self, action: #selector(handleDoubleTapGesture(_:)))
         doubleTapGesture.numberOfTapsRequired = 2
         contentScrollView.addGestureRecognizer(doubleTapGesture)
         
         panGesture.delegate = self
-        panGesture.addTarget(self, action: #selector(handlePanGes(_:)))
+        panGesture.addTarget(self, action: #selector(handlePanGesture(_:)))
         contentScrollView.addGestureRecognizer(panGesture)
         
         singleTapGesture.require(toFail: doubleTapGesture)
     }
     
-    func cellDidScroll() {
-        
-    }
-    
     // MARK: Request
     func setAsset(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
-        cancelRequest()
-        setProgress(1)
+        self.model = model
+        cancelCurrentRequest()
         
-        contentScrollView.setZoomScale(1, animated: false)
         assetImageView.frame = AssetSizeHelper.imageViewRectFrom(imageSize: model.asset.pixelSize, mediaType: model.mediaType)
+        contentScrollView.setZoomScale(1, animated: false)
         contentScrollView.contentSize = assetImageView.frame.size
         contentScrollView.maximumZoomScale = AssetSizeHelper.imageViewMaxZoomScaleFrom(imageSize: model.asset.pixelSize)
+        
         requestImage(model, thumbnail: thumbnail, pickerConfig: pickerConfig)
     }
     
     func requestImage(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
         if let image = model.displayingImage {
             assetImageView.image = image
-            requestOtherAssetData(model)
             return
         }
         assetImageView.image = thumbnail
         
         let options = AssetFetchOptions()
         options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
-        options.progressHandler = defaultProgressHandle
+        options.imageDeliveryMode = .highQualityFormat
         
-        assetRequest = AssetFetchTool.requestImage(for: model.asset, options: options) { [weak self] result, requestId in
-            self?.setProgress(1)
-            switch result {
-            case .success(let response):
-                if !response.isDegraded {
-                    self?.assetImageView.image = response.image
-                    self?.requestOtherAssetData(model)
-                }
-            case .failure: break
+        activityIndicator.startAnimating()
+        
+        assetRequest = AssetFetchTool.requestImage(for: model.asset, options: options) { [weak self] result, _ in
+            self?.activityIndicator.stopAnimating()
+            if case .success(let response) = result {
+                self?.assetImageView.image = response.image
             }
         }
     }
     
-    func requestOtherAssetData(_ model: AssetModel) {
+    func cellDidScroll() {
         
     }
     
-    func cancelRequest() {
-        assetRequest?.cancel()
-        assetRequest = nil
-        assetImageView.image = nil
-    }
-    
-    func defaultProgressHandle(progress: Double) {
-        DispatchQueue.main.async { [weak self] in
-            self?.setProgress(progress)
-        }
-    }
-    
-    func setProgress(_ progress: Double) {
-        iCloudView.isHidden = progress == 1
-        iCloudView.progress = progress
-    }
-    
     // MARK: GestureRecognizer
-    @objc func handleSingleTapGes() {
+    @objc func handleSingleTapGesture() {
         delegate?.previewCellSingleTap(self)
     }
     
-    @objc func handleDoubleTapGes(_ gesture: UITapGestureRecognizer) {
+    @objc func handleDoubleTapGesture(_ gesture: UITapGestureRecognizer) {
         if contentScrollView.zoomScale == contentScrollView.minimumZoomScale {
             var scale: CGFloat = 3
             if assetImageView.size.ratio > UIScreen.size.ratio  && assetImageView.width > assetImageView.height {
@@ -159,27 +135,27 @@ public class AssetPreviewCell: UICollectionViewCell {
         }
     }
     
-    @objc func handlePanGes(_ gesture: UIPanGestureRecognizer) {
+    @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
         switch gesture.state {
         case .began:
-            beginPanGes()
+            beginPanGesture()
         case .changed:
             let translation = gesture.translation(in: self)
-            changedPanGes(translation: translation)
+            changedPanGesture(translation: translation)
         default:
             if contentView.frame.origin.y > 80 || gesture.velocity(in: self).y > 500 {
-                finishPanGes(dismiss: true)
+                finishPanGesture(dismiss: true)
             } else {
-                finishPanGes(dismiss: false)
+                finishPanGesture(dismiss: false)
             }
         }
     }
     
-    func beginPanGes() {
+    func beginPanGesture() {
         delegate?.previewCellSingleTapDidBeginPan(self)
     }
     
-    func changedPanGes(translation: CGPoint) {
+    func changedPanGesture(translation: CGPoint) {
         let transForm = min(1 - translation.y / UIScreen.height, 1)
         contentScrollView.transform = CGAffineTransform(scaleX: transForm, y: transForm)
         contentView.x = translation.x
@@ -188,7 +164,7 @@ public class AssetPreviewCell: UICollectionViewCell {
         delegate?.previewCellSingleTap(self, didPanScale: scale)
     }
     
-    func finishPanGes(dismiss: Bool) {
+    func finishPanGesture(dismiss: Bool) {
         if dismiss {
             delegate?.previewCellSingleTap(self, didFinishPanDismiss: true)
         } else {
@@ -200,9 +176,15 @@ public class AssetPreviewCell: UICollectionViewCell {
         }
     }
     
+    func cancelCurrentRequest() {
+        assetRequest?.cancel()
+        assetRequest = nil
+        assetImageView.image = nil
+    }
+    
     public override func prepareForReuse() {
         super.prepareForReuse()
-        cancelRequest()
+        cancelCurrentRequest()
     }
     
     public override func layoutSubviews() {

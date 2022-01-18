@@ -11,13 +11,21 @@ import VideoToolbox
 
 public class VideoExportManager {
     
+    // 视频压缩尺寸
     public var compressSize: VideoCompressSize = ._960x540
+    
+    // 视频导出格式
     public var videoExportFileType: VideoExportFileType = .mp4
+    
+    // 视频压缩帧率
     public var frameDuration: Float = 30 {
         didSet {
             updateComposition()
         }
     }
+    
+    // 是否压缩视频
+    // 如果为false，所有视频压缩的相关参数将被忽略
     public var compressVideo: Bool = true {
         didSet {
             updateComposition()

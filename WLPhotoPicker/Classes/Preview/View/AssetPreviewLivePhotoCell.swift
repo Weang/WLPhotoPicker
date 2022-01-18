@@ -28,53 +28,60 @@ public class AssetPreviewLivePhotoCell: AssetPreviewCell {
         livePhotoView.delegate = self
         assetImageView.addSubview(livePhotoView)
         
-        contentScrollView.bringSubviewToFront(assetImageView)
-        
         contentView.addSubview(livePhotoTipView)
         livePhotoTipView.snp.makeConstraints { make in
-            make.left.equalTo(iCloudView.snp.left)
-            make.top.equalTo(iCloudView.snp.top)
+            make.left.equalTo(8)
+            make.top.equalTo(keyWindowSafeAreaInsets.top + 52)
         }
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
         longPressGesture.delaysTouchesBegan = true
-        longPressGesture.minimumPressDuration = 0.3
+        longPressGesture.minimumPressDuration = 0.2
         contentScrollView.addGestureRecognizer(longPressGesture)
     }
     
-    override func setProgress(_ progress: Double) {
-        super.setProgress(progress)
-        livePhotoTipView.isHidden = progress != 1 || !isShowToolBar
+    override func requestImage(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
+        assetImageView.image = thumbnail
+        
+        let options = AssetFetchOptions()
+        options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
+        options.imageDeliveryMode = .highQualityFormat
+        
+        activityIndicator.startAnimating()
+        
+        assetRequest = AssetFetchTool.requestImage(for: model.asset, options: options) { [weak self] result, _ in
+            if case .success(let response) = result {
+                self?.assetImageView.image = response.image
+            }
+            self?.requestLivePhoto(model, pickerConfig: pickerConfig)
+        }
     }
     
-    override func requestOtherAssetData(_ model: AssetModel) {
+    func requestLivePhoto(_ model: AssetModel, pickerConfig: PickerConfig) {
         let options = AssetFetchOptions()
-        options.sizeOption = .original
+        options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
         options.imageDeliveryMode = .highQualityFormat
-        options.progressHandler = defaultProgressHandle
         
         assetRequest = AssetFetchTool.requestLivePhoto(for: model.asset, options: options, completion: { [weak self] result, _ in
-            self?.setProgress(1)
-            if case .success(let res) = result {
-                self?.livePhotoView.livePhoto = res.livePhoto
-            } else {
-                self?.livePhotoView.livePhoto = nil
+            self?.activityIndicator.stopAnimating()
+            if case .success(let response) = result {
+                self?.livePhotoView.livePhoto = response.livePhoto
             }
         })
     }
     
-    override func handleSingleTapGes() {
-        super.handleSingleTapGes()
+    override func handleSingleTapGesture() {
+        super.handleSingleTapGesture()
         isShowToolBar.toggle()
     }
     
-    override func beginPanGes() {
-        super.beginPanGes()
+    override func beginPanGesture() {
+        super.beginPanGesture()
         livePhotoTipView.isHidden = true
     }
     
-    override func finishPanGes(dismiss: Bool) {
-        super.finishPanGes(dismiss: dismiss)
+    override func finishPanGesture(dismiss: Bool) {
+        super.finishPanGesture(dismiss: dismiss)
         if !dismiss {
             livePhotoTipView.isHidden = !isShowToolBar
         }

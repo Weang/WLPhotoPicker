@@ -600,7 +600,7 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
             present(vc, animated: true, completion: nil)
         case .text:
             showEditTextController(textMaskLayer: nil)
-        case .crop:
+//        case .crop:
 //            let maskLayers = maskLayerContentView.subviews.compactMap{
 //                ($0 as? PhotoEditMaskView)?.maskLayer
 //            }
@@ -608,7 +608,7 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
 //            guard let editedImage = image else { return }
 //            let vc = PhotoEditCropViewController(photo: editedImage, assetModel: assetModel)
 //            present(vc, animated: true, completion: nil)
-            break
+//            break
         case .mosaic:
             prepareForMosaic()
         case .adjust:

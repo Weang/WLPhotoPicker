@@ -31,6 +31,20 @@ class ViewController: FormViewController {
             self.config.pickerConfig.columnsOfPhotos = Int(row.value ?? "4") ?? 4
         })
         
+        <<< SwitchRow() { row in
+            row.title = "是否显示选择按钮"
+            row.value = self.config.pickerConfig.showSelectButton
+        }.onChange { row in
+            self.config.pickerConfig.showSelectButton = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "点击按钮是否进入预览页面"
+            row.value = self.config.pickerConfig.allowPreview
+        }.onChange { row in
+            self.config.pickerConfig.allowPreview = (row.value ?? false)
+        }
+        
         <<< MultipleSelectorRow<String>() { row in
             row.title = "可选择资源类型"
             row.options = ["照片", "视频", "动图", "实况"]
@@ -114,7 +128,7 @@ class ViewController: FormViewController {
         }
         
         <<< SwitchRow() { row in
-            row.title = "选取视频时是否导出到本地"
+            row.title = "选取视频时是否导出到沙盒"
             row.value = self.config.pickerConfig.exportVideoToLocalWhenPick
         }.onChange { row in
             self.config.pickerConfig.exportVideoToLocalWhenPick = (row.value ?? false)
@@ -165,20 +179,18 @@ class ViewController: FormViewController {
             self.config.pickerConfig.saveEditedPhotoToAlbum = (row.value ?? false)
         }
         
-        
-        
-        
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
 //        let config = WLPhotoConfig()
-//        config.pickerConfig.selectableType = [.photo, .video, .GIF]
+//        config.pickerConfig.selectableType = .all
 //        config.pickerConfig.saveImageToLocalWhenPick = true
 //        config.pickerConfig.exportVideoToLocalWhenPick = true
-//        config.pickerConfig.videoExportOriginal = true
+//        config.pickerConfig.videoExportOriginal = false
+//        config.pickerConfig.showSelectButton = false
+//        config.pickerConfig.allowPreview = false
 //        config.captureConfig.captureAspectRatio = .ratio16x9
 //        config.photoEditConfig.photoEditPasters = (1...18).map{ "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) }
 //        if #available(iOS 13.0, *) {
