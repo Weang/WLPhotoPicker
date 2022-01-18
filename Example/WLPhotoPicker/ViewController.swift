@@ -179,6 +179,31 @@ class ViewController: FormViewController {
             self.config.pickerConfig.saveEditedPhotoToAlbum = (row.value ?? false)
         }
         
+        form +++ Section("Editor")
+        
+        <<< SwitchRow() { row in
+            row.title = "使用自定义贴图"
+            row.value = false
+        }.onChange { row in
+            self.config.photoEditConfig.photoEditPasters = (row.value ?? false) ? (1...18).map{ "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) } : []
+        }
+        
+        form +++ Section("Capture")
+        
+        <<< SwitchRow() { row in
+            row.title = "是否允许拍摄照片"
+            row.value = self.config.captureConfig.captureAllowTakingPhoto
+        }.onChange { row in
+            self.config.captureConfig.captureAllowTakingPhoto = row.value ?? false
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "是否允许拍摄视频"
+            row.value = self.config.captureConfig.captureAllowTakingVideo
+        }.onChange { row in
+            self.config.captureConfig.captureAllowTakingVideo = row.value ?? false
+        }
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
