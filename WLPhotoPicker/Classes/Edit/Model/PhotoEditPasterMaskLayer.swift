@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PhotoEditPasterMaskLayer: PhotoEditMaskLayer {
+struct PhotoEditPasterMaskLayer: PhotoEditMaskLayer {
     
     var id: Double
     var maskImage: UIImage

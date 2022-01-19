@@ -14,7 +14,11 @@ public class AssetPreviewICloudView: VisualEffectView {
     
     public var progress: Double = 0 {
         didSet {
-            progressLabel.text = String(format: "iCloud同步中%d%%", Int(progress * 100))
+            var text = "iCloud同步中"
+            if progress > 0 {
+                text += String(format: "%d%%", Int(progress * 100))
+            }
+            progressLabel.text = text
         }
     }
     

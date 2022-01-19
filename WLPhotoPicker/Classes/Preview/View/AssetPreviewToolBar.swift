@@ -154,7 +154,7 @@ public class AssetPreviewToolBar: VisualEffectView {
         }
         if let asset = asset {
             editButton.alpha = asset.mediaType == .photo ? 1 : 0
-            originButton.alpha = asset.mediaType == .photo || (asset.mediaType == .video && pickerConfig.videoExportOriginal) ? 1 : 0
+            originButton.alpha = asset.mediaType == .photo || (asset.mediaType == .video && pickerConfig.videoExportOriginal) || asset.mediaType == .livePhoto ? 1 : 0
         }
     }
     

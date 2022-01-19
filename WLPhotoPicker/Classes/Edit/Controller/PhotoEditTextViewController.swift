@@ -167,7 +167,7 @@ class PhotoEditTextViewController: UIViewController {
         guard let image = drawTextImage() else {
             return
         }
-        let textMask: PhotoEditTextMaskLayer
+        var textMask: PhotoEditTextMaskLayer
         if let editedtextMask = self.textMaskLayer {
             textMask = editedtextMask
             textMask.text = inputTextView.text

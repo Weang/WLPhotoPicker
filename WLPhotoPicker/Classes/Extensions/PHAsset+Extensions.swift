@@ -10,12 +10,30 @@ import Photos
 
 extension PHAsset {
     
-    var isLocallyAvailable: Bool {
-        guard let resource = PHAssetResource.assetResources(for: self).first,
-              let locallyAvailable = resource.value(forKey: "locallyAvailable") as? Bool else {
-                  return false
-              }
-        return locallyAvailable
+    var isVideoLocallyAvailable: Bool {
+        return PHAssetResource.assetResources(for: self)
+            .lazy
+            .filter {
+                $0.value(forKey: "isCurrent") as? Bool == true
+            }.filter {
+                $0.type == .video || $0.type == .fullSizeVideo
+            }.filter {
+                $0.value(forKey: "locallyAvailable") as? Bool == true
+            }.count > 0
+    }
+    
+    var locallyVideoFileURL: URL? {
+        return PHAssetResource.assetResources(for: self)
+            .lazy
+            .filter {
+                $0.type == .video || $0.type == .fullSizeVideo
+            }.filter {
+                $0.value(forKey: "isCurrent") as? Bool == true
+            }.filter {
+                $0.value(forKey: "locallyAvailable") as? Bool == true
+            }.compactMap {
+                $0.value(forKey: "privateFileURL") as? URL
+            }.first
     }
     
     var fileName: String? {

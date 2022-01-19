@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class PhotoEditGraffitiPath {
+public struct PhotoEditGraffitiPath {
     
     var imageSize: CGSize = .zero
     var shapeSize: CGSize = .zero
@@ -18,11 +18,11 @@ public class PhotoEditGraffitiPath {
         pathLines.last
     }
     
-    func append(pathLine: PhotoEditGraffitiPathLine) {
+    mutating func append(pathLine: PhotoEditGraffitiPathLine) {
         pathLines.append(pathLine)
     }
     
-    func removeLast() {
+    mutating func removeLast() {
         if pathLines.count > 0 {
             pathLines.removeLast()
         }

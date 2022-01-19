@@ -38,7 +38,7 @@ public struct GIFFetchResponse {
 
 // 视频请求结果
 public struct VideoFetchResponse {
-    public let avasset: AVURLAsset
+    public let avasset: AVAsset
     public let playerItem: AVPlayerItem
 }
 

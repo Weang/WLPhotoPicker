@@ -114,6 +114,7 @@ public class AssetPreviewCell: UICollectionViewCell {
     // MARK: GestureRecognizer
     @objc func handleSingleTapGesture() {
         delegate?.previewCellSingleTap(self)
+        print(contentScrollView.frame)
     }
     
     @objc func handleDoubleTapGesture(_ gesture: UITapGestureRecognizer) {
@@ -143,7 +144,7 @@ public class AssetPreviewCell: UICollectionViewCell {
             let translation = gesture.translation(in: self)
             changedPanGesture(translation: translation)
         default:
-            if contentView.frame.origin.y > 80 || gesture.velocity(in: self).y > 500 {
+            if contentScrollView.frame.origin.y > 80 || gesture.velocity(in: self).y > 500 {
                 finishPanGesture(dismiss: true)
             } else {
                 finishPanGesture(dismiss: false)
@@ -158,8 +159,7 @@ public class AssetPreviewCell: UICollectionViewCell {
     func changedPanGesture(translation: CGPoint) {
         let transForm = min(1 - translation.y / UIScreen.height, 1)
         contentScrollView.transform = CGAffineTransform(scaleX: transForm, y: transForm)
-        contentView.x = translation.x
-        contentView.y = translation.y
+            .translatedBy(x: translation.x, y: translation.y)
         let scale = min(1 - translation.y / UIScreen.height * 2, 1)
         delegate?.previewCellSingleTap(self, didPanScale: scale)
     }
@@ -169,7 +169,6 @@ public class AssetPreviewCell: UICollectionViewCell {
             delegate?.previewCellSingleTap(self, didFinishPanDismiss: true)
         } else {
             UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, animations: {
-                self.contentView.frame.origin = .zero
                 self.contentScrollView.transform = .identity
                 self.delegate?.previewCellSingleTap(self, didFinishPanDismiss: false)
             })
@@ -190,6 +189,10 @@ public class AssetPreviewCell: UICollectionViewCell {
     public override func layoutSubviews() {
         super.layoutSubviews()
         contentScrollView.frame = contentView.bounds
+    }
+    
+    deinit {
+        cancelCurrentRequest()
     }
     
     required init?(coder: NSCoder) {

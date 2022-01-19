@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PhotoEditTextMaskLayer: PhotoEditMaskLayer {
+struct PhotoEditTextMaskLayer: PhotoEditMaskLayer {
     
     var id: Double
     

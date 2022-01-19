@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class PhotoEditMosaicPath {
+public struct PhotoEditMosaicPath {
     
     var shapeSize: CGSize = .zero
     
@@ -17,11 +17,11 @@ public class PhotoEditMosaicPath {
         pathLines.last
     }
     
-    func append(pathLine: PhotoEditMosaicPathLine) {
+    mutating func append(pathLine: PhotoEditMosaicPathLine) {
         pathLines.append(pathLine)
     }
     
-    func removeLast() {
+    mutating func removeLast() {
         if pathLines.count > 0 {
             pathLines.removeLast()
         }

@@ -64,16 +64,20 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
                asset.localIdentifier == captureLocalIdentifier {
                 selectedAsset(asset: asset, delegateEvent: false)
                 self.captureLocalIdentifier = nil
-            } else if !detail.hasIncrementalChanges &&
-                        PermissionProvider.statusFor(.photoLibrary) == .limited &&
-                        pickerConfig.autoSelectAssetFromLimitedLibraryPicker {
-                if isUptoLimit {
-                    asset.isEnabled = false
-                }
+            }
+            // limited权限选中照片默认选中
+            if !detail.hasIncrementalChanges &&
+                PermissionProvider.statusFor(.photoLibrary) == .limited &&
+                pickerConfig.autoSelectAssetFromLimitedLibraryPicker {
                 selectedAsset(asset: asset, delegateEvent: false)
+            }
+            if isUptoLimit {
+                asset.isEnabled = false
             }
         }
         
+        // 变更的资源
+        // 从icloud下载图片后，也会触发这个方法，所以判断assetContentChanged，区别是照片修改还是下载
         for changedIndex in detail.changedIndexes ?? IndexSet() {
             let changedAsset = detail.fetchResultAfterChanges[changedIndex]
             if let assetIndex = album.assets.firstIndex(where: { $0.localIdentifier == changedAsset.localIdentifier }) {

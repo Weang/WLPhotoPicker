@@ -19,19 +19,23 @@ extension AssetFetchTool {
         var resultArray: [AssetPickerResult] = []
         for asset in assets {
             let progressClosure: AssetFetchOperationProgress = { progress in
-                progressHandle?(progress)
+                DispatchQueue.main.async {
+                    progressHandle?(progress)
+                }
             }
             let completionClosure: AssetFetchOperationResult = { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let response):
-                    resultArray.append(response)
-                case .failure(let error):
-                    self.assetFetchQueue.cancelAllOperations()
-                    completionHandle(.failure(error))
-                }
-                if resultArray.count == assets.count {
-                    completionHandle(.success(resultArray))
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(let response):
+                        resultArray.append(response)
+                    case .failure(let error):
+                        self.assetFetchQueue.cancelAllOperations()
+                        completionHandle(.failure(error))
+                    }
+                    if resultArray.count == assets.count {
+                        completionHandle(.success(resultArray))
+                    }
                 }
             }
             let operation = AssetFetchOperation(assetModel: asset,
@@ -146,6 +150,7 @@ public class AssetFetchOperation: Operation {
             currentPhoto = assetModel.originalImage
         default: break
         }
+        
         if let photo = currentPhoto {
             DispatchQueue.main.async { [weak self] in
                 self?.finishRequestPhoto(photo)
@@ -153,19 +158,16 @@ public class AssetFetchOperation: Operation {
             return
         }
         
+        // 只有图片编辑过，并且选择了原图，才会进入到这个方法
         assetRequest = AssetFetchTool.requestImage(for: assetModel.asset, options: options) { [weak self] result, _ in
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                if self.assetModel.hasEdit {
-                    self.assetModel.originalImage = response.image
-                    EditManager.drawEditOriginalImageFrom(asset: self.assetModel, photoEditConfig: self.config.photoEditConfig) { [weak self] image in
-                        if let image = image {
-                            self?.finishRequestPhoto(image)
-                        }
+                self.assetModel.originalImage = response.image
+                EditManager.drawEditOriginalImageFrom(asset: self.assetModel, photoEditConfig: self.config.photoEditConfig) { [weak self] image in
+                    if let image = image {
+                        self?.finishRequestPhoto(image)
                     }
-                } else {
-                    self.finishRequestPhoto(response.image)
                 }
             case .failure(let error):
                 self.completion?(.failure(.fetchError(error)))
@@ -228,24 +230,31 @@ public class AssetFetchOperation: Operation {
     func finishRequestVideo(_ response: VideoFetchResponse, options: AssetFetchOptions) {
         if self.config.pickerConfig.exportVideoToLocalWhenPick {
             let videoOutputPath = FileHelper.createVideoPathFrom(asset: assetModel, videoFileType: config.pickerConfig.videoExportFileType)
-            let exportManager = VideoExportManager(avAsset: response.avasset, outputPath: videoOutputPath)
+            let exportManager = VideoCompressManager(avAsset: response.avasset, outputPath: videoOutputPath)
             exportManager.compressVideo = !(isOriginal && config.pickerConfig.videoExportOriginal)
             exportManager.compressSize = config.pickerConfig.videoExportCompressSize
             exportManager.frameDuration = config.pickerConfig.videoExportFrameDuration
             exportManager.videoExportFileType = config.pickerConfig.videoExportFileType
             exportManager.exportVideo { progress in
                 options.progressHandler?(progress)
-            } completion: { url in
-                self.completion?(.success(AssetPickerResult(asset: self.assetModel,
-                                                            playerItem: response.playerItem,
-                                                            fileURL: url)))
-                self.finishAssetRequest()
+            } completion: { [weak self] url in
+                guard let self = self else { return }
+                let result = AssetPickerResult(asset: self.assetModel, playerItem: response.playerItem, fileURL: url)
+                self.recudeVideoResult(result)
             }
         } else {
-            completion?(.success(AssetPickerResult(asset: assetModel,
-                                                   playerItem: response.playerItem)))
-            finishAssetRequest()
+            let result = AssetPickerResult(asset: assetModel, playerItem: response.playerItem)
+            recudeVideoResult(result)
         }
+    }
+    
+    func recudeVideoResult(_ result: AssetPickerResult) {
+        var result = result
+        result.playerItem?.asset.getVideoThumbnailImage(completion: { [weak self] image in
+            result.image = image
+            self?.completion?(.success(result))
+            self?.finishAssetRequest()
+        })
     }
     
     public override func cancel() {

@@ -1,5 +1,5 @@
 //
-//  VideoExportManager.swift
+//  VideoCompressManager.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2022/1/5.
@@ -9,7 +9,7 @@ import UIKit
 import AVFoundation
 import VideoToolbox
 
-public class VideoExportManager {
+public class VideoCompressManager {
     
     // 视频压缩尺寸
     public var compressSize: VideoCompressSize = ._960x540
@@ -42,10 +42,10 @@ public class VideoExportManager {
     let composition = AVMutableComposition()
     let videoComposition = AVMutableVideoComposition()
     
-    let avAsset: AVURLAsset
+    let avAsset: AVAsset
     let outputPath: String
     
-    public init(avAsset: AVURLAsset, outputPath: String) {
+    public init(avAsset: AVAsset, outputPath: String) {
         self.avAsset = avAsset
         self.outputPath = outputPath
         

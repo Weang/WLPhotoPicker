@@ -63,6 +63,7 @@ public class EditManager {
         }
         photo.draw(in: rect)
         
+        var editGraffitiPath = editGraffitiPath
         editGraffitiPath.imageSize = photo.size
         editGraffitiPath.draw()?.draw(in: rect)
         

@@ -11,7 +11,6 @@ public typealias VideoFetchCompletion = (Result<VideoFetchResponse, AssetFetchEr
 
 extension AssetFetchTool {
     
-    // 本地存在视频文件时，用该方法导出视频
     @discardableResult
     public static func requestAVAsset(for asset: PHAsset, options: AssetFetchOptions, completion: @escaping VideoFetchCompletion) -> AssetFetchRequest {
         let requestOptions = PHVideoRequestOptions()
@@ -23,6 +22,20 @@ extension AssetFetchTool {
         }
         
         let request = AssetFetchRequest()
+        
+        if let fileURL = asset.locallyVideoFileURL {
+            let avasset = AVURLAsset(url: fileURL)
+            let playerItem = AVPlayerItem(asset: avasset)
+            DispatchQueue.main.async {
+                completion(.success(VideoFetchResponse(avasset: avasset, playerItem: playerItem)), 0)
+            }
+            return request
+        }
+        
+        if !asset.isVideoLocallyAvailable {
+            options.progressHandler?(0)
+        }
+        
         let requestId = PHImageManager.default().requestAVAsset(forVideo: asset, options: requestOptions) { (avAsset, _, info) in
             DispatchQueue.main.async {
                 let requestID = info?[PHImageResultRequestIDKey] as? PHImageRequestID ?? 0
@@ -37,12 +50,13 @@ extension AssetFetchTool {
                     return
                 }
                 
-                guard let avAsset = avAsset as? AVURLAsset else {
+                guard let avAsset = avAsset else {
                     completion(.failure(.fetchFailed), requestID)
                     return
                 }
                 
-                let response = VideoFetchResponse(avasset: avAsset, playerItem: AVPlayerItem(asset: avAsset))
+                let response = VideoFetchResponse(avasset: avAsset,
+                                                  playerItem: AVPlayerItem(asset: avAsset))
                 completion(.success(response), requestID)
             }
         }

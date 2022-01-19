@@ -348,6 +348,7 @@ extension PhotoEditViewController {
     }
     
     func addMaskLayer(maskLayer: PhotoEditMaskLayer) {
+        var maskLayer = maskLayer
         let viewCenter = CGPoint(x: UIScreen.width * 0.5, y: UIScreen.height * 0.5)
         maskLayer.center = view.convert(viewCenter, to: contentImageView)
         let maskView = PhotoEditMaskView(maskLayer: maskLayer)

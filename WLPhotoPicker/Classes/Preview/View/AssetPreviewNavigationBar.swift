@@ -36,7 +36,7 @@ public class AssetPreviewNavigationBar: VisualEffectView {
             make.width.equalTo(32)
         }
         
-        if pickerConfig.showSelectButton {
+        if pickerConfig.allowSelectMultiPhoto {
             selectButton.addTarget(self, action: #selector(selectButtonClick), for: .touchUpInside)
             selectButton.isSelected = false
             addSubview(selectButton)

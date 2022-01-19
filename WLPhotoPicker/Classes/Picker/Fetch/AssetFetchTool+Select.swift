@@ -16,7 +16,7 @@ extension AssetFetchTool {
     }
     
     public func selectedAsset(asset: AssetModel, delegateEvent: Bool = true) {
-        guard let albumModel = self.albumModel, config.pickerConfig.showSelectButton else {
+        guard let albumModel = self.albumModel, config.pickerConfig.allowSelectMultiPhoto else {
             return
         }
         if !asset.isSelected && isUptoLimit {

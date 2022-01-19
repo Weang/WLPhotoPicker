@@ -7,7 +7,7 @@
 
 import UIKit
 
-public protocol PhotoEditMaskLayer: AnyObject {
+public protocol PhotoEditMaskLayer {
     var maskImage: UIImage { set get }
     var maskPadding: CGFloat { get }
     var size: CGSize { get }

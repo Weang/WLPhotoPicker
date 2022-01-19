@@ -41,6 +41,8 @@ class AssetPreviewVideoCell: AssetPreviewCell {
             make.top.equalTo(keyWindowSafeAreaInsets.top + 52)
         }
         
+        activityIndicator.removeFromSuperview()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidPlayToEndTime), name: .AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
@@ -69,15 +71,16 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         guard let model = self.model else {
             return
         }
+        
         let options = AssetFetchOptions()
-        options.videoDeliveryMode = .mediumQualityFormat
+        options.videoDeliveryMode = .highQualityFormat
         options.progressHandler = setICloudProgress
         
         assetRequest = AssetFetchTool.requestAVAsset(for: model.asset, options: options) { [weak self] result, _ in
             self?.setICloudProgress(1)
             if case .success(let response) = result {
-                self?.setupPlayer(playerItem: response.playerItem)
                 self?.isVideoFinishLoading = true
+                self?.setupPlayer(playerItem: response.playerItem)
             }
         }
     }
@@ -127,12 +130,14 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         super.beginPanGesture()
         setPlayingStatus(isPlaying: false, changeToolbar: false)
         playButton.isHidden = true
+        iCloudView.alpha = 0
     }
     
     override func finishPanGesture(dismiss: Bool) {
         super.finishPanGesture(dismiss: dismiss)
         if !dismiss {
             setPlayingStatus(isPlaying: false, changeToolbar: false)
+            iCloudView.alpha = 1
         }
     }
     

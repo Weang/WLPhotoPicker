@@ -13,8 +13,6 @@ public class PickerConfig {
     public init() { }
     public static let `default` = PickerConfig()
    
-    // MARK: Picker UI
-    
     // 一行的列数
     public var columnsOfPhotos: Int = 4
     
@@ -27,25 +25,22 @@ public class PickerConfig {
     // 列间距
     public var pickerSectionInset: UIEdgeInsets = UIEdgeInsets(top: 2, left: 2, bottom: 2, right: 2)
     
-    // 是否显示选择按钮
-    public var showSelectButton: Bool = true
+    // 是否可选择多个照片
+    // 如果为false, 任何时候都不会选中照片，并且cell和预览页面不会显示选中按钮，selectCountLimit会失效
+    public var allowSelectMultiPhoto: Bool = true
     
-    // 是否显示完成按钮
+    // 是否显示picker底部完成按钮
     public var showPickerDoneButton: Bool = true
     
     // 点击之后是否预览
     // 如果为false，点击cell之后会调用选中方法
     public var allowPreview: Bool = true
     
-    // MARK: Fetch config
-    
     // 可选择资源类型
     public var selectableType: PhotoPickerSelectionType = .all
     
     // 排序方式
     public var sortType: AssetSortType = .asc
-    
-    // MARK: Picker config
     
     // 选择个数限制
     public var selectCountLimit: Int = 9
