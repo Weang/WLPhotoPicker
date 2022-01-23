@@ -34,10 +34,10 @@ class LoadingHUD {
     
 }
 
-class LoadingHUDView: UIView {
+fileprivate class LoadingHUDView: UIView {
     
-    let contnetView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-    let activityIndicator = UIActivityIndicatorView()
+    private let contnetView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    private let activityIndicator = UIActivityIndicatorView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -7,19 +7,19 @@
 
 import UIKit
 
-public class AssetPreviewThumbnailCell: UICollectionViewCell {
-
+class AssetPreviewThumbnailCell: UICollectionViewCell {
+    
     private let assetImageView = UIImageView()
     private let descriptionView = AssetDescriptionView()
     private let highlightCover = UIView()
     
-    public override var isSelected: Bool {
+    private var assetRequest: AssetFetchRequest?
+    
+    override var isSelected: Bool {
         didSet {
             highlightCover.isHidden = !isSelected
         }
     }
-    
-    public var assetRequest: AssetFetchRequest?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -46,7 +46,7 @@ public class AssetPreviewThumbnailCell: UICollectionViewCell {
         }
     }
     
-    public func bind(_ model: AssetModel) {
+    func bind(_ model: AssetModel) {
         descriptionView.bindPreview(model)
         cancelCurrentRequest()
         
@@ -69,13 +69,13 @@ public class AssetPreviewThumbnailCell: UICollectionViewCell {
         })
     }
     
-    public func cancelCurrentRequest() {
+    private func cancelCurrentRequest() {
         assetRequest?.cancel()
         assetRequest = nil
         assetImageView.image = nil
     }
     
-    public override func prepareForReuse() {
+    override func prepareForReuse() {
         super.prepareForReuse()
         cancelCurrentRequest()
     }

@@ -13,7 +13,6 @@ extension AssetFetchTool {
     
     @discardableResult
     public static func requestLivePhoto(for asset: PHAsset, options: AssetFetchOptions, completion: @escaping LivePhotoFetchCompletion) -> AssetFetchRequest {
-        
         let requestOptions = PHLivePhotoRequestOptions()
         requestOptions.version = options.imageVersion
         requestOptions.deliveryMode = options.imageDeliveryMode
@@ -22,19 +21,14 @@ extension AssetFetchTool {
             options.progressHandler?(progress)
         }
         
-        let targetSize = options.targetSizeWith(asset: asset)
+        let targetSize = options.targetSizeWith(assetSize: asset.pixelSize)
         
         let requestId = PHImageManager.default().requestLivePhoto(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: requestOptions) { livePhoto, info in
             DispatchQueue.main.async {
                 let requestID = info?[PHImageResultRequestIDKey] as? PHImageRequestID ?? 0
                 
-                do {
-                    try handleInfo(info)
-                } catch let error as AssetFetchError {
+                if let error = handleInfo(info) {
                     completion(.failure(error), requestID)
-                    return
-                } catch let error {
-                    completion(.failure(.underlying(error)), requestID)
                     return
                 }
                 

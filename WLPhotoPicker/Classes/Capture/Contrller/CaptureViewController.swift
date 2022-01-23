@@ -8,16 +8,16 @@
 import UIKit
 import Photos
 
-protocol CaptureViewControllerDelegate: AnyObject {
+public protocol CaptureViewControllerDelegate: AnyObject {
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingPhoto photo: UIImage)
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingVideo videoUrl: URL)
 }
 
 public class CaptureViewController: UIViewController {
-
-    let captureManager: CaptureManager
-    let controlView: CaptureControlView
-    let config: WLPhotoConfig
+    
+    private let captureManager: CaptureManager
+    private let controlView: CaptureControlView
+    private let config: WLPhotoConfig
     
     weak var delegate: CaptureViewControllerDelegate?
     
@@ -62,7 +62,7 @@ public class CaptureViewController: UIViewController {
         controlView.showStopRunningAnimation()
     }
     
-    func setupView() {
+    private func setupView() {
         view.backgroundColor = .black
         
         controlView.delegate = self
@@ -75,7 +75,7 @@ public class CaptureViewController: UIViewController {
         controlView.layoutSubviews()
     }
     
-    func setupManager() {
+    private func setupManager() {
         captureManager.delegate = self
         captureManager.setupPreviewLayer(to: controlView.previewContentView)
     }
@@ -85,6 +85,7 @@ public class CaptureViewController: UIViewController {
     }
 }
 
+// MARK: CaptureManagerDelegate
 extension CaptureViewController: CaptureManagerDelegate {
     
     public func captureManager(_ captureManager: CaptureManager, didOccurredError error: CaptureError) {
@@ -107,6 +108,48 @@ extension CaptureViewController: CaptureManagerDelegate {
     
 }
 
+// MARK: WLCameraControlDelegate
+extension CaptureViewController: WLCameraControlDelegate {
+    
+    func cameraControlDidClickExit(_ controlView: CaptureControlView) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func cameraControlDidClickChangeCamera(_ controlView: CaptureControlView) {
+        captureManager.switchCamera()
+    }
+    
+    func cameraControl(_ controlView: CaptureControlView, didFocusAt point: CGPoint) {
+        captureManager.focusAt(point)
+    }
+    
+    func controlViewDidTakePhoto(_ controlView: CaptureControlView) {
+        captureManager.capturePhoto()
+    }
+    
+    func controlViewDidBeginTakingVideo(_ controlView: CaptureControlView) {
+        captureManager.startRecordingVideo()
+    }
+    
+    func controlViewDidEndTakingVideo(_ controlView: CaptureControlView) {
+        captureManager.stopRecordingVideo { [weak self] url in
+            let previewVC = CapturePreviewViewController(videoUrl: url)
+            previewVC.delegate = self
+            self?.present(previewVC, animated: false, completion: nil)
+        }
+    }
+    
+    func cameraControlDidPrepareForZoom(_ controlView: CaptureControlView) {
+        captureManager.prepareForZoom()
+    }
+    
+    func controlView(_ controlView: CaptureControlView, didChangeVideoZoom zoomScale: Double) {
+        captureManager.zoom(zoomScale)
+    }
+    
+}
+
+// MARK: CapturePreviewViewControllerDelegate
 extension CaptureViewController: CapturePreviewViewControllerDelegate {
     
     func previewViewController(_ controller: CapturePreviewViewController, didClickDoneButtonWithPhoto photo: UIImage) {
@@ -120,49 +163,10 @@ extension CaptureViewController: CapturePreviewViewControllerDelegate {
     }
 }
 
-extension CaptureViewController: WLCameraControlDelegate {
-    
-    public func cameraControlDidClickExit(_ controlView: CaptureControlView) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    public func cameraControlDidClickChangeCamera(_ controlView: CaptureControlView) {
-        captureManager.switchCamera()
-    }
-    
-    public func cameraControl(_ controlView: CaptureControlView, didFocusAt point: CGPoint) {
-        captureManager.focusAt(point)
-    }
-    
-    public func controlViewDidTakePhoto(_ controlView: CaptureControlView) {
-        captureManager.capturePhoto()
-    }
-    
-    public func controlViewDidBeginTakingVideo(_ controlView: CaptureControlView) {
-        captureManager.startRecordingVideo()
-    }
-    
-    public func controlViewDidEndTakingVideo(_ controlView: CaptureControlView) {
-        captureManager.stopRecordingVideo { [weak self] url in
-            let previewVC = CapturePreviewViewController(videoUrl: url)
-            previewVC.delegate = self
-            self?.present(previewVC, animated: false, completion: nil)
-        }
-    }
-    
-    public func cameraControlDidPrepareForZoom(_ controlView: CaptureControlView) {
-        captureManager.prepareForZoom()
-    }
-    
-    public func controlView(_ controlView: CaptureControlView, didChangeVideoZoom zoomScale: Double) {
-        captureManager.zoom(zoomScale)
-    }
-
-}
-
+// MARK: PhotoEditViewControllerDelegate
 extension CaptureViewController: PhotoEditViewControllerDelegate {
     
-    func editController(_ editController: PhotoEditViewController, didDidFinishEditPhoto photo: UIImage?) {
+    public func editController(_ editController: PhotoEditViewController, didDidFinishEditPhoto photo: UIImage?) {
         guard let editedPhoto = photo else {
             return
         }

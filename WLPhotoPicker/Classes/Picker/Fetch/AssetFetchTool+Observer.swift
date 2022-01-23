@@ -29,9 +29,7 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
     
     func updateAlbum(_ album: AlbumModel, withChangeDetails detail: PHFetchResultChangeDetails<PHAsset>, changeInstance: PHChange) {
         // 重新加载相册
-        let afterAlbumModel = AlbumModel(result: detail.fetchResultAfterChanges,
-                                         collection: album.fetchCollection,
-                                         pickerConfig: pickerConfig)
+        let afterAlbumModel = AlbumModel(result: detail.fetchResultAfterChanges, collection: album.fetchCollection, pickerConfig: pickerConfig)
         
         // 新旧资源map
         var beforeAssetMap: [String: AssetModel] = [:]
@@ -42,20 +40,22 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
         afterAlbumModel.assets.forEach {
             afterAssetMap[$0.localIdentifier] = $0
         }
+        
+        // 被修改的indexs
         var removedItems = IndexSet()
         var insertedItems = IndexSet()
         var changedItems = IndexSet()
         
-        // 旧加载的资源中有新资源不存在的，则为删除
+        // 旧的资源中有新资源不存在的，则为删除
         for (index, asset) in album.assets.enumerated() where afterAssetMap[asset.localIdentifier] == nil {
-            deselectedAsset(asset: asset, delegateEvent: false)
+            deselectedAsset(asset: asset, delegateEvent: false) // 取消选中
             album.assets.removeAll(where: {
                 $0.localIdentifier == asset.localIdentifier
             })
             removedItems.insert(index)
         }
         
-        // 新加载的资源中有旧资源不存在的，则为新增
+        // 新的资源中有旧资源不存在的，则为新增
         for (index, asset) in afterAlbumModel.assets.enumerated() where beforeAssetMap[asset.localIdentifier] == nil {
             album.assets.insert(asset, at: index)
             insertedItems.insert(index)
@@ -102,11 +102,7 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.delegates.forEach { delegate in
-                delegate.value?.assetFetchTool(self,
-                                               updateAlbum: album,
-                                               insertedItems: insertedItems,
-                                               removedItems: removedItems,
-                                               changedItems: changedItems)
+                delegate.value?.assetFetchTool(self, updateAlbum: album, insertedItems: insertedItems, removedItems: removedItems, changedItems: changedItems)
             }
         }
     }

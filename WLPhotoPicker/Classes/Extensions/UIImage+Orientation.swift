@@ -11,12 +11,10 @@ import UIKit
 
 public extension UIImage {
     
-    func fixOrientation(orientation: UIImage.Orientation? = nil) -> UIImage {
-        guard orientation == nil && imageOrientation != .up else { return self }
-        
+    func fixOrientation(orientation: UIImage.Orientation) -> UIImage {
+     
         var transform = CGAffineTransform.identity
-        let orientation = orientation ?? imageOrientation
-        
+      
         switch orientation {
         case .down, .downMirrored:
             transform = transform.translatedBy(x: size.width, y: size.height)

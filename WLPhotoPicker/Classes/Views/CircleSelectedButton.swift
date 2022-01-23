@@ -7,20 +7,20 @@
 
 import UIKit
 
-public class CircleSelectedButton: UIControl {
-
+class CircleSelectedButton: UIControl {
+    
     private let unselectedCurcle = UIView()
     private let selectedCurcle = UIView()
     private let numebrLabel = UILabel()
     
-    public override var isSelected: Bool {
+    override var isSelected: Bool {
         didSet {
             unselectedCurcle.isHidden = isSelected
             selectedCurcle.isHidden = !isSelected
         }
     }
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         
         isAccessibilityElement = true
@@ -53,7 +53,7 @@ public class CircleSelectedButton: UIControl {
         }
     }
     
-    public func set(isSelected: Bool, selectedIndex: Int, animated: Bool) {
+    func set(isSelected: Bool, selectedIndex: Int, animated: Bool) {
         self.isSelected = isSelected
         numebrLabel.text = "\(selectedIndex)"
         if animated {
@@ -70,7 +70,7 @@ public class CircleSelectedButton: UIControl {
         }
     }
     
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         unselectedCurcle.layer.cornerRadius = unselectedCurcle.height * 0.5
         selectedCurcle.layer.cornerRadius = selectedCurcle.height * 0.5
@@ -79,5 +79,5 @@ public class CircleSelectedButton: UIControl {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
 }

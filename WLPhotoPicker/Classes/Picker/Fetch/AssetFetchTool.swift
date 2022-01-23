@@ -18,6 +18,7 @@ protocol AssetFetchToolDelegate: NSObjectProtocol {
     
     // 选中状态变化
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateSelectedStatus assetModel: AssetModel)
+    func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetchSelectedAsset assetModel: AssetModel)
     
     // 相册更新
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateAlbum albumModel: AlbumModel,
@@ -31,24 +32,25 @@ extension AssetFetchToolDelegate {
     func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetchCameraAlbum albumModel: AlbumModel) { }
     func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetch allAlbums: [AlbumModel]) { }
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateSelectedStatus assetModel: AssetModel) { }
+    func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetchSelectedAsset assetModel: AssetModel) { }
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateAlbum albumModel: AlbumModel, insertedItems: IndexSet, removedItems: IndexSet, changedItems: IndexSet) { }
 }
 
-public class AssetFetchTool: NSObject {
+class AssetFetchTool: NSObject {
     
     static let queue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.AssetFetchTool.Fetch")
     var assetFetchQueue = OperationQueue()
     
-    public var albumModel: AlbumModel?
-    public var albumsList: [AlbumModel] = []
-    public var selectedAssets: [AssetModel] = []
+    var albumModel: AlbumModel?
+    var albumsList: [AlbumModel] = []
+    var selectedAssets: [AssetModel] = []
     
-    public var isOriginal = false
+    var isOriginal = false
     
     // 记录相机保存的localIdentifier，在刷新相册时选中
     var captureLocalIdentifier: String?
     
-    public let config: WLPhotoConfig
+    let config: WLPhotoConfig
     
     var pickerConfig: PickerConfig {
         config.pickerConfig
@@ -58,18 +60,18 @@ public class AssetFetchTool: NSObject {
         config.photoEditConfig
     }
     
-    public init(config: WLPhotoConfig) {
+    init(config: WLPhotoConfig) {
         self.config = config
         super.init()
         assetFetchQueue.maxConcurrentOperationCount = 3
     }
     
-    public func register() {
+    func register() {
         PHPhotoLibrary.shared().register(self)
     }
     
     var delegates: [WeakAssetFetchToolDelegate] = []
-
+    
     func addDelegate(_ observer: AssetFetchToolDelegate) {
         delegates.append(WeakAssetFetchToolDelegate(value: observer))
     }
@@ -89,21 +91,22 @@ public class AssetFetchTool: NSObject {
     
 }
 
-public extension AssetFetchTool {
+extension AssetFetchTool {
     
-    static func handleInfo(_ info: [AnyHashable: Any]?) throws {
+    static func handleInfo(_ info: [AnyHashable: Any]?) -> AssetFetchError? {
         guard let info = info else {
-            throw AssetFetchError.fetchFailed
+            return AssetFetchError.fetchFailed
         }
         if let isCancelled = info[PHImageCancelledKey] as? Bool, isCancelled {
-            throw AssetFetchError.canceled
+            return AssetFetchError.canceled
         }
         if let isInCloud = info[PHImageResultIsInCloudKey] as? Bool, isInCloud {
-            throw AssetFetchError.cannotFindInLocal
+            return AssetFetchError.cannotFindInLocal
         }
         if let error = info[PHImageErrorKey] as? Error {
-            throw error
+            return AssetFetchError.underlying(error)
         }
+        return nil
     }
     
 }

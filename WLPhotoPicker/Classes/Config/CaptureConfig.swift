@@ -10,7 +10,6 @@ import UIKit
 public class CaptureConfig {
 
     public init() { }
-    public static let `default` = CaptureConfig()
     
     // 是否允许拍摄照片
     public var captureAllowTakingPhoto: Bool = true

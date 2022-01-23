@@ -7,73 +7,7 @@
 
 import UIKit
 
-// MARK: CIFilters
-public extension UIImage {
-    
-    func toCIImage() -> CIImage? {
-        if let ciImage = self.ciImage {
-            return ciImage
-        }
-        if let cgImage = self.cgImage {
-            return CIImage(cgImage: cgImage)
-        }
-        return nil
-    }
-    
-    func mosaicImage(level: CGFloat) -> UIImage {
-        guard let ciImage = toCIImage() else {
-            return self
-        }
-        let filter = CIFilter(name: "CIPixellate")
-        filter?.setValue(ciImage, forKey: kCIInputImageKey)
-        filter?.setValue(level, forKey: kCIInputScaleKey)
-        guard let outputImage = filter?.outputImage?.toUIImage() else {
-            return self
-        }
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        defer {
-            UIGraphicsEndImageContext()
-        }
-        let origin = CGPoint(x: (size.width - outputImage.size.width) * 0.5,
-                             y: (size.height - outputImage.size.height) * 0.5)
-        outputImage.draw(in: CGRect(x: origin.x,
-                                    y: origin.y,
-                                    width: outputImage.size.width,
-                                    height: outputImage.size.height))
-        return UIGraphicsGetImageFromCurrentImageContext() ?? self
-    }
-    
-    func blurImage(blur: CGFloat) -> UIImage {
-        guard let ciImage = toCIImage() else {
-            return self
-        }
-        let filter = CIFilter(name: "CIGaussianBlur")
-        filter?.setValue(ciImage, forKey: kCIInputImageKey)
-        filter?.setValue(blur, forKey: "inputRadius")
-        guard let outputImage = filter?.outputImage,
-              let cgImage = CIContext().createCGImage(outputImage, from: ciImage.extent) else {
-            return self
-        }
-        return UIImage(cgImage: cgImage)
-    }
-    
-    func adjustImageFrom(_ adjustInfo: [PhotoEditAdjustMode: Double]) -> UIImage {
-        if adjustInfo.map{ $0.value }.filter({ $0 != 0 }).count == 0 {
-            return self
-        }
-        guard var ciImage = toCIImage() else {
-            return self
-        }
-        for (mode, value) in adjustInfo {
-            ciImage = ciImage.applyingFilter(mode.filterName,
-                                             parameters: [mode.keyName: mode.filterValue(Float(value))])
-        }
-        return ciImage.toUIImage() ?? self
-    }
-    
-}
-
-public extension UIImage {
+extension UIImage {
     
     func thumbnailWith(_ toSize: CGFloat) -> UIImage {
         let imageRatio = size.width / size.height
@@ -94,14 +28,6 @@ public extension UIImage {
         defer {
             UIGraphicsEndImageContext()
         }
-        return UIGraphicsGetImageFromCurrentImageContext() ?? self
-    }
-    
-    func convertToScale(_ toScale: CGFloat) -> UIImage {
-        let scale = self.scale / toScale
-        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
-        UIGraphicsBeginImageContextWithOptions(newSize, false, toScale)
-        draw(in: CGRect(origin: .zero, size: newSize))
         return UIGraphicsGetImageFromCurrentImageContext() ?? self
     }
     

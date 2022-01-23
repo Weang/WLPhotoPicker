@@ -10,12 +10,24 @@ import Photos
 
 public class AssetModel {
     
-    public var asset: PHAsset
-    private let pickerConfig: PickerConfig
+    var isSelected: Bool = false
+    var selectedIndex: Int = 0
+    var isEnabled: Bool = true
     
-    public var isSelected: Bool = false
-    public var selectedIndex: Int = 0
-    public var isEnabled: Bool = true
+    var editMosaicPath = PhotoEditMosaicPath()
+    var editMosaicColorIndex: Int = 0
+    var editGraffitiPath = PhotoEditGraffitiPath()
+    var maskLayers: [PhotoEditMaskLayer] = []
+    var filter: PhotoEditFilterProvider?
+    var filterIndex: Int = 0
+    var adjustValue: [PhotoEditAdjustMode: Double] = [:]
+    var hasEdit: Bool {
+        return editMosaicPath.pathLines.count > 0 ||
+        editGraffitiPath.pathLines.count > 0 ||
+        maskLayers.count > 0 ||
+        filter != nil ||
+        adjustValue.filter{ $0.value != 0 }.count > 0
+    }
     
     public var previewImage: UIImage?
     public var editedImage: UIImage?
@@ -25,21 +37,6 @@ public class AssetModel {
             return editedImage
         }
         return previewImage
-    }
-    
-    public var editMosaicPath = PhotoEditMosaicPath()
-    public var editMosaicColorIndex: Int = 0
-    public var editGraffitiPath = PhotoEditGraffitiPath()
-    public var maskLayers: [PhotoEditMaskLayer] = []
-    public var filter: PhotoEditFilterProvider?
-    public var filterIndex: Int = 0
-    public var adjustValue: [PhotoEditAdjustMode: Double] = [:]
-    public var hasEdit: Bool {
-        return editMosaicPath.pathLines.count > 0 ||
-        editGraffitiPath.pathLines.count > 0 ||
-        maskLayers.count > 0 ||
-        filter != nil ||
-        adjustValue.filter{ $0.value != 0 }.count > 0
     }
     
     public var mediaType: AssetMediaType {
@@ -84,6 +81,9 @@ public class AssetModel {
             return nil
         }
     }
+    
+    public var asset: PHAsset
+    private let pickerConfig: PickerConfig
     
     init(asset: PHAsset, pickerConfig: PickerConfig) {
         self.asset = asset

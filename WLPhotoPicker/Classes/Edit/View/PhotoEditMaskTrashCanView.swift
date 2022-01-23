@@ -9,9 +9,9 @@ import UIKit
 
 class PhotoEditMaskTrashCanView: UIView {
     
-    let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-    let iconView = UIImageView()
-    let tipLabel = UILabel()
+    private let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    private let iconView = UIImageView()
+    private let tipLabel = UILabel()
     
     var isHighlighted: Bool = false {
         didSet {
@@ -21,7 +21,7 @@ class PhotoEditMaskTrashCanView: UIView {
         }
     }
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         
         layer.cornerRadius = 10

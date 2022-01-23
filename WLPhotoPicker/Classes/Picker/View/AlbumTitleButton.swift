@@ -7,13 +7,13 @@
 
 import UIKit
 
-public class AlbumTitleButton: UIControl {
+class AlbumTitleButton: UIControl {
     
     private let contentView = UIView()
     private let titleLabel = UILabel()
     private let arrowImageView = UIImageView()
     
-    public override var isSelected: Bool {
+    override var isSelected: Bool {
         didSet {
             UIView.animate(withDuration: 0.15) {
                 self.arrowImageView.transform = CGAffineTransform(rotationAngle: .pi * -0.5 + (self.isSelected ? .pi : 0))

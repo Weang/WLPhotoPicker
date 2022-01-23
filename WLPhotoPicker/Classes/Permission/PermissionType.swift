@@ -15,14 +15,6 @@ enum PermissionType {
 
 extension PermissionType {
     
-    public var displayText: String {
-        switch self {
-        case .photoLibrary: return "相册"
-        case .camera: return "相机"
-        case .microphone: return "麦克风"
-        }
-    }
-    
     public var permission: Permission.Type {
         switch self {
         case .photoLibrary: return PhotoLibrary.self

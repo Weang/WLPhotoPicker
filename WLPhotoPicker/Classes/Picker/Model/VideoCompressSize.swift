@@ -16,7 +16,7 @@ public enum VideoCompressSize {
     case _3840x2160
 }
 
-public extension VideoCompressSize {
+extension VideoCompressSize {
     
     var size: CGSize {
         switch self {

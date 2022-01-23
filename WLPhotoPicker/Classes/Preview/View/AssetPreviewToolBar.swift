@@ -7,21 +7,23 @@
 
 import UIKit
 
-public protocol AssetPreviewToolBarDelegate: AnyObject {
+protocol AssetPreviewToolBarDelegate: AnyObject {
     func toolBar(_ toolBar: AssetPreviewToolBar, didSelectAsset asset: AssetModel)
     func toolBarDidClickEditButton(_ toolBar: AssetPreviewToolBar)
     func toolBarDidClickOriginButton(_ toolBar: AssetPreviewToolBar, isOriginal: Bool)
     func toolBarDidClickDoneButton(_ toolBar: AssetPreviewToolBar)
 }
 
-public class AssetPreviewToolBar: VisualEffectView {
+class AssetPreviewToolBar: VisualEffectView {
     
     private let previewThumbnailItemSize: CGSize = CGSize(width: 64, height: 64)
     private let previewThumbnailColumnSpace: CGFloat = 16
     private let previewThumbnailHeight: CGFloat = 96
     private let toolBarHeight: CGFloat = 54
     
-    public var isOriginal: Bool = false {
+    weak var delegate: AssetPreviewToolBarDelegate?
+    
+    var isOriginal: Bool = false {
         didSet {
             originButton.isSelected = isOriginal
         }
@@ -38,9 +40,7 @@ public class AssetPreviewToolBar: VisualEffectView {
     private var selectedAssets: [AssetModel] = []
     private let pickerConfig: PickerConfig
     
-    public weak var delegate: AssetPreviewToolBarDelegate?
-    
-    public init(pickerConfig: PickerConfig) {
+    init(pickerConfig: PickerConfig) {
         self.pickerConfig = pickerConfig
         super.init(frame: .zero)
         
@@ -119,27 +119,27 @@ public class AssetPreviewToolBar: VisualEffectView {
         }
     }
     
-    @objc func editButtonClick() {
+    @objc private func editButtonClick() {
         delegate?.toolBarDidClickEditButton(self)
     }
     
-    @objc func originButtonClick() {
+    @objc private func originButtonClick() {
         originButton.isSelected.toggle()
         delegate?.toolBarDidClickOriginButton(self, isOriginal: originButton.isSelected)
     }
     
-    @objc func doneButtonClick() {
+    @objc private func doneButtonClick() {
         delegate?.toolBarDidClickDoneButton(self)
     }
     
-    public func setSelectedAssets(_ assetList: [AssetModel]) {
+    func setSelectedAssets(_ assetList: [AssetModel]) {
         selectedAssets = assetList
         collectionView.reloadData()
         invalidateIntrinsicContentSize()
         thumbnailContentView.isHidden = selectedAssets.count == 0
     }
     
-    public func setCurrentAsset(_ asset: AssetModel?, animated: Bool) {
+    func setCurrentAsset(_ asset: AssetModel?, animated: Bool) {
         let selectedIndexPaths = collectionView.indexPathsForSelectedItems ?? []
         if let asset = asset,
            let shouldSelectIndex = selectedAssets.firstIndex(where: { $0.localIdentifier == asset.localIdentifier }) {
@@ -154,7 +154,7 @@ public class AssetPreviewToolBar: VisualEffectView {
         }
         if let asset = asset {
             editButton.alpha = asset.mediaType == .photo ? 1 : 0
-            originButton.alpha = asset.mediaType == .photo || (asset.mediaType == .video && pickerConfig.videoExportOriginal) || asset.mediaType == .livePhoto ? 1 : 0
+            originButton.alpha = asset.mediaType == .photo || (asset.mediaType == .video && pickerConfig.videoCanSaveOriginal) || asset.mediaType == .livePhoto ? 1 : 0
         }
     }
     
@@ -177,7 +177,7 @@ public class AssetPreviewToolBar: VisualEffectView {
         thumbnailContentView.isHidden = selectedAssets.count == 0
     }
     
-    public override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         var height = toolBarHeight + keyWindowSafeAreaInsets.bottom
         if selectedAssets.count > 0 {
             height += previewThumbnailHeight
@@ -193,22 +193,22 @@ public class AssetPreviewToolBar: VisualEffectView {
 
 extension AssetPreviewToolBar: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return selectedAssets.count
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(AssetPreviewThumbnailCell.self, for: indexPath)
         cell.bind(selectedAssets[indexPath.item])
         return cell
     }
     
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         delegate?.toolBar(self, didSelectAsset: selectedAssets[indexPath.item])
     }
     
-    public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         if collectionView.indexPathsForSelectedItems?.contains(indexPath) ?? false {
             return false
         }

@@ -9,16 +9,14 @@ import UIKit
 import AVFoundation
 
 public enum CaptureSessionPreset {
-    
     case cif352x288
     case vga640x480
     case hd1280x720
     case hd1920x1080
     case hd4K3840x2160
-    
 }
 
-public extension CaptureSessionPreset {
+extension CaptureSessionPreset {
     
     var avSessionPreset: AVCaptureSession.Preset {
         switch self {

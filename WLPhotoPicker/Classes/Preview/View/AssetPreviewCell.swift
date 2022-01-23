@@ -16,7 +16,7 @@ protocol AssetPreviewCellDelegate: AnyObject {
     func previewCellSingleTap(_ previewCell: AssetPreviewCell, didFinishPanDismiss dismiss: Bool)
 }
 
-public class AssetPreviewCell: UICollectionViewCell {
+class AssetPreviewCell: UICollectionViewCell {
     
     weak var delegate: AssetPreviewCellDelegate?
     
@@ -73,7 +73,6 @@ public class AssetPreviewCell: UICollectionViewCell {
         singleTapGesture.require(toFail: doubleTapGesture)
     }
     
-    // MARK: Request
     func setAsset(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
         self.model = model
         cancelCurrentRequest()
@@ -111,7 +110,6 @@ public class AssetPreviewCell: UICollectionViewCell {
         
     }
     
-    // MARK: GestureRecognizer
     @objc func handleSingleTapGesture() {
         delegate?.previewCellSingleTap(self)
         print(contentScrollView.frame)
@@ -181,33 +179,33 @@ public class AssetPreviewCell: UICollectionViewCell {
         assetImageView.image = nil
     }
     
-    public override func prepareForReuse() {
+    override func prepareForReuse() {
         super.prepareForReuse()
         cancelCurrentRequest()
     }
     
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         contentScrollView.frame = contentView.bounds
-    }
-    
-    deinit {
-        cancelCurrentRequest()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        cancelCurrentRequest()
+    }
+    
 }
 
 extension AssetPreviewCell: UIScrollViewDelegate {
     
-    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return assetImageView
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        assetImageView
     }
     
-    public func scrollViewDidZoom(_ scrollView: UIScrollView) {
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
         assetImageView.center = AssetSizeHelper.imageViewCenterWhenZoom(scrollView)
     }
     
@@ -215,7 +213,7 @@ extension AssetPreviewCell: UIScrollViewDelegate {
 
 extension AssetPreviewCell: UIGestureRecognizerDelegate {
     
-    public override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard gestureRecognizer == self.panGesture else {
             return true
         }

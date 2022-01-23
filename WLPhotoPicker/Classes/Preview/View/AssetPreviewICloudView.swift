@@ -7,12 +7,12 @@
 
 import UIKit
 
-public class AssetPreviewICloudView: VisualEffectView {
+class AssetPreviewICloudView: VisualEffectView {
     
     private let imageView = UIImageView()
     private let progressLabel = UILabel()
     
-    public var progress: Double = 0 {
+    var progress: Double = 0 {
         didSet {
             var text = "iCloud同步中"
             if progress > 0 {
@@ -49,7 +49,7 @@ public class AssetPreviewICloudView: VisualEffectView {
         
     }
     
-    public override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         return CGSize(width: -1, height: 26)
     }
     

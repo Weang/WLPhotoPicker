@@ -37,7 +37,7 @@ extension AssetFetchError: LocalizedError {
         case .cannotFindInLocal:
             return "未找到本地资源"
         case .faildToDecodeImage, .faildToDecodeGIF:
-            return "资源加载失败"
+            return "无法加载图片"
         case .invalidVideoUrl:
             return "视频存储路径错误"
         case .invalidVideoPreset:

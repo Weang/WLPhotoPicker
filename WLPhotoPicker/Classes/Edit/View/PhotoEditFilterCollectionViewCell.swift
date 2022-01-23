@@ -8,9 +8,9 @@
 import UIKit
 
 class PhotoEditFilterCollectionViewCell: UICollectionViewCell {
-
+    
     let imageView = UIImageView()
-    let nameLabel = UILabel()
+    private let nameLabel = UILabel()
     
     override var isSelected: Bool {
         didSet {

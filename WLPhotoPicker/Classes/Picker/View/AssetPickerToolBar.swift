@@ -7,36 +7,36 @@
 
 import UIKit
 
-public protocol AssetPickerToolBarDelegate: AnyObject {
+protocol AssetPickerToolBarDelegate: AnyObject {
     func pickerToolBarDidClickPermissionLimitedView(_ toolBar: AssetPickerToolBar)
     func pickerToolBarDidClickOrginButton(_ toolBar: AssetPickerToolBar, isOriginal: Bool)
     func pickerToolBarDidClickDoneButton(_ toolBar: AssetPickerToolBar)
 }
 
-public class AssetPickerToolBar: VisualEffectView {
+class AssetPickerToolBar: VisualEffectView {
     
     private let limitedPermissionViewHeight: CGFloat = 64
     private let toolBarHeight: CGFloat = 54
     
-    public var isOriginal: Bool = false {
-        didSet {
-            originButton.isSelected = isOriginal
-        }
-    }
-    
-    public var isLimitedPermission: Bool = false {
-        didSet {
-            updateHidden()
-        }
-    }
-    
-    public weak var delegate: AssetPickerToolBarDelegate?
+    weak var delegate: AssetPickerToolBarDelegate?
     
     private let contentView = UIStackView()
     private let originButton = NormalStyleButton()
     private let doneButton = UIButton()
     
     private let limitedPermissionView = AssetPickerLimitedPermissionView()
+    
+    var isOriginal: Bool = false {
+        didSet {
+            originButton.isSelected = isOriginal
+        }
+    }
+    
+    var isLimitedPermission: Bool = false {
+        didSet {
+            updateHidden()
+        }
+    }
     
     var isEnabled: Bool = false {
         didSet {
@@ -50,7 +50,7 @@ public class AssetPickerToolBar: VisualEffectView {
         }
     }
     
-    let pickerConfig: PickerConfig
+    private let pickerConfig: PickerConfig
     
     init(pickerConfig: PickerConfig) {
         self.pickerConfig = pickerConfig
@@ -108,7 +108,7 @@ public class AssetPickerToolBar: VisualEffectView {
         updateHidden()
     }
     
-    func updateHidden() {
+    private func updateHidden() {
         contentView.isHidden = !pickerConfig.allowSelectOriginal && !pickerConfig.showPickerDoneButton
         limitedPermissionView.isHidden = !isLimitedPermission
         isHidden = contentView.isHidden && limitedPermissionView.isHidden
@@ -116,20 +116,20 @@ public class AssetPickerToolBar: VisualEffectView {
         invalidateIntrinsicContentSize()
     }
     
-    @objc func permissionLimitedViewClick() {
+    @objc private func permissionLimitedViewClick() {
         delegate?.pickerToolBarDidClickPermissionLimitedView(self)
     }
     
-    @objc func originButtonClick() {
+    @objc private func originButtonClick() {
         originButton.isSelected.toggle()
         delegate?.pickerToolBarDidClickOrginButton(self, isOriginal: originButton.isSelected)
     }
     
-    @objc func doneButtonClick() {
+    @objc private func doneButtonClick() {
         delegate?.pickerToolBarDidClickDoneButton(self)
     }
     
-    public override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         var height = keyWindowSafeAreaInsets.bottom
         if !contentView.isHidden {
             height += toolBarHeight

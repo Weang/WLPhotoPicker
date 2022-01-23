@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class AssetDescriptionView: UIView {
+class AssetDescriptionView: UIView {
     
     private let iconImageView = UIImageView()
     private let GIFLabel = UILabel()
@@ -65,7 +65,7 @@ public class AssetDescriptionView: UIView {
         videoDurationLabel.isHidden = true
     }
     
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         
         gradientLayer.frame = bounds
@@ -76,5 +76,5 @@ public class AssetDescriptionView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
 }

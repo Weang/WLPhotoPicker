@@ -8,18 +8,16 @@
 import UIKit
 
 protocol PhotoEditTopToolBarDelegate: AnyObject {
-    
     func topToolBarDidClickCancelButton(_ topToolBar: PhotoEditTopToolBar)
-    
 }
 
 class PhotoEditTopToolBar: UIView {
-
+    
     weak var delegate: PhotoEditTopToolBarDelegate?
     
     private let toolBarHeight: CGFloat = 60
     
-    let cancelButton = UIButton()
+    private let cancelButton = UIButton()
     private let gradientLayer = CAGradientLayer()
     
     override init(frame: CGRect) {
@@ -28,7 +26,7 @@ class PhotoEditTopToolBar: UIView {
         
         backgroundColor = .clear
         layer.addSublayer(gradientLayer)
-   
+        
         cancelButton.tintColor = .white
         cancelButton.addTarget(self, action: #selector(cancelButtonClick), for: .touchUpInside)
         cancelButton.setImage(BundleHelper.imageNamed("back_fill")?.withRenderingMode(.alwaysTemplate), for: .normal)
@@ -41,11 +39,11 @@ class PhotoEditTopToolBar: UIView {
         
     }
     
-    @objc func cancelButtonClick() {
+    @objc private func cancelButtonClick() {
         delegate?.topToolBarDidClickCancelButton(self)
     }
     
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = bounds
         gradientLayer.colors = [UIColor(white: 0, alpha: 0.4).cgColor,
@@ -53,7 +51,7 @@ class PhotoEditTopToolBar: UIView {
         gradientLayer.removeAllAnimations()
     }
     
-    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let view = super.hitTest(point, with: event)
         if view == self {
             return nil
@@ -61,7 +59,7 @@ class PhotoEditTopToolBar: UIView {
         return view
     }
     
-    public override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         return CGSize(width: UIScreen.width, height: toolBarHeight + keyWindowSafeAreaInsets.top)
     }
     

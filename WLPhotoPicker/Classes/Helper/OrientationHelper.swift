@@ -8,7 +8,7 @@
 import Photos
 import CoreImage
 
-public class OrientationHelper {
+class OrientationHelper {
     
     static func cgImageOrientationFrom(_ orientation: UIInterfaceOrientation) -> CGImagePropertyOrientation {
         switch orientation {
@@ -57,7 +57,7 @@ public class OrientationHelper {
 
 }
 
-public extension OrientationHelper {
+extension OrientationHelper {
     
     static func rotateImage(photoData: Data, orientation: UIInterfaceOrientation, aspectRatio: CaptureAspectRatio) -> UIImage? {
         guard let source = CGImageSourceCreateWithData(photoData as CFData, nil),

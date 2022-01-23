@@ -8,32 +8,28 @@
 import UIKit
 
 protocol AlbumListViewControllerDelegate: AnyObject {
-    
     func albumList(_ viewController: AlbumListViewController, didSelect album: AlbumModel)
     func albumListDidDismiss(_ viewController: AlbumListViewController)
-    
 }
 
 class AlbumListViewController: UIViewController {
     
     weak var delegate: AlbumListViewControllerDelegate?
     
-    private let tableViewContentView = UIView()
-    private let tableView = UITableView(frame: .zero, style: .plain)
-    let transitioning = AlbumListAnimation()
+    let tableViewContentView = UIView()
+    let tableView = UITableView(frame: .zero, style: .plain)
+    
+    let dismissTapGesture = UITapGestureRecognizer()
     
     private let albumsList: [AlbumModel]
     private let selectedAlbum: AlbumModel?
-    
-    let dismissTapGesture = UITapGestureRecognizer()
     
     init(albumsList: [AlbumModel], selectedAlbum: AlbumModel?) {
         self.albumsList = albumsList
         self.selectedAlbum = selectedAlbum
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .custom
-        
-        transitioningDelegate = transitioning
+        transitioningDelegate = self
         modalPresentationCapturesStatusBarAppearance = true
     }
     
@@ -53,7 +49,7 @@ class AlbumListViewController: UIViewController {
         }
     }
     
-    func setupView() {
+    private func setupView() {
         view.backgroundColor = .clear
         
         tableViewContentView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -80,17 +76,19 @@ class AlbumListViewController: UIViewController {
         }
         view.layoutIfNeeded()
         
-        dismissTapGesture.addTarget(self, action: #selector(dismissTap))
+        dismissTapGesture.addTarget(self, action: #selector(handleTapGesture))
         dismissTapGesture.delegate = self
         view.addGestureRecognizer(dismissTapGesture)
     }
     
-    @objc func dismissTap() {
+    @objc private func handleTapGesture() {
         dismiss(animated: true, completion: nil)
         delegate?.albumListDidDismiss(self)
     }
+    
 }
 
+// MARK: UITableViewDelegate & UITableViewDataSource
 extension AlbumListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -119,36 +117,6 @@ extension AlbumListViewController: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         let location = gestureRecognizer.location(in: self.view)
         return location.y > tableView.height || location.y < tableView.y
-    }
-    
-}
-
-extension AlbumListViewController {
-    
-    func showAnimation(duration: Double, completion: @escaping (Bool) -> ()) {
-        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
-            self.tableViewContentView.snp.remakeConstraints { make in
-                make.left.top.right.equalToSuperview()
-                make.height.equalTo(self.tableView.snp.height)
-            }
-            self.view.backgroundColor = UIColor(white: 0, alpha: 0.6)
-            self.view.layoutIfNeeded()
-        }) { (completed) in
-            completion(completed)
-        }
-    }
-    
-    func dismissAnimation(duration: Double, completion: @escaping (Bool) -> ()) {
-        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-            self.tableViewContentView.snp.remakeConstraints { make in
-                make.left.top.right.equalToSuperview()
-                make.height.equalTo(0)
-            }
-            self.view.backgroundColor = .clear
-            self.view.layoutIfNeeded()
-        }) { (completed) in
-            completion(completed)
-        }
     }
     
 }

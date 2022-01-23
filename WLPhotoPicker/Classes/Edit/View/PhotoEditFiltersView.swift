@@ -8,19 +8,17 @@
 import UIKit
 
 protocol PhotoEditFiltersViewDelegate: AnyObject {
-    
     func filtersView(_ filtersView: PhotoEditFiltersView, didSelectFilter filter: PhotoEditFilterProvider)
-    
 }
 
 class PhotoEditFiltersView: UIView {
     
     weak var delegate: PhotoEditFiltersViewDelegate?
     
-    var collectionView: UICollectionView!
+    private var collectionView: UICollectionView!
     
-    let photo: UIImage?
-    let photoEditConfig: PhotoEditConfig
+    private let photo: UIImage?
+    private let photoEditConfig: PhotoEditConfig
     
     init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
         self.photo = photo

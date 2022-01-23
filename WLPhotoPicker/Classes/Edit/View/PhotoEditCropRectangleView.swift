@@ -8,6 +8,7 @@
 import UIKit
 
 protocol PhotoEditCropRectangleViewDelegate: AnyObject {
+    func cropView(_ cropView: PhotoEditCropRectangleView, willCropToRect cropRect: CGRect)
     func cropView(_ cropView: PhotoEditCropRectangleView, didCropToRect cropRect: CGRect)
 }
 
@@ -15,25 +16,28 @@ class PhotoEditCropRectangleView: UIView {
     
     weak var delegate: PhotoEditCropRectangleViewDelegate?
     
-    let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-    let fillLayer = CAShapeLayer()
+    private let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    private let backgroundMaskLayer = CAShapeLayer()
     
-    let cropContentView = UIView()
-    let lineLayer = CAShapeLayer()
+    private let cropGridView = UIView()
+    private let cropGridLineLayer = CAShapeLayer()
     
-    let leftTopCorner = PhotoEditCropRectangleCorner(posotion: .leftTop)
-    let rightTopCorner = PhotoEditCropRectangleCorner(posotion: .rightTop)
-    let rightBottomCorner = PhotoEditCropRectangleCorner(posotion: .rightBottom)
-    let leftBottomCorner = PhotoEditCropRectangleCorner(posotion: .leftBottom)
+    private let leftTopCorner = PhotoEditCropRectangleCorner(posotion: .leftTop)
+    private let rightTopCorner = PhotoEditCropRectangleCorner(posotion: .rightTop)
+    private let rightBottomCorner = PhotoEditCropRectangleCorner(posotion: .rightBottom)
+    private let leftBottomCorner = PhotoEditCropRectangleCorner(posotion: .leftBottom)
     
-    var minimumSize: CGFloat = 46
-    var startCropRect: CGRect = .zero
+    private var minimumSize: CGFloat = 46
+    private var startCropRect: CGRect = .zero
+    
     var cropRect: CGRect = .zero
+    var maximumCropRect: CGRect = .zero
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setupView()
+        setupGesture()
     }
     
     func setupView() {
@@ -45,41 +49,43 @@ class PhotoEditCropRectangleView: UIView {
             maker.edges.equalToSuperview()
         }
         
-        fillLayer.fillRule = .evenOdd
-        backgroundView.layer.mask = fillLayer
-        
-        lineLayer.lineWidth = 1
-        lineLayer.strokeColor = UIColor.white.cgColor
-        cropContentView.layer.addSublayer(lineLayer)
-        
-        cropContentView.isUserInteractionEnabled = true
-        cropContentView.backgroundColor = .clear
-        addSubview(cropContentView)
+        cropGridView.isUserInteractionEnabled = true
+        cropGridView.backgroundColor = .clear
+        addSubview(cropGridView)
         
         addSubview(leftTopCorner)
         leftTopCorner.snp.makeConstraints { make in
-            make.centerX.equalTo(cropContentView.snp.left)
-            make.centerY.equalTo(cropContentView.snp.top)
+            make.centerX.equalTo(cropGridView.snp.left)
+            make.centerY.equalTo(cropGridView.snp.top)
         }
         
         addSubview(rightTopCorner)
         rightTopCorner.snp.makeConstraints { make in
-            make.centerX.equalTo(cropContentView.snp.right)
-            make.centerY.equalTo(cropContentView.snp.top)
+            make.centerX.equalTo(cropGridView.snp.right)
+            make.centerY.equalTo(cropGridView.snp.top)
         }
         
         addSubview(rightBottomCorner)
         rightBottomCorner.snp.makeConstraints { make in
-            make.centerX.equalTo(cropContentView.snp.right)
-            make.centerY.equalTo(cropContentView.snp.bottom)
+            make.centerX.equalTo(cropGridView.snp.right)
+            make.centerY.equalTo(cropGridView.snp.bottom)
         }
         
         addSubview(leftBottomCorner)
         leftBottomCorner.snp.makeConstraints { make in
-            make.centerX.equalTo(cropContentView.snp.left)
-            make.centerY.equalTo(cropContentView.snp.bottom)
+            make.centerX.equalTo(cropGridView.snp.left)
+            make.centerY.equalTo(cropGridView.snp.bottom)
         }
         
+        backgroundMaskLayer.fillRule = .evenOdd
+        backgroundView.layer.mask = backgroundMaskLayer
+        
+        cropGridLineLayer.lineWidth = 1.5
+        cropGridLineLayer.strokeColor = UIColor(white: 1, alpha: 0.6).cgColor
+        cropGridView.layer.addSublayer(cropGridLineLayer)
+    }
+    
+    func setupGesture() {
         leftTopCorner.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:))))
         rightTopCorner.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:))))
         rightBottomCorner.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:))))
@@ -87,107 +93,137 @@ class PhotoEditCropRectangleView: UIView {
     }
     
     @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
-        if gesture.state == .began {
-            startCrop()
+        switch gesture.state {
+        case .began:
             startCropRect = self.cropRect
-        } else if gesture.state == .ended {
-            finishCrop()
+            hideCover()
+        case .changed:
+            let translation = gesture.translation(in: self)
+            var cropRect = startCropRect
+            if gesture.view == leftTopCorner {
+                cropRect.origin.x += translation.x
+                cropRect.origin.y += translation.y
+                cropRect.size.width -= translation.x
+                cropRect.size.height -= translation.y
+                if cropRect.size.width <= minimumSize {
+                    cropRect.origin.x -= (minimumSize - cropRect.size.width)
+                    cropRect.size.width = minimumSize
+                }
+                if cropRect.size.height <= minimumSize {
+                    cropRect.origin.y -= (minimumSize - cropRect.size.height)
+                    cropRect.size.height = minimumSize
+                }
+                if cropRect.origin.x < maximumCropRect.origin.x {
+                    cropRect.size.width -= (maximumCropRect.origin.x - cropRect.origin.x)
+                    cropRect.origin.x = maximumCropRect.origin.x
+                }
+                if cropRect.origin.y < maximumCropRect.origin.y {
+                    cropRect.size.height -= (maximumCropRect.origin.y - cropRect.origin.y)
+                    cropRect.origin.y = maximumCropRect.origin.y
+                }
+            } else if gesture.view == rightTopCorner {
+                cropRect.origin.y +=  translation.y
+                cropRect.size.width += translation.x
+                cropRect.size.height -=  translation.y
+                if cropRect.size.height <= minimumSize {
+                    cropRect.origin.y -= (minimumSize - cropRect.size.height)
+                    cropRect.size.height = minimumSize
+                }
+                if cropRect.origin.y < maximumCropRect.origin.y {
+                    cropRect.size.height -= (maximumCropRect.origin.y - cropRect.origin.y)
+                    cropRect.origin.y = maximumCropRect.origin.y
+                }
+                if cropRect.size.width > maximumCropRect.size.width {
+                    cropRect.size.width = maximumCropRect.size.width
+                }
+            } else if gesture.view == rightBottomCorner {
+                cropRect.size.width += translation.x
+                cropRect.size.height += translation.y
+                if cropRect.size.width > maximumCropRect.size.width {
+                    cropRect.size.width = maximumCropRect.size.width
+                }
+                if cropRect.size.height > maximumCropRect.size.height {
+                    cropRect.size.height = maximumCropRect.size.height
+                }
+            } else if gesture.view == leftBottomCorner {
+                cropRect.origin.x += translation.x
+                cropRect.size.width -= translation.x
+                cropRect.size.height +=  translation.y
+                if cropRect.size.width <= minimumSize {
+                    cropRect.origin.x -= (minimumSize - cropRect.size.width)
+                    cropRect.size.width = minimumSize
+                }
+                if cropRect.origin.x < maximumCropRect.origin.x {
+                    cropRect.size.width -= (maximumCropRect.origin.x - cropRect.origin.x)
+                    cropRect.origin.x = maximumCropRect.origin.x
+                }
+                if cropRect.size.height > maximumCropRect.size.height {
+                    cropRect.size.height = maximumCropRect.size.height
+                }
+            }
+            cropRect.size.width = max(cropRect.size.width, minimumSize)
+            cropRect.size.height = max(cropRect.size.height, minimumSize)
+            updateCropRect(cropRect, animate: false)
+        default:
+            showCoverWithDelay()
         }
-        let translation = gesture.translation(in: self)
-        var cropRect = startCropRect
-        if gesture.view == leftTopCorner {
-            cropRect.origin.x += translation.x
-            cropRect.origin.y += translation.y
-            cropRect.size.width -= translation.x
-            cropRect.size.height -= translation.y
-            if cropRect.size.width <= minimumSize {
-                cropRect.origin.x -= (minimumSize - cropRect.size.width)
-                cropRect.size.width = minimumSize
-            }
-            if cropRect.size.height <= minimumSize {
-                cropRect.origin.y -= (minimumSize - cropRect.size.height)
-                cropRect.size.height = minimumSize
-            }
-        } else if gesture.view == rightTopCorner {
-            cropRect.origin.y +=  translation.y
-            cropRect.size.width += translation.x
-            cropRect.size.height -=  translation.y
-            if cropRect.size.height <= minimumSize {
-                cropRect.origin.y -= (minimumSize - cropRect.size.height)
-                cropRect.size.height = minimumSize
-            }
-        } else if gesture.view == rightBottomCorner {
-            cropRect.size.width +=  translation.x
-            cropRect.size.height +=  translation.y
-        } else if gesture.view == leftBottomCorner {
-            cropRect.origin.x += translation.x
-            cropRect.size.width -= translation.x
-            cropRect.size.height +=  translation.y
-            if cropRect.size.width <= minimumSize {
-                cropRect.origin.x -= (minimumSize - cropRect.size.width)
-                cropRect.size.width = minimumSize
-            }
-        }
-        cropRect.size.width = max(cropRect.size.width, minimumSize)
-        cropRect.size.height = max(cropRect.size.height, minimumSize)
-        updateCropRect(cropRect)
     }
     
-    func updateCropRect(_ cropRect: CGRect) {
+    func updateCropRect(_ cropRect: CGRect, animate: Bool = true) {
         self.cropRect = cropRect
         
-        cropContentView.frame = cropRect
+        cropGridView.frame = cropRect
+        layoutIfNeeded()
         
-        let fillPath = UIBezierPath(roundedRect: bounds, cornerRadius: 0)
-        let cropPath = UIBezierPath(roundedRect: cropRect, cornerRadius: 0)
-        fillPath.append(cropPath)
-        fillPath.usesEvenOddFillRule = true
-        fillLayer.path = fillPath.cgPath
+        updateLayers(animate: animate)
+    }
+    
+    func updateLayers(animate: Bool) {
+        let maskLayerPath = UIBezierPath(roundedRect: bounds, cornerRadius: 0)
+        let hollowOutPath = UIBezierPath(roundedRect: cropRect, cornerRadius: 0)
+        maskLayerPath.append(hollowOutPath)
+        maskLayerPath.usesEvenOddFillRule = true
+        backgroundMaskLayer.path = maskLayerPath.cgPath
         
-        let linePath = UIBezierPath()
+        let lineLayerPath = UIBezierPath()
         for i in 0...3 {
             let y = (cropRect.size.height / 3) * CGFloat(i)
-            linePath.move(to: CGPoint(x: 0, y: y))
-            linePath.addLine(to: CGPoint(x: cropRect.size.width, y: y))
+            lineLayerPath.move(to: CGPoint(x: 0, y: y))
+            lineLayerPath.addLine(to: CGPoint(x: cropRect.size.width, y: y))
         }
-        
         for i in 0...3 {
             let x = (cropRect.size.width / 3) * CGFloat(i)
-            linePath.move(to: CGPoint(x: x, y: 0))
-            linePath.addLine(to: CGPoint(x: x, y:cropRect.size.height))
+            lineLayerPath.move(to: CGPoint(x: x, y: 0))
+            lineLayerPath.addLine(to: CGPoint(x: x, y:cropRect.size.height))
         }
-        linePath.stroke()
-        lineLayer.path = linePath.cgPath
-        setNeedsDisplay()
+        lineLayerPath.stroke()
+        cropGridLineLayer.path = lineLayerPath.cgPath
+        
+        if animate {
+            let animation = CABasicAnimation(keyPath: "path")
+            animation.duration = 0.4
+            animation.isRemovedOnCompletion = false
+            animation.timingFunction = .init(name: .easeInEaseOut)
+            backgroundMaskLayer.add(animation, forKey: "animation")
+            cropGridLineLayer.add(animation, forKey: "animation")
+        }
     }
     
-    func startCrop() {
+    func hideCover() {
         NSObject.cancelPreviousPerformRequests(withTarget: self)
-        setCoverHidden(true)
+        backgroundView.effect = nil
     }
     
-    func finishCrop() {
-        perform(#selector(sendFinishEvent), with: nil, afterDelay: 0.5)
+    func showCoverWithDelay() {
+        delegate?.cropView(self, willCropToRect: cropRect)
+        perform(#selector(sendFinishEvent), with: nil, afterDelay: 0.6)
     }
     
     @objc func sendFinishEvent() {
-        setCoverHidden(false)
-        delegate?.cropView(self, didCropToRect: cropRect)
-    }
-    
-    func setCoverHidden(_ isHidden: Bool) {
-        NSObject.cancelPreviousPerformRequests(withTarget: self)
-        if isHidden {
-            self.backgroundView.effect = nil
-        } else {
-            perform(#selector(hideCover), with: nil, afterDelay: 1)
-        }
-    }
-    
-    @objc func hideCover() {
-        UIView.animate(withDuration: 0.2) {
+        UIView.animate(withDuration: 0.4) {
             self.backgroundView.effect = UIBlurEffect(style: .dark)
         }
+        delegate?.cropView(self, didCropToRect: cropRect)
     }
     
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {

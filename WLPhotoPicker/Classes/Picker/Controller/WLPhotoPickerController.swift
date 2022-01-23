@@ -11,7 +11,7 @@ import SnapKit
 public protocol WLPhotoPickerControllerDelegate: AnyObject {
     
     // 点击取消
-    // 如果WLPhotoPickerUIConfig的autoDismiss为false，那么控制器不会自动关闭
+    // 如果PickerConfig的dismissPickerAfterDone为false，那么控制器不会自动关闭
     func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController)
     
     // 点击完成按钮
@@ -31,16 +31,16 @@ public class WLPhotoPickerController: UINavigationController {
     
     public weak var pickerDelegate: WLPhotoPickerControllerDelegate?
     
-    let pickerConfig: WLPhotoConfig
+    let config: WLPhotoConfig
     
-    public init(pickerConfig: WLPhotoConfig = .default) {
-        self.pickerConfig = pickerConfig.checkCongfig()
+    public init(config: WLPhotoConfig = .default) {
+        self.config = config.checkCongfig()
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
-        
         navigationBar.barTintColor = .white
         navigationBar.tintColor = .black
-        let viewController = AssetPickerController(config: pickerConfig)
+        
+        let viewController = AssetPickerController(config: config)
         viewController.delegate = self
         viewControllers = [viewController]
     }
@@ -51,6 +51,8 @@ public class WLPhotoPickerController: UINavigationController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationBar.isTranslucent = true
         if #available(iOS 15.0, *) {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithTransparentBackground()
@@ -62,26 +64,29 @@ public class WLPhotoPickerController: UINavigationController {
             navigationBar.setBackgroundImage(UIImage.imageWithColor(.white), for: .default)
             navigationBar.shadowImage = UIImage()
         }
-        navigationBar.isTranslucent = true
     }
     
 }
 
+// MARK: AssetPickerControllerDelegate
 extension WLPhotoPickerController: AssetPickerControllerDelegate {
     
     func pickerControllerDidCancel(_ pickerController: AssetPickerController) {
         pickerDelegate?.pickerControllerDidCancel(self)
+        
+        if config.pickerConfig.dismissPickerAfterDone {
+            dismiss(animated: true, completion: nil)
+        }
     }
     
     func pickerController(_ pickerController: AssetPickerController, didSelectResult result: [AssetPickerResult]) {
         pickerDelegate?.pickerController(self, didSelectResult: result)
         
-        if pickerConfig.pickerConfig.autoDismissAfterDone {
-            if let vc = self.presentedViewController as? AssetPreviewViewController {
-                vc.transitioningDelegate = nil
-                vc.modalPresentationStyle = .fullScreen
-            }
-            self.presentingViewController?.dismiss(animated: true, completion: nil)
+        if config.pickerConfig.dismissPickerAfterDone {
+            let previewController = presentedViewController as? AssetPreviewViewController
+            previewController?.transitioningDelegate = nil
+            previewController?.modalPresentationStyle = .fullScreen
+            presentingViewController?.dismiss(animated: true, completion: nil)
         }
     }
     

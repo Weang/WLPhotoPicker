@@ -7,7 +7,7 @@
 
 import UIKit
 
-public struct PhotoEditGraffitiPath {
+struct PhotoEditGraffitiPath {
     
     var imageSize: CGSize = .zero
     var shapeSize: CGSize = .zero
@@ -55,7 +55,7 @@ public struct PhotoEditGraffitiPath {
     
 }
 
-public class PhotoEditGraffitiPathLine {
+class PhotoEditGraffitiPathLine {
     
     let startPoint: CGPoint
     let lineWidth: CGFloat

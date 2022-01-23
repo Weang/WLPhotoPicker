@@ -31,6 +31,7 @@ public struct LivePhotoFetchResponse {
     public let livePhoto: PHLivePhoto
 }
 
+// GIF请求结果
 public struct GIFFetchResponse {
     public let image: UIImage
     public let imageData: Data
@@ -40,9 +41,4 @@ public struct GIFFetchResponse {
 public struct VideoFetchResponse {
     public let avasset: AVAsset
     public let playerItem: AVPlayerItem
-}
-
-// 视频导出结果
-public struct VideoExportResponse {
-    public let videoPath: String
 }

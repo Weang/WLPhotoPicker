@@ -10,7 +10,6 @@ import UIKit
 public class PhotoEditConfig {
 
     public init() { }
-    public static let `default` = PhotoEditConfig()
     
     // 照片编辑菜单类型
     public var photoEditItemTypes: [PhotoEditItemType] = PhotoEditItemType.all
@@ -38,10 +37,10 @@ public class PhotoEditConfig {
     public var photoEditMosaicWidth: CGFloat = 30
     
     // 照片裁剪比例
-    public var photoEditCropRatios: PhotoEditCropRatio = .freedom
+    // TODO: public var photoEditCropRatios: PhotoEditCropRatio = .freedom
     
     // 照片裁剪是否裁剪圆形，如果为true，那么photoEditCropRatios不会生效，只会默认圆形
-    public var photoEditCropCircle: Bool = false
+    // TODO: public var photoEditCropCircle: Bool = false
     
     // 滤镜选项
     public var photoEditFilters: [PhotoEditFilterProvider] = PhotoEditDefaultFilter.all

@@ -7,45 +7,6 @@
 
 import UIKit
 
-class PhotoEditCropShowTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
-    
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let toVC = transitionContext.viewController(forKey: .to) as? PhotoEditCropViewController else {
-            transitionContext.completeTransition(false)
-            return
-        }
-        transitionContext.containerView.addSubview(toVC.view)
-        let duration = transitionDuration(using: transitionContext)
-        toVC.showAnimation(duration: duration) { completion in
-            transitionContext.completeTransition(completion)
-        }
-    }
-    
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.4
-    }
-    
-}
-
-class PhotoEditCropDismissTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
-    
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let toVC = transitionContext.viewController(forKey: .from) as? PhotoEditCropViewController else {
-            transitionContext.completeTransition(false)
-            return
-        }
-        let duration = transitionDuration(using: transitionContext)
-        toVC.dismissAnimation(duration: duration) { completion in
-            transitionContext.completeTransition(completion)
-        }
-    }
-    
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.3
-    }
-    
-}
-
 extension PhotoEditCropViewController: UIViewControllerTransitioningDelegate {
     
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -58,14 +19,104 @@ extension PhotoEditCropViewController: UIViewControllerTransitioningDelegate {
     
 }
 
-extension PhotoEditCropViewController {
+private class PhotoEditCropShowTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
     
-    fileprivate func showAnimation(duration: Double, completion: @escaping (Bool) -> ()) {
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        guard let toVC = transitionContext.viewController(forKey: .to) as? PhotoEditCropViewController,
+              let fromVC = transitionContext.viewController(forKey: .from) as? PhotoEditViewController else {
+                  transitionContext.completeTransition(false)
+                  return
+              }
         
+        transitionContext.containerView.addSubview(toVC.view)
+        let duration = transitionDuration(using: transitionContext)
+        toVC.showAnimation(duration: duration, from: fromVC) { completion in
+            transitionContext.completeTransition(completion)
+        }
     }
     
-    fileprivate func dismissAnimation(duration: Double, completion: @escaping (Bool) -> ()) {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return 0.6
+    }
+    
+}
+
+private class PhotoEditCropDismissTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
+    
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        guard let fromVC = transitionContext.viewController(forKey: .from) as? PhotoEditCropViewController,
+              let toVC = transitionContext.viewController(forKey: .to) as? PhotoEditViewController else {
+                  transitionContext.completeTransition(false)
+                  return
+              }
+        let duration = transitionDuration(using: transitionContext)
+        fromVC.dismissAnimation(duration: duration, to: toVC) { completion in
+            transitionContext.completeTransition(completion)
+        }
+    }
+    
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return 0.4
+    }
+    
+}
+
+extension PhotoEditCropViewController {
+    
+    fileprivate func showAnimation(duration: Double, from editViewController: PhotoEditViewController, completion: @escaping (Bool) -> ()) {
+        let animateImageView = UIImageView()
+        animateImageView.image = photo
+        animateImageView.frame = editViewController.contentScrollView.convert(editViewController.contentImageView.frame, to: editViewController.view)
+        editViewController.view.addSubview(animateImageView)
         
+        editViewController.view.bringSubviewToFront(editViewController.topToolBar)
+        editViewController.view.bringSubviewToFront(editViewController.bottomToolBar)
+        editViewController.contentImageView.isHidden = true
+        view.alpha = 0
+        
+        let toFrame = adaptionDisplay(displaySize: photo.size)
+        
+        UIView.animate(withDuration: duration - 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            animateImageView.frame = toFrame
+            editViewController.topToolBar.alpha = 0
+            editViewController.bottomToolBar.alpha = 0
+        }) { _ in }
+        
+        UIView.animate(withDuration: 0.2, delay: duration - 0.2, animations: {
+            self.view.alpha = 1
+        }) { (completed) in
+            animateImageView.removeFromSuperview()
+            editViewController.contentImageView.isHidden = false
+            editViewController.topToolBar.alpha = 1
+            editViewController.bottomToolBar.alpha = 1
+            completion(completed)
+        }
+    }
+    
+    fileprivate func dismissAnimation(duration: Double, to editViewController: PhotoEditViewController, completion: @escaping (Bool) -> ()) {
+        let animateImageView = UIImageView()
+        animateImageView.image = photo
+        animateImageView.frame = contentScrollView.convert(contentImageView.frame, to: editViewController.view)
+        editViewController.view.addSubview(animateImageView)
+        
+        editViewController.view.bringSubviewToFront(editViewController.topToolBar)
+        editViewController.view.bringSubviewToFront(editViewController.bottomToolBar)
+        editViewController.contentImageView.isHidden = true
+        editViewController.topToolBar.alpha = 0
+        editViewController.bottomToolBar.alpha = 0
+        view.alpha = 0
+        
+        let toFrame = editViewController.contentScrollView.convert(editViewController.contentImageView.frame, to: editViewController.view)
+        
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            animateImageView.frame = toFrame
+            editViewController.topToolBar.alpha = 1
+            editViewController.bottomToolBar.alpha = 1
+        }) { (completed) in
+            animateImageView.removeFromSuperview()
+            editViewController.contentImageView.isHidden = false
+            completion(completed)
+        }
     }
     
 }

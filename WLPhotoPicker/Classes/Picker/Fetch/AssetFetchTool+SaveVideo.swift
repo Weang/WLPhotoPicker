@@ -8,15 +8,15 @@
 import UIKit
 import Photos
 
-public typealias SaveVideoCompletion = (Result<PHAsset, AssetSaveError>) -> Void
+typealias SaveVideoCompletion = (Result<PHAsset, AssetSaveError>) -> Void
 
 extension AssetFetchTool {
     
-    public static func saveVideo(url: URL, completion: @escaping SaveVideoCompletion) {
+    static func saveVideo(url: URL, completion: @escaping SaveVideoCompletion) {
         var localIdentifier: String = ""
         let changes = {
             guard let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url) else {
-                completion(.failure(.invalidPhoto))
+                completion(.failure(.invalidVideoURL))
                 return
             }
             localIdentifier = request.placeholderForCreatedAsset?.localIdentifier ?? ""
@@ -26,7 +26,7 @@ extension AssetFetchTool {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
                     completion(.success(asset))
                 } else {
-                    completion(.failure(.savePhotoFailed))
+                    completion(.failure(.saveVideoFailed))
                 }
             }
         }

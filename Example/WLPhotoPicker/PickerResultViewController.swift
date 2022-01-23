@@ -8,6 +8,8 @@
 
 import UIKit
 import WLPhotoPicker
+import AVFoundation
+import AVKit
 
 class PickerResultViewController: UIViewController {
 
@@ -54,5 +56,15 @@ extension PickerResultViewController: UITableViewDataSource, UITableViewDelegate
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let model = result[indexPath.section]
+        if let playerItem = model.playerItem {
+            let player = AVPlayer(playerItem: playerItem.copy() as! AVPlayerItem)
+            let controller = AVPlayerViewController()
+            controller.player = player
+            controller.modalPresentationStyle = .fullScreen
+            present(controller, animated: true) {
+                player.play()
+            }
+        }
     }
 }

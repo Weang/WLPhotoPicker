@@ -19,12 +19,9 @@ protocol AssetPreviewViewControllerDelegate: AnyObject {
     func imageBrowser(_ imageBrowser: AssetPreviewViewController, didFinishEditImageAt indexPath: IndexPath)
 }
 
-public class AssetPreviewViewController: UIViewController {
+class AssetPreviewViewController: UIViewController {
     
-    fileprivate let itemSpacing: CGFloat = 28
-    
-    let assetFetchTool: AssetFetchTool
-    let config: WLPhotoConfig
+    private let itemSpacing: CGFloat = 28
     
     let topToolBar: AssetPreviewNavigationBar
     let bottomToolBar: AssetPreviewToolBar
@@ -32,30 +29,32 @@ public class AssetPreviewViewController: UIViewController {
     let collectionViewLayout = UICollectionViewFlowLayout()
     var collectionView: UICollectionView!
     
-    var toolbars: [UIView] {
-        [topToolBar, bottomToolBar]
-    }
-    
     weak var animateDataSource: AssetPreviewViewControllerAnimateDataSource?
     weak var deleagte: AssetPreviewViewControllerDelegate?
     
     public var currentIndex: Int?
-    
     private var showToolBar: Bool = true
+    
+    var toolbars: [UIView] {
+        [topToolBar, bottomToolBar]
+    }
     
     public override var prefersStatusBarHidden: Bool {
         !showToolBar
     }
     
-    public init(config: WLPhotoConfig, assetFetchTool: AssetFetchTool) {
+    let assetFetchTool: AssetFetchTool
+    private let config: WLPhotoConfig
+    
+    init(config: WLPhotoConfig, assetFetchTool: AssetFetchTool) {
         self.config = config
         self.assetFetchTool = assetFetchTool
         self.topToolBar = AssetPreviewNavigationBar(pickerConfig: config.pickerConfig)
         self.bottomToolBar = AssetPreviewToolBar(pickerConfig: config.pickerConfig)
         super.init(nibName: nil, bundle: nil)
-        self.modalPresentationStyle = .custom
-        self.transitioningDelegate = self
-        self.modalPresentationCapturesStatusBarAppearance = true
+        modalPresentationStyle = .custom
+        transitioningDelegate = self
+        modalPresentationCapturesStatusBarAppearance = true
         assetFetchTool.addDelegate(self)
     }
     
@@ -69,10 +68,10 @@ public class AssetPreviewViewController: UIViewController {
         setupView()
     }
     
-    func setupView() {
+    private func setupView() {
         view.backgroundColor = .clear
         
-        collectionViewLayout.itemSize = UIScreen.main.bounds.size
+        collectionViewLayout.itemSize = UIScreen.size
         collectionViewLayout.scrollDirection = .horizontal
         collectionViewLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: itemSpacing)
         collectionViewLayout.minimumLineSpacing = itemSpacing
@@ -114,7 +113,32 @@ public class AssetPreviewViewController: UIViewController {
         }
     }
     
-    public override func viewDidLayoutSubviews() {
+    private func changeToolBarStatus() {
+        showToolBar.toggle()
+        view.backgroundColor = showToolBar ? .white : .black
+        toolbars.forEach{
+            $0.alpha = showToolBar ? 1 : 0
+        }
+        setNeedsStatusBarAppearanceUpdate()
+    }
+    
+    private func updateToolBarsAt(_ index: Int) {
+        guard let albumModel = assetFetchTool.albumModel else {
+            return
+        }
+        let assetModel = albumModel.assets[index]
+        topToolBar.setCircleButton(isSelected: assetModel.isSelected, selectedIndex: assetModel.selectedIndex, animated: false)
+        bottomToolBar.setCurrentAsset(assetModel, animated: true)
+    }
+    
+    private func openEditViewController(_ assetModel: AssetModel) {
+        let vc = PhotoEditViewController(assetModel: assetModel,
+                                         photoEditConfig: config.photoEditConfig)
+        vc.delegate = self
+        present(vc, animated: false, completion: nil)
+    }
+    
+    override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         guard let currentIndex = self.currentIndex else {
             return
@@ -125,44 +149,20 @@ public class AssetPreviewViewController: UIViewController {
         self.currentIndex = nil
     }
     
-    func changeToolBarStatus() {
-        showToolBar.toggle()
-        view.backgroundColor = showToolBar ? .white : .black
-        toolbars.forEach{
-            $0.alpha = showToolBar ? 1 : 0
-        }
-        setNeedsStatusBarAppearanceUpdate()
-    }
-    
-    func updateToolBarsAt(_ index: Int) {
-        guard let albumModel = assetFetchTool.albumModel else {
-            return
-        }
-        let assetModel = albumModel.assets[index]
-        topToolBar.setCircleButton(isSelected: assetModel.isSelected, selectedIndex: assetModel.selectedIndex, animated: false)
-        bottomToolBar.setCurrentAsset(assetModel, animated: true)
-    }
-    
-    func openEditViewController(_ assetModel: AssetModel) {
-        let vc = PhotoEditViewController(assetModel: assetModel,
-                                         photoEditConfig: config.photoEditConfig)
-        vc.delegate = self
-        self.present(vc, animated: false, completion: nil)
-    }
-    
     deinit {
         assetFetchTool.removeDeleagte(self)
     }
     
 }
 
+// MARK: UICollectionViewDelegate & UICollectionViewDataSource
 extension AssetPreviewViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return assetFetchTool.albumModel?.assets.count ?? 0
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let albumModel = assetFetchTool.albumModel else {
             return collectionView.dequeueReusableCell(AssetPreviewCell.self, for: indexPath)
         }
@@ -182,7 +182,7 @@ extension AssetPreviewViewController: UICollectionViewDelegate, UICollectionView
         return cell
     }
     
-    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let cell = cell as? AssetPreviewCell,
               let albumModel = assetFetchTool.albumModel else {
                   return
@@ -192,12 +192,12 @@ extension AssetPreviewViewController: UICollectionViewDelegate, UICollectionView
         cell.setAsset(albumModel.assets[indexPath.item], thumbnail: thumbnail, pickerConfig: config.pickerConfig)
     }
     
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetIndex = max(Int(round(scrollView.contentOffset.x / scrollView.width)), 0)
         updateToolBarsAt(offsetIndex)
     }
     
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         collectionView.visibleCells.compactMap {
             $0 as? AssetPreviewCell
         }.forEach {
@@ -205,12 +205,13 @@ extension AssetPreviewViewController: UICollectionViewDelegate, UICollectionView
         }
     }
     
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let offsetIndex = max(Int(round(scrollView.contentOffset.x / scrollView.width)), 0)
         deleagte?.imageBrowser(self, didScrollTo: IndexPath(item: offsetIndex, section: 0))
     }
 }
 
+// MARK: AssetFetchToolDelegate
 extension AssetPreviewViewController: AssetFetchToolDelegate {
     
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateSelectedStatus assetModel: AssetModel) {
@@ -252,7 +253,7 @@ extension AssetPreviewViewController: AssetPreviewCellDelegate {
     }
     
     func previewCellSingleTap(_ previewCell: AssetPreviewCell, didPanScale scale: CGFloat) {
-        self.view.backgroundColor = self.view.backgroundColor?.withAlphaComponent(scale)
+        view.backgroundColor = view.backgroundColor?.withAlphaComponent(scale)
     }
     
     func previewCellSingleTap(_ previewCell: AssetPreviewCell, didFinishPanDismiss dismiss: Bool) {
@@ -272,11 +273,11 @@ extension AssetPreviewViewController: AssetPreviewCellDelegate {
 
 extension AssetPreviewViewController: AssetPreviewNavigationBarDelegate {
     
-    public func navigationBarDidClickCancelButton(_ navigationBar: AssetPreviewNavigationBar) {
+    func navigationBarDidClickCancelButton(_ navigationBar: AssetPreviewNavigationBar) {
         dismiss(animated: true, completion: nil)
     }
     
-    public func navigationBar(_ navigationBar: AssetPreviewNavigationBar, didClickSelectButton isSelected: Bool) {
+    func navigationBar(_ navigationBar: AssetPreviewNavigationBar, didClickSelectButton isSelected: Bool) {
         guard let albumModel = assetFetchTool.albumModel else {
             return
         }
@@ -294,7 +295,7 @@ extension AssetPreviewViewController: AssetPreviewNavigationBarDelegate {
 
 extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
     
-    public func toolBar(_ toolBar: AssetPreviewToolBar, didSelectAsset asset: AssetModel) {
+    func toolBar(_ toolBar: AssetPreviewToolBar, didSelectAsset asset: AssetModel) {
         guard let index = assetFetchTool.albumModel?.assets.firstIndex(where: { $0.localIdentifier == asset.localIdentifier }) else {
             return
         }
@@ -302,7 +303,7 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
         scrollViewDidEndDecelerating(collectionView)
     }
     
-    public func toolBarDidClickEditButton(_ toolBar: AssetPreviewToolBar) {
+    func toolBarDidClickEditButton(_ toolBar: AssetPreviewToolBar) {
         guard let albumModel = assetFetchTool.albumModel else { return }
         
         let offsetIndex = Int(round(collectionView.contentOffset.x / collectionView.width))
@@ -325,7 +326,7 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
         }
     }
     
-    public func toolBarDidClickOriginButton(_ toolBar: AssetPreviewToolBar, isOriginal: Bool) {
+    func toolBarDidClickOriginButton(_ toolBar: AssetPreviewToolBar, isOriginal: Bool) {
         assetFetchTool.isOriginal = isOriginal
         deleagte?.imageBrowser(self, didChangeIsOriginal: isOriginal)
         
@@ -340,7 +341,7 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
         }
     }
     
-    public func toolBarDidClickDoneButton(_ toolBar: AssetPreviewToolBar) {
+    func toolBarDidClickDoneButton(_ toolBar: AssetPreviewToolBar) {
         var assets: [AssetModel] = []
         if assetFetchTool.selectedAssets.count > 0 {
             assets = assetFetchTool.selectedAssets

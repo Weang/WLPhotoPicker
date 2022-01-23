@@ -11,6 +11,11 @@ import Photos
 public class AlbumModel {
     
     public var assets: [AssetModel] = []
+    
+    public var count: Int {
+        assets.count
+    }
+    
     public var coverAsset: AssetModel? {
         switch pickerConfig.sortType {
         case .asc:
@@ -24,32 +29,12 @@ public class AlbumModel {
         fetchCollection.localIdentifier
     }
     
-    public var localizedTitle: String? {
-        fetchCollection.localizedTitle
-    }
-    
-    public var count: Int {
-        assets.count
+    public var localizedTitle: String {
+        fetchCollection.localizedTitle ?? ""
     }
     
     public var isCameraRollAlbum: Bool {
         fetchCollection.isCameraRollAlbum
-    }
-    
-    public var selectPhoto: Bool {
-        pickerConfig.selectableType.contains(.photo)
-    }
-    
-    public var selectVideo: Bool {
-        pickerConfig.selectableType.contains(.video)
-    }
-    
-    public var selectPhotoGIF: Bool {
-        pickerConfig.selectableType.contains(.GIF)
-    }
-    
-    public var selectPhotoLive: Bool {
-        pickerConfig.selectableType.contains(.livePhoto)
     }
     
     private let pickerConfig: PickerConfig
@@ -72,17 +57,17 @@ public class AlbumModel {
     func shouldAppendAsset(asset: PHAsset) -> AssetModel? {
         let asset = AssetModel(asset: asset, pickerConfig: pickerConfig)
         switch asset.mediaType {
-        case .photo where self.selectPhoto:
+        case .photo where pickerConfig.selectableType.contains(.photo):
             return asset
-        case .video where self.selectVideo:
+        case .video where pickerConfig.selectableType.contains(.video):
             let maximumVideoDuration = pickerConfig.pickerMaximumVideoDuration
             if maximumVideoDuration != 0 && asset.duration > maximumVideoDuration {
                 return nil
             }
             return asset
-        case .GIF where self.selectPhotoGIF:
+        case .GIF where pickerConfig.selectableType.contains(.GIF):
             return asset
-        case .livePhoto where self.selectPhotoLive:
+        case .livePhoto where pickerConfig.selectableType.contains(.livePhoto):
             return asset
         default:
             return nil

@@ -16,22 +16,22 @@ class PhotoEditTextViewController: UIViewController {
     
     weak var delegate: PhotoEditTextViewControllerDelegate?
     
-    let backgroundImageView = UIImageView()
-    let foregroundView = UIView()
-    let cancelButton = UIButton()
-    let doneButton = UIButton()
-    let inputTextView = UITextView()
-    let colorsView: PhotoEditTextColorsView
-    let textShapeLayer = CAShapeLayer()
+    private let backgroundImageView = UIImageView()
+    private let foregroundView = UIView()
+    private let cancelButton = UIButton()
+    private let doneButton = UIButton()
+    private let inputTextView = UITextView()
+    private let colorsView: PhotoEditTextColorsView
+    private let textShapeLayer = CAShapeLayer()
     
-    var isTextWrap: Bool = false
-    var textColorIndex: Int = 0
-    var textLineRects: [CGRect] = []
-    let textWrapPadding: CGFloat = 16
+    private var isTextWrap: Bool = false
+    private var textColorIndex: Int = 0
+    private var textLineRects: [CGRect] = []
+    private let textWrapPadding: CGFloat = 16
     
-    let backgroundImage: UIImage?
-    var textMaskLayer: PhotoEditTextMaskLayer?
-    let photoEditConfig: PhotoEditConfig
+    private let backgroundImage: UIImage?
+    private var textMaskLayer: PhotoEditTextMaskLayer?
+    private let photoEditConfig: PhotoEditConfig
     
     public override var prefersStatusBarHidden: Bool {
         true
@@ -57,21 +57,11 @@ class PhotoEditTextViewController: UIViewController {
         setupView()
         addNotifications()
         setupTextColor()
-        
+        setupCurrentText()
         inputTextView.becomeFirstResponder()
-        
-        if let textMaskLayer = self.textMaskLayer {
-            inputTextView.text = textMaskLayer.text
-            isTextWrap = textMaskLayer.isWrap
-            textColorIndex = textMaskLayer.colorIndex
-            colorsView.wrapButton.isSelected = isTextWrap
-            colorsView.collectionView.selectItem(at: IndexPath(item: textColorIndex, section: 0), animated: false, scrollPosition: .left)
-            setupTextColor()
-            updateAttributeText()
-        }
     }
     
-    func setupView() {
+    private  func setupView() {
         view.backgroundColor = .black
         
         backgroundImageView.image = backgroundImage?.blurImage(blur: 8)
@@ -141,24 +131,37 @@ class PhotoEditTextViewController: UIViewController {
         view.layoutSubviews()
     }
     
-    func addNotifications() {
+    private func addNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(kayboardChanged(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(kayboardChanged(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    func setupTextColor() {
+    private func setupTextColor() {
         let textColor = photoEditConfig.photoEditTextColors[textColorIndex]
         inputTextView.textColor = isTextWrap ? textColor.textColor : textColor.tintColor
         textShapeLayer.fillColor = textColor.tintColor.cgColor
         textShapeLayer.removeAllAnimations()
     }
     
-    @objc func cancelButtonClick() {
+    private func setupCurrentText() {
+        guard let textMaskLayer = self.textMaskLayer else {
+            return
+        }
+        inputTextView.text = textMaskLayer.text
+        isTextWrap = textMaskLayer.isWrap
+        textColorIndex = textMaskLayer.colorIndex
+        colorsView.wrapButton.isSelected = isTextWrap
+        colorsView.collectionView.selectItem(at: IndexPath(item: textColorIndex, section: 0), animated: false, scrollPosition: .left)
+        setupTextColor()
+        updateAttributeText()
+    }
+    
+    @objc private func cancelButtonClick() {
         delegate?.textController(self, didCancelImput: textMaskLayer)
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func doneButtonClick() {
+    @objc private func doneButtonClick() {
         if textLineRects.count == 0 {
             delegate?.textController(self, didCancelImput: textMaskLayer)
             dismiss(animated: true, completion: nil)
@@ -184,7 +187,7 @@ class PhotoEditTextViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func kayboardChanged(_ notification: Notification) {
+    @objc private func kayboardChanged(_ notification: Notification) {
         guard let keyboardRect = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
             return
         }
@@ -194,7 +197,7 @@ class PhotoEditTextViewController: UIViewController {
         view.layoutSubviews()
     }
     
-    func updateAttributeText() {
+    private func updateAttributeText() {
         let attributedText = NSMutableAttributedString(attributedString: inputTextView.attributedText)
         let paragraphStye = NSMutableParagraphStyle()
         paragraphStye.alignment = .left
@@ -214,11 +217,11 @@ class PhotoEditTextViewController: UIViewController {
 // MARK: Draw
 extension PhotoEditTextViewController {
     
-    func drawLineLayers() {
+    private func drawLineLayers() {
         textShapeLayer.path = drawTextWrapPath()?.cgPath
     }
     
-    func drawTextImage() -> UIImage? {
+    private func drawTextImage() -> UIImage? {
         let textWidth = textLineRects.map{ $0.width }.max() ?? 0
         let textHeight = textLineRects.map{ $0.height }.reduce(0, +)
         let width = textWidth + textWrapPadding * 2
@@ -243,7 +246,7 @@ extension PhotoEditTextViewController {
     }
     
     @discardableResult
-    func drawTextWrapPath() -> UIBezierPath? {
+    private func drawTextWrapPath() -> UIBezierPath? {
         guard isTextWrap, textLineRects.count > 0 else {
             return nil
         }

@@ -10,7 +10,7 @@ import Photos
 
 extension AssetFetchTool {
     
-    var assetFetchOptions: PHFetchOptions {
+    private var assetFetchOptions: PHFetchOptions {
         let fetchOptions = PHFetchOptions()
         if !pickerConfig.selectableType.hasVideo {
             fetchOptions.predicate = NSPredicate(format: "mediaType == %ld", PHAssetMediaType.image.rawValue)
@@ -25,18 +25,17 @@ extension AssetFetchTool {
         return fetchOptions
     }
     
-    public func fetchCameraRollAlbum() {
+    func fetchCameraRollAlbum() {
         AssetFetchTool.queue.async { [weak self] in
             guard let self = self else { return }
-            let assetFetchOptions = self.assetFetchOptions
             let assetCollections = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
-            let collections = assetCollections.objects.filter{
+            let collections = assetCollections.objects.filter {
                 $0.estimatedAssetCount > 0 && $0.isCameraRollAlbum
             }
             guard let cameraRollAlbumCollection = collections.first else {
                 return
             }
-            let assetFetchResult = PHAsset.fetchAssets(in: cameraRollAlbumCollection, options: assetFetchOptions)
+            let assetFetchResult = PHAsset.fetchAssets(in: cameraRollAlbumCollection, options: self.assetFetchOptions)
             let albumModel = AlbumModel(result: assetFetchResult, collection: cameraRollAlbumCollection, pickerConfig: self.pickerConfig)
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
@@ -48,12 +47,11 @@ extension AssetFetchTool {
         }
     }
     
-    public func fetchAllAlbums() {
+    func fetchAllAlbums() {
         AssetFetchTool.queue.async { [weak self] in
             guard let self = self else { return }
             
             var albumArray: [AlbumModel] = []
-            let assetFetchOptions = self.assetFetchOptions
             var collections: [PHAssetCollection] = []
             
             let subtypes: [PHAssetCollectionSubtype] = [
@@ -64,9 +62,11 @@ extension AssetFetchTool {
             ]
             let smartAlbumCollections = subtypes.map {
                 PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: $0, options: nil)
-            }.map{
+            }.map {
                 $0.objects
-            }.flatMap{ $0 }
+            }.flatMap{
+                $0
+            }
             
             let topLevelUserCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil).objects.compactMap {
                 $0 as? PHAssetCollection
@@ -76,17 +76,16 @@ extension AssetFetchTool {
             collections.append(contentsOf: topLevelUserCollections)
             
             for collection in collections {
+                let assetFetchResult = PHAsset.fetchAssets(in: collection, options: self.assetFetchOptions)
+                if albumArray.contains(where: { $0.localIdentifier == collection.localIdentifier }) {
+                    continue
+                }
                 if collection.estimatedAssetCount <= 0 && !collection.isCameraRollAlbum {
                     continue
                 }
-                if collection.isHiddenAlbum ||
-                    collection.isRecentlyDeletedAlbum ||
-                    albumArray.contains(where: {
-                        $0.localIdentifier == collection.localIdentifier
-                    }) {
+                if collection.isHiddenAlbum || collection.isRecentlyDeletedAlbum {
                     continue
                 }
-                let assetFetchResult = PHAsset.fetchAssets(in: collection, options: assetFetchOptions)
                 if assetFetchResult.count == 0 && !collection.isCameraRollAlbum {
                     continue
                 }

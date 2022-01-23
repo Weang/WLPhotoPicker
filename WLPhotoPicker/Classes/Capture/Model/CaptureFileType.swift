@@ -13,7 +13,7 @@ public enum CaptureFileType {
     case mov
 }
 
-public extension CaptureFileType {
+extension CaptureFileType {
     
     var avFileType: AVFileType {
         switch self {

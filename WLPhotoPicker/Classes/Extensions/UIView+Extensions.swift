@@ -61,18 +61,25 @@ extension UIView {
 
 extension UIView {
     
-    func screenShot() -> UIImage? {
+    func screenShot(rect: CGRect? = nil, scale: CGFloat = UIScreen.main.scale) -> UIImage? {
         guard frame.size.height > 0 && frame.size.width > 0 else {
             return nil
         }
-        UIGraphicsBeginImageContextWithOptions(frame.size, false, 1)
-        defer {
-            UIGraphicsEndImageContext()
-        }
+        UIGraphicsBeginImageContextWithOptions(frame.size, false, scale)
         guard let context = UIGraphicsGetCurrentContext() else {
             return nil
         }
         layer.render(in: context)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        guard let rect = rect else {
+            return image
+        }
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, scale)
+        defer {
+            UIGraphicsEndImageContext()
+        }
+        image?.draw(in: CGRect(x: -rect.origin.x, y: -rect.origin.y, width: frame.size.width, height: frame.size.height))
         return UIGraphicsGetImageFromCurrentImageContext()
     }
     

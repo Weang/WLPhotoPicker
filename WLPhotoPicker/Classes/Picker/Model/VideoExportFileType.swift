@@ -13,7 +13,7 @@ public enum VideoExportFileType {
     case mov
 }
 
-public extension VideoExportFileType {
+extension VideoExportFileType {
     
     var avFileType: AVFileType {
         switch self {

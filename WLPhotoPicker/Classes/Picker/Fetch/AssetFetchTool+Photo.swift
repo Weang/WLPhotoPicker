@@ -8,12 +8,12 @@
 import UIKit
 import Photos
 
-public typealias LocalPhotoFetchCompletion = (Result<LocalPhotoFetchResponse, AssetFetchError>, PHImageRequestID) -> Void
+typealias LocalPhotoFetchCompletion = (Result<LocalPhotoFetchResponse, AssetFetchError>, PHImageRequestID) -> Void
 
 extension AssetFetchTool {
     
     @discardableResult
-    public static func requestPhoto(for asset: PHAsset, options: AssetFetchOptions, completion: @escaping LocalPhotoFetchCompletion) -> PHImageRequestID {
+    static func requestPhoto(for asset: PHAsset, options: AssetFetchOptions, completion: @escaping LocalPhotoFetchCompletion) -> PHImageRequestID {
         let requestOptions = PHImageRequestOptions()
         requestOptions.version = options.imageVersion
         requestOptions.resizeMode = options.imageResizeMode
@@ -23,18 +23,13 @@ extension AssetFetchTool {
             options.progressHandler?(progress)
         }
         
-        let targetSize = options.targetSizeWith(asset: asset)
+        let targetSize = options.targetSizeWith(assetSize: asset.pixelSize)
         
         return PHImageManager.default().requestImage(for: asset, targetSize: targetSize, contentMode: .default, options: requestOptions) { image, info in
             let requestID = info?[PHImageResultRequestIDKey] as? PHImageRequestID ?? 0
             
-            do {
-                try handleInfo(info)
-            } catch let error as AssetFetchError {
+            if let error = handleInfo(info) {
                 completion(.failure(error), requestID)
-                return
-            } catch let error {
-                completion(.failure(.underlying(error)), requestID)
                 return
             }
             
@@ -46,7 +41,6 @@ extension AssetFetchTool {
             let isDegraded = info?[PHImageResultIsDegradedKey] as? Bool ?? false
             let response = LocalPhotoFetchResponse(image: image, isDegraded: isDegraded)
             completion(.success(response), requestID)
-            
         }
     }
     

@@ -24,34 +24,34 @@ public class CaptureManager: NSObject {
     
     weak var delegate: CaptureManagerDelegate?
     
-    let captureSession = AVCaptureSession()
+    private let captureSession = AVCaptureSession()
     
-    var previewLayer: AVCaptureVideoPreviewLayer?
+    private var previewLayer: AVCaptureVideoPreviewLayer?
     
-    var videoDeviceInput: AVCaptureDeviceInput?
-    var audioDeviceInput: AVCaptureDeviceInput?
+    private var videoDeviceInput: AVCaptureDeviceInput?
+    private var audioDeviceInput: AVCaptureDeviceInput?
     
-    var assetWriter: AVAssetWriter?
-    var assetWriterAudioInput: AVAssetWriterInput?
-    var assetWriterVideoInput: AVAssetWriterInput?
+    private var assetWriter: AVAssetWriter?
+    private var assetWriterAudioInput: AVAssetWriterInput?
+    private var assetWriterVideoInput: AVAssetWriterInput?
     
-    let videoDataOutput = AVCaptureVideoDataOutput()
-    let audioDataOutput = AVCaptureAudioDataOutput()
-    let photoOutput = AVCapturePhotoOutput()
+    private let videoDataOutput = AVCaptureVideoDataOutput()
+    private let audioDataOutput = AVCaptureAudioDataOutput()
+    private let photoOutput = AVCapturePhotoOutput()
     
-    let sessionQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Session")
-    let videoDataOutputQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Video")
-    let audioDataOutputQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Audio")
-    let assetWriterQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Writer")
+    private let sessionQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Session")
+    private let videoDataOutputQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Video")
+    private let audioDataOutputQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Audio")
+    private let assetWriterQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Writer")
     
-    var isRecording: Bool = false
-    var isFocusing: Bool = false
-    var videoCurrentZoom: Double = 1.0
+    private var isRecording: Bool = false
+    private var isFocusing: Bool = false
+    private var videoCurrentZoom: Double = 1.0
     
-    var currentOrientation: UIInterfaceOrientation = .portrait
-    let deviceOrientation = DeviceOrientation()
+    private var currentOrientation: UIInterfaceOrientation = .portrait
+    private let deviceOrientation = DeviceOrientation()
     
-    let pickerConfig: WLPhotoConfig
+    private let pickerConfig: WLPhotoConfig
     
     public init(pickerConfig: WLPhotoConfig) {
         self.pickerConfig = pickerConfig
@@ -70,7 +70,7 @@ public class CaptureManager: NSObject {
         }
     }
     
-    func setupCapture() {
+    private func setupCapture() {
         let sessionPreset = pickerConfig.captureConfig.captureSessionPreset.avSessionPreset
         if (captureSession.canSetSessionPreset(sessionPreset)) {
             captureSession.sessionPreset = sessionPreset
@@ -81,7 +81,7 @@ public class CaptureManager: NSObject {
         setupAudioDevice()
     }
     
-    func setupCameraDevice(position: AVCaptureDevice.Position) {
+    private func setupCameraDevice(position: AVCaptureDevice.Position) {
         if let videoDeviceInput = self.videoDeviceInput {
             captureSession.removeInput(videoDeviceInput)
         }
@@ -123,7 +123,7 @@ public class CaptureManager: NSObject {
         videoDevice.unlockForConfiguration()
     }
     
-    func setupAudioDevice() {
+    private func setupAudioDevice() {
         guard let audioDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInMicrophone],
                                                                  mediaType: .audio,
                                                                  position: .unspecified).devices.first,
@@ -137,7 +137,7 @@ public class CaptureManager: NSObject {
         }
     }
     
-    func setupDataOut() {
+    private func setupDataOut() {
         videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey : kCVPixelFormatType_32BGRA] as [String : Any]
         videoDataOutput.alwaysDiscardsLateVideoFrames = true
         videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
@@ -156,7 +156,35 @@ public class CaptureManager: NSObject {
         }
     }
     
-    func switchCamera() {
+    public func setupPreviewLayer(to superView: UIView) {
+        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.frame = superView.layer.bounds
+        superView.layer.addSublayer(previewLayer)
+        self.previewLayer = previewLayer
+    }
+    
+    public func starRunning() {
+        deviceOrientation.startUpdates()
+        sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            if !self.captureSession.isRunning {
+                self.captureSession.startRunning()
+            }
+        }
+    }
+    
+    public func stopRunning() {
+        deviceOrientation.stopUpdates()
+        sessionQueue.async { [weak self] in
+            guard let self = self else { return }
+            if self.captureSession.isRunning {
+                self.captureSession.stopRunning()
+            }
+        }
+    }
+    
+    public func switchCamera() {
         if isRecording { return }
         
         guard let videoDeviceInput = self.videoDeviceInput else { return }
@@ -173,35 +201,7 @@ public class CaptureManager: NSObject {
         }
     }
     
-    func setupPreviewLayer(to superView: UIView) {
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.videoGravity = .resizeAspectFill
-        previewLayer.frame = superView.layer.bounds
-        superView.layer.addSublayer(previewLayer)
-        self.previewLayer = previewLayer
-    }
-    
-    func starRunning() {
-        deviceOrientation.startUpdates()
-        sessionQueue.async { [weak self] in
-            guard let self = self else { return }
-            if !self.captureSession.isRunning {
-                self.captureSession.startRunning()
-            }
-        }
-    }
-    
-    func stopRunning() {
-        deviceOrientation.stopUpdates()
-        sessionQueue.async { [weak self] in
-            guard let self = self else { return }
-            if self.captureSession.isRunning {
-                self.captureSession.stopRunning()
-            }
-        }
-    }
-    
-    func focusAt(_ point: CGPoint) {
+    public func focusAt(_ point: CGPoint) {
         lockVideoDeviceForConfiguration { [weak self] devide in
             guard let previewLayer = self?.previewLayer else {
                 return
@@ -223,14 +223,14 @@ public class CaptureManager: NSObject {
         }
     }
     
-    func prepareForZoom() {
+    public func prepareForZoom() {
         guard let videoDeviceInput = self.videoDeviceInput else {
             return
         }
         videoCurrentZoom = Double(videoDeviceInput.device.videoZoomFactor)
     }
     
-    func zoom(_ mulriple: Double) {
+    public func zoom(_ mulriple: Double) {
         guard let videoDeviceInput = self.videoDeviceInput else {
             return
         }
@@ -242,7 +242,7 @@ public class CaptureManager: NSObject {
         }
     }
     
-    func lockVideoDeviceForConfiguration(_ closure: (AVCaptureDevice) -> ()) {
+    public func lockVideoDeviceForConfiguration(_ closure: (AVCaptureDevice) -> ()) {
         guard let videoDeviceInput = self.videoDeviceInput else {
             return
         }
@@ -253,14 +253,14 @@ public class CaptureManager: NSObject {
     }
     
     // 拍照调用方法
-    func capturePhoto() {
+    public func capturePhoto() {
         let settings = AVCapturePhotoSettings()
         settings.flashMode = pickerConfig.captureConfig.captureFlashMode.avFlashMode
         settings.isAutoStillImageStabilizationEnabled = photoOutput.isStillImageStabilizationSupported
         photoOutput.capturePhoto(with: settings, delegate: self)
     }
     
-    func startRecordingVideo() {
+    public func startRecordingVideo() {
         sessionQueue.async { [weak self] in
             self?.initializeVideoWriter()
             self?.isRecording = true
@@ -299,7 +299,7 @@ public class CaptureManager: NSObject {
         self.assetWriter = assetWriter
     }
     
-    func stopRecordingVideo(completion: @escaping (URL) -> ()) {
+    public func stopRecordingVideo(completion: @escaping (URL) -> ()) {
         if !isRecording { return }
         isRecording = false
         assetWriterAudioInput?.markAsFinished()
@@ -316,14 +316,6 @@ public class CaptureManager: NSObject {
                 completion(outputURL)
             }
         }
-    }
-    
-}
-
-extension CaptureManager: DeviceOrientationDelegate {
-    
-    func deviceOrientation(_ deviceOrientation: DeviceOrientation, didUpdate orientation: UIInterfaceOrientation) {
-        currentOrientation = orientation
     }
     
 }
@@ -362,6 +354,14 @@ extension CaptureManager: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptur
                 self.assetWriterAudioInput?.append(sampleBuffer)
             }
         }
+    }
+    
+}
+
+extension CaptureManager: DeviceOrientationDelegate {
+    
+    func deviceOrientation(_ deviceOrientation: DeviceOrientation, didUpdate orientation: UIInterfaceOrientation) {
+        currentOrientation = orientation
     }
     
 }

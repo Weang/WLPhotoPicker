@@ -17,7 +17,7 @@ public enum CaptureVideoStabilizationMode {
     case cinematicExtended
 }
 
-public extension CaptureVideoStabilizationMode {
+extension CaptureVideoStabilizationMode {
     
     var avPreferredVideoStabilizationMode: AVCaptureVideoStabilizationMode {
         switch self {

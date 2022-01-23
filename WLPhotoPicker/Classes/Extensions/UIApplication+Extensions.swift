@@ -19,4 +19,5 @@ extension UIApplication {
     var appName: String? {
         return Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
     }
+    
 }

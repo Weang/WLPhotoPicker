@@ -7,7 +7,7 @@
 
 import UIKit
 
-public struct PhotoEditMosaicPath {
+struct PhotoEditMosaicPath {
     
     var shapeSize: CGSize = .zero
     
@@ -79,7 +79,7 @@ public struct PhotoEditMosaicPath {
     
 }
 
-public class PhotoEditMosaicPathLine {
+class PhotoEditMosaicPathLine {
     
     let lineWidth: CGFloat
     let startPoint: CGPoint

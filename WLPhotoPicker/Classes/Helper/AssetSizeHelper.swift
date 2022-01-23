@@ -63,27 +63,4 @@ class AssetSizeHelper {
                        y: contentSize.height * 0.5 + deltaHeight)
     }
     
-    static func cropViewRectFrom(imageSize: CGSize, to viewsize: CGSize) -> CGRect {
-        let viewWidth = viewsize.width
-        let viewHeight = viewsize.height
-        
-        let viewRatio = viewWidth / viewHeight
-        let imageRatio = imageSize.width / imageSize.height
-        
-        var imageViewRect: CGRect = .zero
-        
-        if imageRatio > viewRatio {
-            imageViewRect.size.width = viewWidth
-            imageViewRect.size.height = viewWidth / imageRatio
-            imageViewRect.origin.x = 0
-            imageViewRect.origin.y = (viewHeight - imageViewRect.size.height) * 0.5
-        } else {
-            imageViewRect.size.height = viewHeight
-            imageViewRect.size.width = viewHeight * imageRatio
-            imageViewRect.origin.y = 0
-            imageViewRect.origin.x = (viewWidth - imageViewRect.size.width) * 0.5
-        }
-        return imageViewRect
-    }
-    
 }

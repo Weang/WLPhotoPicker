@@ -10,5 +10,4 @@ import UIKit
 public enum PhotoEditPasterProvider {
     case imageName(String)
     case imagePath(String)
-//    case imageURL(URL) TODO
 }

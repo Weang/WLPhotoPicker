@@ -7,11 +7,11 @@
 
 import UIKit
 
-public class VisualEffectView: UIView {
+class VisualEffectView: UIView {
     
     let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         
         backgroundView.contentView.backgroundColor = #colorLiteral(red: 0.968627451, green: 0.968627451, blue: 0.968627451, alpha: 1).withAlphaComponent(0.8)

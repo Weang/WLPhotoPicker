@@ -24,7 +24,7 @@ extension AssetFetchTool {
         let request = AssetFetchRequest()
         
         if let fileURL = asset.locallyVideoFileURL {
-            let avasset = AVURLAsset(url: fileURL)
+            let avasset = AVAsset(url: fileURL)
             let playerItem = AVPlayerItem(asset: avasset)
             DispatchQueue.main.async {
                 completion(.success(VideoFetchResponse(avasset: avasset, playerItem: playerItem)), 0)
@@ -40,13 +40,8 @@ extension AssetFetchTool {
             DispatchQueue.main.async {
                 let requestID = info?[PHImageResultRequestIDKey] as? PHImageRequestID ?? 0
                 
-                do {
-                    try handleInfo(info)
-                } catch let error as AssetFetchError {
+                if let error = handleInfo(info) {
                     completion(.failure(error), requestID)
-                    return
-                } catch let error {
-                    completion(.failure(.underlying(error)), requestID)
                     return
                 }
                 
@@ -55,8 +50,7 @@ extension AssetFetchTool {
                     return
                 }
                 
-                let response = VideoFetchResponse(avasset: avAsset,
-                                                  playerItem: AVPlayerItem(asset: avAsset))
+                let response = VideoFetchResponse(avasset: avAsset, playerItem: AVPlayerItem(asset: avAsset))
                 completion(.success(response), requestID)
             }
         }

@@ -7,27 +7,27 @@
 
 import UIKit
 
-public class PhotoEditAdjustSlideView: UIControl {
+class PhotoEditAdjustSlideView: UIControl {
     
-    public var minimumValue: CGFloat = -1 {
+    var minimumValue: CGFloat = -1 {
         didSet {
             layoutSlider()
         }
     }
     
-    public var maximumValue: CGFloat = 1 {
+    var maximumValue: CGFloat = 1 {
         didSet {
             layoutSlider()
         }
     }
     
-    public var value: Double = 0 {
+    var value: Double = 0 {
         didSet {
             layoutSlider()
         }
     }
     
-    var sliderWidth: CGFloat {
+    private var sliderWidth: CGFloat {
         sliderLine.width - sliderBar.width
     }
     
@@ -40,13 +40,9 @@ public class PhotoEditAdjustSlideView: UIControl {
         super.init(frame: frame)
         
         setupView()
-        layoutIfNeeded()
-        
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
-        addGestureRecognizer(panGesture)
     }
     
-    func setupView() {
+    private func setupView() {
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = .zero
         layer.shadowOpacity = 0.7
@@ -82,9 +78,14 @@ public class PhotoEditAdjustSlideView: UIControl {
             make.top.equalToSuperview()
             make.centerX.equalTo(sliderBar.snp.centerX)
         }
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+        addGestureRecognizer(panGesture)
+        
+        layoutIfNeeded()
     }
     
-    func layoutSlider() {
+    private func layoutSlider() {
         valueLabel.text = "\(Int(value * 100))"
         let offsetWidth = sliderWidth / (maximumValue - minimumValue) * value
         sliderBar.snp.updateConstraints { make in
@@ -109,7 +110,7 @@ public class PhotoEditAdjustSlideView: UIControl {
         }
     }
     
-    @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
+    @objc private func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
         let location = gesture.location(in: self)
         var value = (location.x - sliderBar.width * 0.5) / sliderWidth * (maximumValue - minimumValue)
         if minimumValue < 0 {
@@ -120,7 +121,7 @@ public class PhotoEditAdjustSlideView: UIControl {
         self.sendActions(for: .valueChanged)
     }
     
-    public override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         return CGSize(width: -1, height: 42)
     }
     

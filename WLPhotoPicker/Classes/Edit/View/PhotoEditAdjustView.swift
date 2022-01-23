@@ -22,8 +22,8 @@ class PhotoEditAdjustView: UIView {
     
     weak var delegate: PhotoEditAdjustViewDelegate?
     
-    var collectionView: UICollectionView!
-    let photoEditConfig: PhotoEditConfig
+    private var collectionView: UICollectionView!
+    private let photoEditConfig: PhotoEditConfig
     
     init(photoEditConfig: PhotoEditConfig) {
         self.photoEditConfig = photoEditConfig

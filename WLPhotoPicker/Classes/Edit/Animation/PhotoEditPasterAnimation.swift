@@ -7,7 +7,19 @@
 
 import UIKit
 
-class PhotoEditPasterShowTransitioning: NSObject,  UIViewControllerAnimatedTransitioning {
+extension PhotoEditPasterViewController: UIViewControllerTransitioningDelegate {
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return PhotoEditPasterShowTransitioning()
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return PhotoEditPasterDismissTransitioning()
+    }
+    
+}
+
+private class PhotoEditPasterShowTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toVC = transitionContext.viewController(forKey: .to) as? PhotoEditPasterViewController else {
@@ -27,7 +39,7 @@ class PhotoEditPasterShowTransitioning: NSObject,  UIViewControllerAnimatedTrans
     
 }
 
-class PhotoEditPasterDismissTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
+private class PhotoEditPasterDismissTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toVC = transitionContext.viewController(forKey: .from) as? PhotoEditPasterViewController else {
@@ -42,18 +54,6 @@ class PhotoEditPasterDismissTransitioning: NSObject, UIViewControllerAnimatedTra
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.2
-    }
-    
-}
-
-extension PhotoEditPasterViewController: UIViewControllerTransitioningDelegate {
-    
-    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PhotoEditPasterShowTransitioning()
-    }
-    
-    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PhotoEditPasterDismissTransitioning()
     }
     
 }

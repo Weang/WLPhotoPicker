@@ -12,11 +12,11 @@ protocol AssetCollectionViewCellDelegate: AnyObject {
     func cell(_ cell: AssetCollectionViewCell, didChangeSelectedStatus selected: Bool)
 }
 
-public class AssetCollectionViewCell: UICollectionViewCell {
+class AssetCollectionViewCell: UICollectionViewCell {
     
     weak var delegate: AssetCollectionViewCellDelegate?
     
-    public let assetImageView = UIImageView()
+    let assetImageView = UIImageView()
     private let selectedButton = CircleSelectedButton()
     private let selectedCover = UIView()
     private let disabledCover = UIView()
@@ -65,7 +65,7 @@ public class AssetCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    public func bind(_ model: AssetModel, pickerConfig: PickerConfig) {
+    func bind(_ model: AssetModel, pickerConfig: PickerConfig) {
         selectedButton.isHidden = !pickerConfig.allowSelectMultiPhoto
         update(model, animated: false)
         
@@ -87,24 +87,24 @@ public class AssetCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    public func update(_ model: AssetModel, animated: Bool) {
+    func update(_ model: AssetModel, animated: Bool) {
         descriptionView.bind(model)
         selectedCover.isHidden = !model.isSelected
         disabledCover.isHidden = model.isEnabled
         selectedButton.set(isSelected: model.isSelected, selectedIndex: model.selectedIndex, animated: animated)
     }
     
-    @objc func selectButtonClick() {
+    @objc private func selectButtonClick() {
         delegate?.cell(self, didChangeSelectedStatus: !selectedButton.isSelected)
     }
     
-    public func cancelCurrentRequest() {
+    private func cancelCurrentRequest() {
         assetRequest?.cancel()
         assetRequest = nil
         assetImageView.image = nil
     }
     
-    public override func prepareForReuse() {
+    override func prepareForReuse() {
         super.prepareForReuse()
         cancelCurrentRequest()
     }

@@ -19,8 +19,16 @@ public class WLPhotoConfig {
     
     public var captureConfig = CaptureConfig()
     
+}
+
+public extension WLPhotoConfig {
+    
+    var showCameraItem: Bool {
+        captureConfig.captureAllowTakingPhoto || captureConfig.captureAllowTakingVideo
+    }
+    
     // 检测配置项
-    public func checkCongfig() -> WLPhotoConfig {
+    func checkCongfig() -> WLPhotoConfig {
         if !pickerConfig.selectableType.contains(.photo) {
             captureConfig.captureAllowTakingPhoto = false
         }
@@ -46,14 +54,6 @@ public class WLPhotoConfig {
             photoEditConfig.photoEditItemTypes.removeAll(where: { $0 == .adjust })
         }
         return self
-    }
-    
-}
-
-extension WLPhotoConfig {
-    
-    var showCameraItem: Bool {
-        captureConfig.captureAllowTakingPhoto || captureConfig.captureAllowTakingVideo
     }
     
 }

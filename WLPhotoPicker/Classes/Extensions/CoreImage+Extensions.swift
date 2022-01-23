@@ -19,3 +19,28 @@ extension CGImageSource {
     }
     
 }
+
+extension CIImage {
+    
+    func toUIImage() -> UIImage? {
+        guard let cgImage = CIContext().createCGImage(self, from: extent) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage)
+    }
+    
+}
+
+extension UIImage {
+    
+    func toCIImage() -> CIImage? {
+        if let ciImage = self.ciImage {
+            return ciImage
+        }
+        if let cgImage = self.cgImage {
+            return CIImage(cgImage: cgImage)
+        }
+        return nil
+    }
+    
+}

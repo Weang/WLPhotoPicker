@@ -35,15 +35,15 @@ public class VideoCompressManager {
     private var audioQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.VideoExportTool.Audio")
     private var videoQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.VideoExportTool.Video")
     
-    var assetVideoTrack: AVAssetTrack?
-    var assetAudioTrack: AVAssetTrack?
-    var renderSize: CGSize = .zero
+    private var assetVideoTrack: AVAssetTrack?
+    private var assetAudioTrack: AVAssetTrack?
+    private var renderSize: CGSize = .zero
     
-    let composition = AVMutableComposition()
-    let videoComposition = AVMutableVideoComposition()
+    private let composition = AVMutableComposition()
+    private let videoComposition = AVMutableVideoComposition()
     
-    let avAsset: AVAsset
-    let outputPath: String
+    private let avAsset: AVAsset
+    private let outputPath: String
     
     public init(avAsset: AVAsset, outputPath: String) {
         self.avAsset = avAsset
@@ -53,7 +53,7 @@ public class VideoCompressManager {
         updateComposition()
     }
     
-    func setupTracks() {
+    private func setupTracks() {
         guard let assetVideoTrack = avAsset.tracks(withMediaType: .video).first,
               let assetAudioTrack = avAsset.tracks(withMediaType: .audio).first else {
                   return
@@ -89,7 +89,7 @@ public class VideoCompressManager {
         videoComposition.instructions = [videoCompositionInstrution]
     }
     
-    func updateComposition() {
+    private func updateComposition() {
         guard let assetVideoTrack = self.assetVideoTrack else {
             return
         }
@@ -180,7 +180,7 @@ public class VideoCompressManager {
         }
     }
     
-    func videoWriterConfig() -> [String: Any]? {
+    private func videoWriterConfig() -> [String: Any]? {
         let videoExportSize = computeVideoExportSize()
         
         let supportHEVC = VTIsHardwareDecodeSupported(kCMVideoCodecType_HEVC)
@@ -202,7 +202,7 @@ public class VideoCompressManager {
         ]
     }
     
-    func audioWriterConfig() -> [String: Any]? {
+    private func audioWriterConfig() -> [String: Any]? {
         return [
             AVFormatIDKey: kAudioFormatMPEG4AAC,
             AVEncoderBitRatePerChannelKey: 64000,
@@ -210,7 +210,7 @@ public class VideoCompressManager {
             AVNumberOfChannelsKey: 2]
     }
     
-    func computeVideoExportSize() -> CGSize {
+    private func computeVideoExportSize() -> CGSize {
         if compressVideo {
             let videoShortSide = min(renderSize.width, renderSize.height)
             let videoLongSide = max(renderSize.width, renderSize.height)
@@ -240,7 +240,7 @@ public class VideoCompressManager {
         }
     }
     
-    func fixedTransformFrom(transForm: CGAffineTransform, natureSize: CGSize) -> CGAffineTransform {
+    private func fixedTransformFrom(transForm: CGAffineTransform, natureSize: CGSize) -> CGAffineTransform {
         switch (transForm.a, transForm.b, transForm.c, transForm.d) {
         case (0, 1, -1, 0):
             return CGAffineTransform(a: 0, b: 1, c: -1, d: 0, tx: natureSize.height, ty: 0)

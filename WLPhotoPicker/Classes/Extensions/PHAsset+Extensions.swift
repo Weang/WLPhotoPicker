@@ -10,6 +10,39 @@ import Photos
 
 extension PHAsset {
     
+    var pixelSize: CGSize {
+        CGSize(width: pixelWidth, height: pixelHeight)
+    }
+    
+}
+
+// MARK: Type
+extension PHAsset {
+    
+    var isPhoto: Bool {
+        mediaType == .image
+    }
+    
+    var isVideo: Bool {
+        mediaType == .video
+    }
+    
+    var isLivePhoto: Bool {
+        mediaSubtypes.contains(.photoLive)
+    }
+    
+    var isGIF: Bool {
+        if let fileName = value(forKey: "filename") as? String {
+            return fileName.uppercased().hasSuffix("GIF")
+        } else {
+            return false
+        }
+    }
+}
+
+// MARK: Locally video
+extension PHAsset {
+    
     var isVideoLocallyAvailable: Bool {
         return PHAssetResource.assetResources(for: self)
             .lazy
@@ -36,39 +69,4 @@ extension PHAsset {
             }.first
     }
     
-    var fileName: String? {
-        return value(forKey: "filename") as? String
-    }
-    
-    var fileSuffix: String? {
-        guard let fileName = self.fileName,
-              let suffix = fileName.split(separator: ".").last else {
-            return nil
-        }
-        return String(suffix)
-    }
-    
-    var pixelSize: CGSize {
-        CGSize(width: pixelWidth, height: pixelHeight)
-    }
-    
-    var isPhoto: Bool {
-        mediaType == .image
-    }
-    
-    var isVideo: Bool {
-        mediaType == .video
-    }
-    
-    var isLivePhoto: Bool {
-        mediaSubtypes.contains(.photoLive)
-    }
-    
-    var isGIF: Bool {
-        if let fileName = self.fileName {
-            return fileName.uppercased().hasSuffix("GIF")
-        } else {
-            return false
-        }
-    }
 }

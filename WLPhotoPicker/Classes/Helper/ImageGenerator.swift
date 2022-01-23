@@ -10,12 +10,12 @@ import UIKit
 public class ImageGenerator {
 
     // UIImage Data 转对应尺寸图片
-    static func resizeImage(from data: Data, targetSize: CGFloat) -> UIImage? {
+    static func createImage(from data: Data, targetSize: CGFloat) -> UIImage? {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let imageSource = CGImageSourceCreateWithData(data as CFData, imageSourceOptions) else {
             return nil
         }
-        let size = calculate(from: imageSource.size, to: targetSize)
+        let size = getTargetSize(from: imageSource.size, to: targetSize)
         let maxDimensionInPixels = max(size.width, size.height)
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
@@ -29,18 +29,16 @@ public class ImageGenerator {
         return UIImage(cgImage: downsampledImage, scale: 1.0, orientation: .up)
     }
     
-    
-    
-    static func calculate(from fromFize: CGSize, to targetSize: CGFloat) -> CGSize {
-        let scale: CGFloat
+    static fileprivate func getTargetSize(from fromFize: CGSize, to targetSize: CGFloat) -> CGSize {
+        let ratio: CGFloat
         if fromFize.width < fromFize.height {
-            scale = fromFize.width / targetSize
+            ratio = fromFize.width / targetSize
         } else {
-            scale = fromFize.height / targetSize
+            ratio = fromFize.height / targetSize
         }
-        if scale < 1 {
+        if ratio < 1 {
             return fromFize
         }
-        return CGSize(width: fromFize.width / scale, height: fromFize.height / scale)
+        return CGSize(width: fromFize.width / ratio, height: fromFize.height / ratio)
     }
 }

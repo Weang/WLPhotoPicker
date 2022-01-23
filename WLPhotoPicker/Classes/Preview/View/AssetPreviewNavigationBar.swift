@@ -7,16 +7,16 @@
 
 import UIKit
 
-public protocol AssetPreviewNavigationBarDelegate: AnyObject {
+protocol AssetPreviewNavigationBarDelegate: AnyObject {
     func navigationBarDidClickCancelButton(_ navigationBar: AssetPreviewNavigationBar)
     func navigationBar(_ navigationBar: AssetPreviewNavigationBar, didClickSelectButton isSelected: Bool)
 }
 
-public class AssetPreviewNavigationBar: VisualEffectView {
+class AssetPreviewNavigationBar: VisualEffectView {
     
     weak var delegate: AssetPreviewNavigationBarDelegate?
     
-    let pickerConfig: PickerConfig
+    private let pickerConfig: PickerConfig
     
     private let cancelButton = UIButton()
     private let selectButton = CircleSelectedButton()
@@ -52,15 +52,15 @@ public class AssetPreviewNavigationBar: VisualEffectView {
         selectButton.set(isSelected: isSelected, selectedIndex: selectedIndex, animated: animated)
     }
     
-    @objc func cancelButtonClick() {
+    @objc private func cancelButtonClick() {
         delegate?.navigationBarDidClickCancelButton(self)
     }
     
-    @objc func selectButtonClick() {
+    @objc private func selectButtonClick() {
         delegate?.navigationBar(self, didClickSelectButton: !selectButton.isSelected)
     }
     
-    public override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         return CGSize(width: UIScreen.width, height: 44 + keyWindowSafeAreaInsets.top)
     }
     

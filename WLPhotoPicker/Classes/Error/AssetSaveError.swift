@@ -8,8 +8,7 @@
 import UIKit
 
 public enum AssetSaveError: Error {
-
-    case invalidPhoto
     case savePhotoFailed
-
+    case invalidVideoURL
+    case saveVideoFailed
 }

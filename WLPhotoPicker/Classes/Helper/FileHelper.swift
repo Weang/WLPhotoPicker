@@ -19,7 +19,7 @@ public class FileHelper {
     
 }
 
-// Picker
+// MARK: Picker
 public extension FileHelper {
     
     static func createFileNamePrefixFrom(asset: AssetModel) -> String {
@@ -47,7 +47,7 @@ public extension FileHelper {
     
 }
 
-// Capture
+// MARK: Capture
 public extension FileHelper {
     
     static func createCapturePhotoPath() -> String {

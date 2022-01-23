@@ -23,10 +23,10 @@ class PhotoEditGraffitiColorsView: UIView {
         return nil
     }
     
-    let photoEditConfig: PhotoEditConfig
+    private let photoEditConfig: PhotoEditConfig
     
-    var graffitiCollectionView: UICollectionView!
-    let undoButton = UIButton()
+    private var graffitiCollectionView: UICollectionView!
+    private let undoButton = UIButton()
     
     init(photoEditConfig: PhotoEditConfig) {
         self.photoEditConfig = photoEditConfig
@@ -67,7 +67,7 @@ class PhotoEditGraffitiColorsView: UIView {
         
     }
     
-    @objc func undoButtonClick() {
+    @objc private func undoButtonClick() {
         delegate?.graffitiColorsViewDidClickUndoButton(self)
     }
     
@@ -98,4 +98,5 @@ extension PhotoEditGraffitiColorsView: UICollectionViewDelegateFlowLayout, UICol
         let itemWidth = (collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize.width ?? 0
         return CGFloat(floor((collectionView.width - count * itemWidth) / (count - 1)))
     }
+    
 }

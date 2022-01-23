@@ -9,7 +9,7 @@ import UIKit
 
 class PhotoEditItemCollectionViewCell: UICollectionViewCell {
     
-    let iconImageView = UIImageView()
+    private let iconImageView = UIImageView()
     
     override var isSelected: Bool {
         didSet {

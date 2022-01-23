@@ -37,7 +37,7 @@ public extension PhotoPickerSelectionType {
     
 }
 
-public extension PhotoPickerSelectionType {
+extension PhotoPickerSelectionType {
     
     var hasPhoto: Bool {
         return contains(.photo) || contains(.GIF) || contains(.livePhoto)

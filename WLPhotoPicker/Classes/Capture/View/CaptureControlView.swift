@@ -7,12 +7,7 @@
 
 import UIKit
 
-enum LongPressState {
-    case begin
-    case end
-}
-
-public protocol WLCameraControlDelegate: AnyObject {
+protocol WLCameraControlDelegate: AnyObject {
     
     // exit
     func cameraControlDidClickExit(_ controlView: CaptureControlView)
@@ -31,27 +26,27 @@ public protocol WLCameraControlDelegate: AnyObject {
     func controlView(_ controlView: CaptureControlView, didChangeVideoZoom zoomScale: Double)
 }
 
-public class CaptureControlView: UIView {
+class CaptureControlView: UIView {
     
-    public weak var delegate: WLCameraControlDelegate?
+    weak var delegate: WLCameraControlDelegate?
     
     let previewContentView = UIView()
-    let cameraButton = CaptureCameraButton()
-    let cancelButton = UIButton()
-    let changeCameraButton = UIButton()
-    let focusImageView = UIImageView()
-    var isFocusing: Bool = false
+    private let cameraButton = CaptureCameraButton()
+    private let cancelButton = UIButton()
+    private let changeCameraButton = UIButton()
+    private let focusImageView = UIImageView()
+    private var isFocusing: Bool = false
     
-    var videoTimer: Timer?
-    var videoRecordTime: Double = 0
-    var maximumVideoDuration: TimeInterval {
+    private var videoTimer: Timer?
+    private var videoRecordTime: Double = 0
+    private var maximumVideoDuration: TimeInterval {
         if pickerConfig.pickerConfig.pickerMaximumVideoDuration == 0 {
             return pickerConfig.captureConfig.captureMaximumVideoDuration
         }
         return min(pickerConfig.pickerConfig.pickerMaximumVideoDuration, pickerConfig.captureConfig.captureMaximumVideoDuration)
     }
     
-    let pickerConfig: WLPhotoConfig
+    private let pickerConfig: WLPhotoConfig
     
     public init(pickerConfig: WLPhotoConfig) {
         self.pickerConfig = pickerConfig
@@ -60,7 +55,7 @@ public class CaptureControlView: UIView {
         setupView()
     }
     
-    func setupView() {
+    private func setupView() {
         previewContentView.alpha = 0
         previewContentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(focusTapGes(_:))))
         previewContentView.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(zoomPinchGes(_:))))
@@ -109,17 +104,17 @@ public class CaptureControlView: UIView {
         layoutSubviews()
     }
     
-    public func showRunningAnimation() {
+    func showRunningAnimation() {
         UIView.animate(withDuration: 0.6) {
             self.previewContentView.alpha = 1
         }
     }
     
-    public func showStopRunningAnimation() {
+    func showStopRunningAnimation() {
         self.previewContentView.alpha = 0
     }
     
-    @objc func zoomPinchGes(_ gesture: UIPinchGestureRecognizer) {
+    @objc private func zoomPinchGes(_ gesture: UIPinchGestureRecognizer) {
         guard gesture.numberOfTouches == 2 else { return }
         if gesture.state == .began {
             delegate?.cameraControlDidPrepareForZoom(self)
@@ -127,12 +122,12 @@ public class CaptureControlView: UIView {
         delegate?.controlView(self, didChangeVideoZoom: gesture.scale)
     }
     
-    @objc func focusTapGes(_ gesture: UIGestureRecognizer) {
+    @objc private func focusTapGes(_ gesture: UIGestureRecognizer) {
         let location = gesture.location(in: previewContentView)
         showFocusAnimationAt(point: location)
     }
     
-    public func showFocusAnimationAt(point: CGPoint) {
+    func showFocusAnimationAt(point: CGPoint) {
         if isFocusing {
             return
         }
@@ -158,22 +153,22 @@ public class CaptureControlView: UIView {
         delegate?.cameraControl(self, didFocusAt: point)
     }
     
-    @objc func cancelButtonClick() {
+    @objc private func cancelButtonClick() {
         delegate?.cameraControlDidClickExit(self)
     }
     
-    @objc func tapGesture() {
+    @objc private func tapGesture() {
         delegate?.controlViewDidTakePhoto(self)
     }
     
-    @objc func longPressGesture(_ res: UIGestureRecognizer) {
+    @objc private func longPressGesture(_ res: UIGestureRecognizer) {
         switch res.state {
         case .began:
             longPressBegin()
             delegate?.cameraControlDidPrepareForZoom(self)
         case .changed:
             let pointY = res.location(in: cameraButton).y
-            var zoom = -pointY / (Double(UIScreen.main.bounds.size.width) * 0.15) + 1
+            var zoom = -pointY / (Double(UIScreen.width) * 0.15) + 1
             if pointY > 0 {
                 zoom = 1
             }
@@ -183,13 +178,13 @@ public class CaptureControlView: UIView {
         }
     }
     
-    func longPressBegin() {
+    private func longPressBegin() {
         cameraButton.showBeginAnimation()
         videoTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(timeRecord), userInfo: nil, repeats: true)
         delegate?.controlViewDidBeginTakingVideo(self)
     }
     
-    func longPressEnd() {
+    private func longPressEnd() {
         videoTimer?.invalidate()
         videoTimer = nil
         videoRecordTime = 0
@@ -198,7 +193,7 @@ public class CaptureControlView: UIView {
         delegate?.controlViewDidEndTakingVideo(self)
     }
     
-    @objc func timeRecord() {
+    @objc private func timeRecord() {
         videoRecordTime += 0.1
         let progress = videoRecordTime / maximumVideoDuration
         if progress > 1 {
@@ -208,7 +203,7 @@ public class CaptureControlView: UIView {
         }
     }
     
-    @objc func changeCameraButtonClick() {
+    @objc private func changeCameraButtonClick() {
         delegate?.cameraControlDidClickChangeCamera(self)
     }
     
@@ -220,7 +215,7 @@ public class CaptureControlView: UIView {
 
 extension CaptureControlView: CAAnimationDelegate {
     
-    public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         UIView.animate(withDuration: 0.2, animations: {
             self.focusImageView.alpha = 0
         }) { _ in

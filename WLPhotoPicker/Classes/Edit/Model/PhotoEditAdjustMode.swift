@@ -16,7 +16,7 @@ public enum PhotoEditAdjustMode: Equatable {
     case saturability
 }
 
-public extension PhotoEditAdjustMode {
+extension PhotoEditAdjustMode {
     
     var icon: UIImage? {
         let imageName: String

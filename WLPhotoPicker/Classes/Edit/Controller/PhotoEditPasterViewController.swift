@@ -8,24 +8,22 @@
 import UIKit
 
 protocol PhotoEditPasterViewControllerDelegate: AnyObject {
-    
     func pasterController(_ pasterController: PhotoEditPasterViewController, didSelectPasterImage image: UIImage)
-    
 }
 
 class PhotoEditPasterViewController: UIViewController {
-
+    
     weak var delegate: PhotoEditPasterViewControllerDelegate?
     
     let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-    let cancelButton = UIButton()
-    var collectionView: UICollectionView!
+    private let cancelButton = UIButton()
+    private var collectionView: UICollectionView!
     
     var backgroundViewHeight: CGFloat {
         400 + keyWindowSafeAreaInsets.bottom
     }
     
-    let photoEditConfig: PhotoEditConfig
+    private let photoEditConfig: PhotoEditConfig
     
     init(photoEditConfig: PhotoEditConfig) {
         self.photoEditConfig = photoEditConfig
@@ -40,11 +38,11 @@ class PhotoEditPasterViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupView()
     }
     
-    func setupView() {
+    private func setupView() {
         view.backgroundColor = .clear
         
         let dismissTapGesture = UITapGestureRecognizer(target: self, action: #selector(cancelButtonClick))
@@ -91,7 +89,7 @@ class PhotoEditPasterViewController: UIViewController {
         view.layoutIfNeeded()
     }
     
-    @objc func cancelButtonClick() {
+    @objc private func cancelButtonClick() {
         dismiss(animated: true, completion: nil)
     }
     

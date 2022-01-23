@@ -14,7 +14,7 @@ public enum CaptureFlashMode {
     case off
 }
 
-public extension CaptureFlashMode {
+extension CaptureFlashMode {
     
     var avFlashMode: AVCaptureDevice.FlashMode {
         switch self {

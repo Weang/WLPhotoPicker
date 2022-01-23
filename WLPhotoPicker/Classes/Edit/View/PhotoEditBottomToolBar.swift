@@ -29,7 +29,7 @@ protocol PhotoEditBottomToolBarDelegate: AnyObject {
     func bottomToolBarDidClickDoneButton(_ bottomToolBar: PhotoEditBottomToolBar)
 }
 
-public class PhotoEditBottomToolBar: UIView {
+class PhotoEditBottomToolBar: UIView {
     
     weak var delegate: PhotoEditBottomToolBarDelegate?
     
@@ -40,32 +40,32 @@ public class PhotoEditBottomToolBar: UIView {
     private let filtersContentViewHeight: CGFloat = 82
     private let adjustContentViewHeight: CGFloat = 52
     
-    let contentView = UIView()
-    let doneButton = UIButton()
-    var editItemCollectionView: UICollectionView!
+    private let contentView = UIView()
+    private let doneButton = UIButton()
+    private var editItemCollectionView: UICollectionView!
     private let gradientLayer = CAGradientLayer()
     
-    lazy var graffitiContentView: PhotoEditGraffitiColorsView = {
+    private lazy var graffitiContentView: PhotoEditGraffitiColorsView = {
         return PhotoEditGraffitiColorsView(photoEditConfig: photoEditConfig)
     }()
     
-    lazy var mosaicContentView: UIView = {
+    private lazy var mosaicContentView: UIView = {
         return UIView()
     }()
     
-    lazy var filtersContentView: PhotoEditFiltersView = {
+    private lazy var filtersContentView: PhotoEditFiltersView = {
         return PhotoEditFiltersView(photo: photo, photoEditConfig: photoEditConfig)
     }()
     
-    lazy var adjustContentView: PhotoEditAdjustView = {
+    private lazy var adjustContentView: PhotoEditAdjustView = {
         return PhotoEditAdjustView(photoEditConfig: photoEditConfig)
     }()
     
-    let photo: UIImage?
-    let photoEditConfig: PhotoEditConfig
-    var currentItemType: PhotoEditItemType?
+    private let photo: UIImage?
+    private let photoEditConfig: PhotoEditConfig
+    private var currentItemType: PhotoEditItemType?
     
-    public init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
+    init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
         self.photo = photo
         self.photoEditConfig = photoEditConfig
         
@@ -74,7 +74,7 @@ public class PhotoEditBottomToolBar: UIView {
         setupContentView()
     }
     
-    func setupContentView() {
+    private func setupContentView() {
         backgroundColor = .clear
         layer.addSublayer(gradientLayer)
         
@@ -122,7 +122,7 @@ public class PhotoEditBottomToolBar: UIView {
         }
     }
     
-    func setupGraffitiView() {
+    private func setupGraffitiView() {
         graffitiContentView.delegate = self
         graffitiContentView.isHidden = true
         addSubview(graffitiContentView)
@@ -133,7 +133,7 @@ public class PhotoEditBottomToolBar: UIView {
         }
     }
     
-    func setupMosaicView() {
+    private func setupMosaicView() {
         mosaicContentView.isHidden = true
         addSubview(mosaicContentView)
         mosaicContentView.snp.makeConstraints { make in
@@ -153,7 +153,7 @@ public class PhotoEditBottomToolBar: UIView {
         }
     }
     
-    func setupFiltersView() {
+    private func setupFiltersView() {
         filtersContentView.delegate = self
         filtersContentView.isHidden = true
         addSubview(filtersContentView)
@@ -164,7 +164,7 @@ public class PhotoEditBottomToolBar: UIView {
         }
     }
     
-    func setupAdjustView() {
+    private func setupAdjustView() {
         adjustContentView.delegate = self
         adjustContentView.isHidden = true
         addSubview(adjustContentView)
@@ -175,7 +175,7 @@ public class PhotoEditBottomToolBar: UIView {
         }
     }
     
-    func selectEditItem(_ itemType: PhotoEditItemType?) {
+    private func selectEditItem(_ itemType: PhotoEditItemType?) {
         delegate?.bottomToolBar(self, didSelectItemType: itemType)
         guard itemType?.hasNextStep ?? true else {
             return
@@ -211,15 +211,15 @@ public class PhotoEditBottomToolBar: UIView {
         adjustContentView.isHidden = itemType != .adjust
     }
     
-    @objc func doneButtonClick() {
+    @objc private func doneButtonClick() {
         delegate?.bottomToolBarDidClickDoneButton(self)
     }
     
-    @objc func undoButtonClick() {
+    @objc private func undoButtonClick() {
         delegate?.bottomToolBarDidClickMosaicUndoButton(self)
     }
     
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = bounds
         gradientLayer.colors = [UIColor(white: 0, alpha: 0).cgColor,
@@ -227,7 +227,7 @@ public class PhotoEditBottomToolBar: UIView {
         gradientLayer.removeAllAnimations()
     }
     
-    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         let view = super.hitTest(point, with: event)
         if view == self {
             return nil
@@ -235,7 +235,7 @@ public class PhotoEditBottomToolBar: UIView {
         return view
     }
     
-    public override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         return CGSize(width: UIScreen.width, height: editBottomToolBarHeight + keyWindowSafeAreaInsets.bottom)
     }
     
@@ -247,21 +247,21 @@ public class PhotoEditBottomToolBar: UIView {
 
 extension PhotoEditBottomToolBar: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         photoEditConfig.photoEditItemTypes.count
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(PhotoEditItemCollectionViewCell.self, for: indexPath)
         cell.bind(photoEditConfig.photoEditItemTypes[indexPath.item])
         return cell
     }
     
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 40, height: collectionView.height)
     }
     
-    public func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
         let canBeHighlight = photoEditConfig.photoEditItemTypes[indexPath.item].hasNextStep
         if collectionView.indexPathsForSelectedItems?.first == indexPath && canBeHighlight {
@@ -295,6 +295,7 @@ extension PhotoEditBottomToolBar: PhotoEditAdjustViewDelegate {
     }
     
 }
+
 extension PhotoEditBottomToolBar: PhotoEditFiltersViewDelegate {
     
     func filtersView(_ filtersView: PhotoEditFiltersView, didSelectFilter filter: PhotoEditFilterProvider) {

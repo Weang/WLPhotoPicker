@@ -7,7 +7,19 @@
 
 import UIKit
 
-class AssetPreviewShowTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
+extension AssetPreviewViewController: UIViewControllerTransitioningDelegate {
+    
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return AssetPreviewShowTransitioning()
+    }
+    
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return AssetPreviewDismissTransitioning()
+    }
+    
+}
+
+private class AssetPreviewShowTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toVC = transitionContext.viewController(forKey: .to) as? AssetPreviewViewController else {
@@ -27,7 +39,7 @@ class AssetPreviewShowTransitioning: NSObject, UIViewControllerAnimatedTransitio
     
 }
 
-class AssetPreviewDismissTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
+private class AssetPreviewDismissTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toVC = transitionContext.viewController(forKey: .from) as? AssetPreviewViewController else {
@@ -42,18 +54,6 @@ class AssetPreviewDismissTransitioning: NSObject, UIViewControllerAnimatedTransi
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.35
-    }
-    
-}
-
-extension AssetPreviewViewController: UIViewControllerTransitioningDelegate {
-    
-    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return AssetPreviewShowTransitioning()
-    }
-    
-    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return AssetPreviewDismissTransitioning()
     }
     
 }

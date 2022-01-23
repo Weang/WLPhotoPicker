@@ -16,7 +16,7 @@ class PhotoEditTextColorsView: UIView {
     
     weak var delegate: PhotoEditTextColorsViewDelegate?
     
-    let photoEditConfig: PhotoEditConfig
+    private let photoEditConfig: PhotoEditConfig
     
     var collectionView: UICollectionView!
     let wrapButton = NormalStyleButton()
@@ -58,7 +58,7 @@ class PhotoEditTextColorsView: UIView {
         collectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .left)
     }
     
-    @objc func wrapButtonClick() {
+    @objc private func wrapButtonClick() {
         wrapButton.isSelected.toggle()
         delegate?.textColorsView(self, didClickWrapButton: wrapButton.isSelected)
     }

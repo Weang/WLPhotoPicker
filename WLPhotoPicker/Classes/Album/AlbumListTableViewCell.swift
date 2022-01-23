@@ -8,7 +8,7 @@
 import UIKit
 
 class AlbumListTableViewCell: UITableViewCell {
-
+    
     private let albumCover = UIImageView()
     private let albumNameLabel = UILabel()
     private let photoCountLabel = UILabel()
@@ -79,10 +79,14 @@ class AlbumListTableViewCell: UITableViewCell {
         }
     }
     
-    func cancelLastRequest() {
+    private func cancelLastRequest() {
         request?.cancel()
         request = nil
         albumCover.image = nil
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
     }
     
     override func prepareForReuse() {
@@ -94,8 +98,4 @@ class AlbumListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-
 }

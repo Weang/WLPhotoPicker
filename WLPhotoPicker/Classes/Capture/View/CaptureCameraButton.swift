@@ -7,13 +7,13 @@
 
 import UIKit
 
-public class CaptureCameraButton: UIView {
+class CaptureCameraButton: UIView {
     
     private let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
     private let buttonCenterView = UIView()
     private let progressLayer = CAShapeLayer()
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         
         backgroundView.layer.cornerRadius = intrinsicContentSize.width * 0.5
@@ -39,7 +39,7 @@ public class CaptureCameraButton: UIView {
                                 startAngle: .pi * -0.5,
                                 endAngle: .pi * 1.5,
                                 clockwise: true)
-
+        
         progressLayer.frame = CGRect(origin: .zero, size: intrinsicContentSize)
         progressLayer.fillColor = UIColor.clear.cgColor
         progressLayer.strokeColor = UIColor.black.cgColor
@@ -57,14 +57,14 @@ public class CaptureCameraButton: UIView {
         layer.addSublayer(gradientLayer)
     }
     
-    public func showBeginAnimation() {
+    func showBeginAnimation() {
         UIView.animate(withDuration: 0.2, animations: {
             self.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
             self.buttonCenterView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
         })
     }
     
-    public func showEndAnimation() {
+    func showEndAnimation() {
         UIView.animate(withDuration: 0.1, animations: {
             self.transform = .identity
             self.buttonCenterView.transform = .identity
@@ -73,11 +73,11 @@ public class CaptureCameraButton: UIView {
         progressLayer.removeAllAnimations()
     }
     
-    public func updateProgress(_ progress: CGFloat) {
+    func updateProgress(_ progress: CGFloat) {
         progressLayer.strokeEnd = progress
     }
     
-    public override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         return CGSize(width: 70, height: 70)
     }
     

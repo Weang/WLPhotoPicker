@@ -18,18 +18,18 @@ class ViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let config = WLPhotoConfig()
-        config.pickerConfig.selectableType = .all
-        config.pickerConfig.saveImageToLocalWhenPick = true
-        config.pickerConfig.exportVideoToLocalWhenPick = true
-        config.pickerConfig.videoExportOriginal = true
-        config.photoEditConfig.photoEditPasters = (1...18).map { "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) }
-        if #available(iOS 13.0, *) {
-            config.captureConfig.captureVideoStabilizationMode = .cinematicExtended
-        }
-        let vc = WLPhotoPickerController(pickerConfig: config)
-        vc.pickerDelegate = self
-        self.present(vc, animated: true, completion: nil)
+//        let config = WLPhotoConfig()
+//        config.pickerConfig.selectableType = .all
+//        config.pickerConfig.saveImageToLocalWhenPick = true
+//        config.pickerConfig.exportVideoToLocalWhenPick = true
+//        config.pickerConfig.videoExportOriginal = true
+//        config.photoEditConfig.photoEditPasters = (1...18).map { "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) }
+//        if #available(iOS 13.0, *) {
+//            config.captureConfig.captureVideoStabilizationMode = .cinematicExtended
+//        }
+//        let vc = WLPhotoPickerController(config: config)
+//        vc.pickerDelegate = self
+//        self.present(vc, animated: true, completion: nil)
         
         self.navigationItem.title = "WLPhotoPicker"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Picker", style: .done, target: self, action: #selector(openPicker))
@@ -142,16 +142,16 @@ class ViewController: FormViewController {
         
         <<< SwitchRow() { row in
             row.title = "是否导出选取视频"
-            row.value = self.config.pickerConfig.exportVideoToLocalWhenPick
+            row.value = self.config.pickerConfig.saveVideoToLocalWhenPick
         }.onChange { row in
-            self.config.pickerConfig.exportVideoToLocalWhenPick = (row.value ?? false)
+            self.config.pickerConfig.videoCanSaveOriginal = (row.value ?? false)
         }
         
         <<< SwitchRow() { row in
             row.title = "勾选原图时导出原视频"
-            row.value = self.config.pickerConfig.videoExportOriginal
+            row.value = self.config.pickerConfig.videoCanSaveOriginal
         }.onChange { row in
-            self.config.pickerConfig.videoExportOriginal = (row.value ?? false)
+            self.config.pickerConfig.videoCanSaveOriginal = (row.value ?? false)
         }
         
         <<< PickerInputRow<String>() { row in
@@ -180,9 +180,9 @@ class ViewController: FormViewController {
         
         <<< SwitchRow() { row in
             row.title = "点击确定是否自动关闭"
-            row.value = self.config.pickerConfig.autoDismissAfterDone
+            row.value = self.config.pickerConfig.dismissPickerAfterDone
         }.onChange { row in
-            self.config.pickerConfig.autoDismissAfterDone = (row.value ?? false)
+            self.config.pickerConfig.dismissPickerAfterDone = (row.value ?? false)
         }
         
         <<< SwitchRow() { row in
@@ -228,7 +228,7 @@ class ViewController: FormViewController {
     }
     
     @objc func openPicker() {
-        let vc = WLPhotoPickerController(pickerConfig: config)
+        let vc = WLPhotoPickerController(config: config)
         vc.pickerDelegate = self
         self.present(vc, animated: true, completion: nil)
     }

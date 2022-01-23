@@ -8,11 +8,11 @@
 import UIKit
 import Photos
 
-public typealias SavePhotoCompletion = (Result<PHAsset, AssetSaveError>) -> Void
+typealias SavePhotoCompletion = (Result<PHAsset, AssetSaveError>) -> Void
 
 extension AssetFetchTool {
-
-    public static func savePhoto(image: UIImage, completion: @escaping SavePhotoCompletion) {
+    
+    static func savePhoto(image: UIImage, completion: @escaping SavePhotoCompletion) {
         var localIdentifier: String = ""
         let changes = {
             let request = PHAssetChangeRequest.creationRequestForAsset(from: image)
@@ -28,5 +28,5 @@ extension AssetFetchTool {
             }
         }
     }
-
+    
 }

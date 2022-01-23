@@ -8,7 +8,6 @@
 import UIKit
 
 public enum VideoExportError: Error {
-
     case createAssetTrack
     case createExportSession
     case exportSessionError

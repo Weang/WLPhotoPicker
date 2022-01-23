@@ -9,9 +9,9 @@ import UIKit
 import AVFoundation
 import CoreMedia
 
-public typealias AssetFetchOperationProgress = (Double) -> Void
-public typealias AssetFetchOperationResult = (Result<AssetPickerResult, WLPhotoError>) -> Void
-public typealias AssetFetchAssetsResult = (Result<[AssetPickerResult], WLPhotoError>) -> Void
+typealias AssetFetchOperationProgress = (Double) -> Void
+typealias AssetFetchOperationResult = (Result<AssetPickerResult, WLPhotoError>) -> Void
+typealias AssetFetchAssetsResult = (Result<[AssetPickerResult], WLPhotoError>) -> Void
 
 extension AssetFetchTool {
     
@@ -50,14 +50,14 @@ extension AssetFetchTool {
     
 }
 
-public class AssetFetchOperation: Operation {
+fileprivate class AssetFetchOperation: Operation {
     
-    let assetModel: AssetModel
-    let isOriginal: Bool
-    let config: WLPhotoConfig
-    var assetRequest: AssetFetchRequest?
-    let progress: AssetFetchOperationProgress?
-    let completion: AssetFetchOperationResult?
+    private let assetModel: AssetModel
+    private let isOriginal: Bool
+    private let config: WLPhotoConfig
+    private var assetRequest: AssetFetchRequest?
+    private let progress: AssetFetchOperationProgress?
+    private let completion: AssetFetchOperationResult?
     
     private var _isExecuting = false {
         willSet {
@@ -158,7 +158,6 @@ public class AssetFetchOperation: Operation {
             return
         }
         
-        // 只有图片编辑过，并且选择了原图，才会进入到这个方法
         assetRequest = AssetFetchTool.requestImage(for: assetModel.asset, options: options) { [weak self] result, _ in
             guard let self = self else { return }
             switch result {
@@ -228,14 +227,14 @@ public class AssetFetchOperation: Operation {
     }
     
     func finishRequestVideo(_ response: VideoFetchResponse, options: AssetFetchOptions) {
-        if self.config.pickerConfig.exportVideoToLocalWhenPick {
+        if config.pickerConfig.saveVideoToLocalWhenPick {
             let videoOutputPath = FileHelper.createVideoPathFrom(asset: assetModel, videoFileType: config.pickerConfig.videoExportFileType)
-            let exportManager = VideoCompressManager(avAsset: response.avasset, outputPath: videoOutputPath)
-            exportManager.compressVideo = !(isOriginal && config.pickerConfig.videoExportOriginal)
-            exportManager.compressSize = config.pickerConfig.videoExportCompressSize
-            exportManager.frameDuration = config.pickerConfig.videoExportFrameDuration
-            exportManager.videoExportFileType = config.pickerConfig.videoExportFileType
-            exportManager.exportVideo { progress in
+            let manager = VideoCompressManager(avAsset: response.avasset, outputPath: videoOutputPath)
+            manager.compressVideo = !(isOriginal && config.pickerConfig.videoCanSaveOriginal)
+            manager.compressSize = config.pickerConfig.videoExportCompressSize
+            manager.frameDuration = config.pickerConfig.videoExportFrameDuration
+            manager.videoExportFileType = config.pickerConfig.videoExportFileType
+            manager.exportVideo { progress in
                 options.progressHandler?(progress)
             } completion: { [weak self] url in
                 guard let self = self else { return }

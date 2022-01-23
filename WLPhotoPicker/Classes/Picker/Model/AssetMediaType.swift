@@ -15,7 +15,7 @@ public enum AssetMediaType: Equatable {
     case livePhoto
 }
 
-public extension AssetMediaType {
+extension AssetMediaType {
     
     var isPhoto: Bool {
         !isVideo

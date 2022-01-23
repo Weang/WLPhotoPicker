@@ -14,16 +14,15 @@ protocol CapturePreviewViewControllerDelegate: AnyObject {
 }
 
 class CapturePreviewViewController: UIViewController {
-
+    
     weak var delegate: CapturePreviewViewControllerDelegate?
     
-    let previewPhoto: UIImage?
+    private let toolBar = CapturePreviewToolBar()
     
-    let videoUrl: URL?
-    var player: AVPlayer?
-    var playerLayer: AVPlayerLayer?
-    
-    let toolBar = CapturePreviewToolBar()
+    private let previewPhoto: UIImage?
+    private let videoUrl: URL?
+    private var player: AVPlayer?
+    private var playerLayer: AVPlayerLayer?
     
     init(previewPhoto: UIImage? = nil, videoUrl: URL? = nil) {
         self.previewPhoto = previewPhoto
@@ -46,8 +45,8 @@ class CapturePreviewViewController: UIViewController {
         }
         setupView()
     }
-
-    func setupView() {
+    
+    private func setupView() {
         view.backgroundColor = .black
         
         toolBar.delegate = self
@@ -57,7 +56,7 @@ class CapturePreviewViewController: UIViewController {
         }
     }
     
-    func setupImageView() {
+    private func setupImageView() {
         let imageView = UIImageView()
         imageView.backgroundColor = .clear
         imageView.image = previewPhoto
@@ -68,7 +67,7 @@ class CapturePreviewViewController: UIViewController {
         }
     }
     
-    func setupVideoPlayer() {
+    private func setupVideoPlayer() {
         guard let videoUrl = videoUrl else {
             return
         }
@@ -86,7 +85,7 @@ class CapturePreviewViewController: UIViewController {
         self.player = player
     }
     
-    @objc func playToEndTime() {
+    @objc private func playToEndTime() {
         player?.seek(to: CMTime.zero)
         player?.play()
     }
@@ -99,7 +98,7 @@ class CapturePreviewViewController: UIViewController {
 extension CapturePreviewViewController: CapturePreviewToolBarDelegate {
     
     func toolBarDidClickCancelButton(_ toolBar: CapturePreviewToolBar) {
-            dismiss(animated: false, completion: nil)
+        dismiss(animated: false, completion: nil)
     }
     
     func toolBarDidClickDoneButton(_ toolBar: CapturePreviewToolBar) {

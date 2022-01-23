@@ -9,8 +9,8 @@ import UIKit
 
 class PhotoEditAdjustCollectionViewCell: UICollectionViewCell {
     
-    let iconImageView = UIImageView()
-    let nameLabel = UILabel()
+    private let iconImageView = UIImageView()
+    private let nameLabel = UILabel()
     
     override var isSelected: Bool {
         didSet {

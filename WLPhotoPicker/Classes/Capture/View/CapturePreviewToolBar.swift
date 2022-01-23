@@ -18,10 +18,10 @@ class CapturePreviewToolBar: UIView {
     
     private let toolBarHeight: CGFloat = 54
     
-    let toolBarContentView = UIStackView()
-    let cancelButton = UIButton()
-    let doneButton = UIButton()
-    let gradientLayer = CAGradientLayer()
+    private let toolBarContentView = UIStackView()
+    private let cancelButton = UIButton()
+    private let doneButton = UIButton()
+    private let gradientLayer = CAGradientLayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,7 +51,7 @@ class CapturePreviewToolBar: UIView {
         toolBarContentView.addArrangedSubview(doneButton)
     }
     
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = bounds
         gradientLayer.colors = [UIColor(white: 0, alpha: 0).cgColor,
@@ -59,11 +59,11 @@ class CapturePreviewToolBar: UIView {
         gradientLayer.removeAllAnimations()
     }
     
-    @objc func cancelButtonClick() {
+    @objc private func cancelButtonClick() {
         delegate?.toolBarDidClickCancelButton(self)
     }
     
-    @objc func doneButtonClick() {
+    @objc private func doneButtonClick() {
         delegate?.toolBarDidClickDoneButton(self)
     }
     

@@ -8,8 +8,8 @@
 import UIKit
 import PhotosUI
 
-public class AssetPreviewLivePhotoCell: AssetPreviewCell {
-
+class AssetPreviewLivePhotoCell: AssetPreviewCell {
+    
     private let livePhotoTipView = AssetPreviewLivePhotoView()
     private let livePhotoView = PHLivePhotoView()
     
@@ -19,7 +19,7 @@ public class AssetPreviewLivePhotoCell: AssetPreviewCell {
         }
     }
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
         
         livePhotoView.isHidden = true
@@ -34,7 +34,7 @@ public class AssetPreviewLivePhotoCell: AssetPreviewCell {
             make.top.equalTo(keyWindowSafeAreaInsets.top + 52)
         }
         
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(livePhotoLongPress(_:)))
         longPressGesture.delaysTouchesBegan = true
         longPressGesture.minimumPressDuration = 0.2
         contentScrollView.addGestureRecognizer(longPressGesture)
@@ -57,7 +57,7 @@ public class AssetPreviewLivePhotoCell: AssetPreviewCell {
         }
     }
     
-    func requestLivePhoto(_ model: AssetModel, pickerConfig: PickerConfig) {
+    private func requestLivePhoto(_ model: AssetModel, pickerConfig: PickerConfig) {
         let options = AssetFetchOptions()
         options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
         options.imageDeliveryMode = .highQualityFormat
@@ -68,6 +68,18 @@ public class AssetPreviewLivePhotoCell: AssetPreviewCell {
                 self?.livePhotoView.livePhoto = response.livePhoto
             }
         })
+    }
+    
+    @objc private func livePhotoLongPress(_ gesture: UILongPressGestureRecognizer) {
+        if livePhotoView.livePhoto == nil { return }
+        switch gesture.state {
+        case .began:
+            livePhotoView.startPlayback(with: .full)
+        case .ended, .cancelled:
+            livePhotoView.stopPlayback()
+        default:
+            break
+        }
     }
     
     override func handleSingleTapGesture() {
@@ -87,24 +99,12 @@ public class AssetPreviewLivePhotoCell: AssetPreviewCell {
         }
     }
     
-    @objc func longPress(_ gesture: UILongPressGestureRecognizer) {
-        if livePhotoView.livePhoto == nil { return }
-        switch gesture.state {
-        case .began:
-            livePhotoView.startPlayback(with: .full)
-        case .ended, .cancelled:
-            livePhotoView.stopPlayback()
-        default:
-            break
-        }
-    }
-    
-    public override func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
         livePhotoView.frame = assetImageView.bounds
     }
     
-    public override func prepareForReuse() {
+    override func prepareForReuse() {
         super.prepareForReuse()
         livePhotoView.livePhoto = nil
     }
@@ -117,11 +117,11 @@ public class AssetPreviewLivePhotoCell: AssetPreviewCell {
 
 extension AssetPreviewLivePhotoCell: PHLivePhotoViewDelegate {
     
-    public func livePhotoView(_ livePhotoView: PHLivePhotoView, willBeginPlaybackWith playbackStyle: PHLivePhotoViewPlaybackStyle) {
+    func livePhotoView(_ livePhotoView: PHLivePhotoView, willBeginPlaybackWith playbackStyle: PHLivePhotoViewPlaybackStyle) {
         livePhotoView.isHidden = false
     }
     
-    public func livePhotoView(_ livePhotoView: PHLivePhotoView, didEndPlaybackWith playbackStyle: PHLivePhotoViewPlaybackStyle) {
+    func livePhotoView(_ livePhotoView: PHLivePhotoView, didEndPlaybackWith playbackStyle: PHLivePhotoViewPlaybackStyle) {
         livePhotoView.isHidden = true
     }
     

@@ -7,7 +7,6 @@
 
 import UIKit
 
-// 生成GIF图
 public class GIFGenerator {
 
     static func animatedImageWith(data: Data) -> UIImage? {

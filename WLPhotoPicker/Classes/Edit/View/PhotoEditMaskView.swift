@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class PhotoEditMaskView: UIView {
+class PhotoEditMaskView: UIView {
     
     var isActive: Bool = false
     var maskLayer: PhotoEditMaskLayer

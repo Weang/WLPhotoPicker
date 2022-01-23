@@ -23,7 +23,6 @@ public class AssetFetchOptions {
     public var videoDeliveryMode: PHVideoRequestOptionsDeliveryMode = .highQualityFormat
     
     public var progressHandler: ((Double) -> Void)? = nil
-    
 }
 
 public enum PhotoFetchSizeOptions {
@@ -34,17 +33,17 @@ public enum PhotoFetchSizeOptions {
 extension AssetFetchOptions {
     
     // requestImage方法中传入的targetSize会根据图片的短边来裁剪，导致预览图模糊
-    func targetSizeWith(asset: PHAsset) -> CGSize {
+    func targetSizeWith(assetSize: CGSize) -> CGSize {
         let targetSize: CGSize
         switch sizeOption {
         case .original:
             targetSize = PHImageManagerMaximumSize
         case .specify(let size):
-            let scale = CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight)
-            if scale < 1 {
-                targetSize = CGSize(width: size / scale, height: size / scale)
+            let ratio = assetSize.width / assetSize.height
+            if ratio < 1 {
+                targetSize = CGSize(width: size / ratio, height: size / ratio)
             } else {
-                targetSize = CGSize(width: size * scale, height: size * scale)
+                targetSize = CGSize(width: size * ratio, height: size * ratio)
             }
         }
         return targetSize

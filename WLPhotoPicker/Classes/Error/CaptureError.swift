@@ -8,12 +8,10 @@
 import UIKit
 
 public enum CaptureError {
-    
     case simulator
     case deviceInitializeError
     case fileWriteError
     case changeCameraFailed
-    
 }
 
 extension CaptureError: LocalizedError {

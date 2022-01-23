@@ -8,12 +8,12 @@
 import UIKit
 import Photos
 
-protocol PhotoEditViewControllerDelegate: AnyObject {
+public protocol PhotoEditViewControllerDelegate: AnyObject {
     func editController(_ editController: PhotoEditViewController, didDidFinishEditAsset asset: AssetModel)
     func editController(_ editController: PhotoEditViewController, didDidFinishEditPhoto photo: UIImage?)
 }
 
-extension PhotoEditViewControllerDelegate {
+public extension PhotoEditViewControllerDelegate {
     func editController(_ editController: PhotoEditViewController, didDidFinishEditAsset asset: AssetModel) { }
     func editController(_ editController: PhotoEditViewController, didDidFinishEditPhoto photo: UIImage?) { }
 }
@@ -22,13 +22,13 @@ public class PhotoEditViewController: UIViewController {
     
     weak var delegate: PhotoEditViewControllerDelegate?
     
-    let photo: UIImage?
-    let assetModel: AssetModel?
-    let photoEditConfig: PhotoEditConfig
+    private let photo: UIImage?
+    private let assetModel: AssetModel?
+    private let photoEditConfig: PhotoEditConfig
     
-    var currentEditItemType: PhotoEditItemType?
+    private var currentEditItemType: PhotoEditItemType?
     
-    let singleTapGesture = UITapGestureRecognizer()
+    private let singleTapGesture = UITapGestureRecognizer()
     
     let editContentView = UIView()
     let contentScrollView = UIScrollView()
@@ -36,38 +36,38 @@ public class PhotoEditViewController: UIViewController {
     let topToolBar = PhotoEditTopToolBar()
     let bottomToolBar: PhotoEditBottomToolBar
     
-    var graffitiDrawColor: UIColor = .clear
-    let graffitiDrawLayer = CALayer()
-    let graffitiDrawGesture = UIPanGestureRecognizer()
-    var graffitiDrawPath = PhotoEditGraffitiPath()
+    private var graffitiDrawColor: UIColor = .clear
+    private let graffitiDrawLayer = CALayer()
+    private let graffitiDrawGesture = UIPanGestureRecognizer()
+    private var graffitiDrawPath = PhotoEditGraffitiPath()
     
-    var mosaicMaskImage: UIImage?
-    var mosaicDrawLayer = CALayer()
-    var mosaicDrawMaskLayer = CAShapeLayer()
-    let mosaicDrawGesture = UIPanGestureRecognizer()
-    var mosaicDrawPath = PhotoEditMosaicPath()
+    private var mosaicMaskImage: UIImage?
+    private var mosaicDrawLayer = CALayer()
+    private var mosaicDrawMaskLayer = CAShapeLayer()
+    private let mosaicDrawGesture = UIPanGestureRecognizer()
+    private var mosaicDrawPath = PhotoEditMosaicPath()
     
-    let maskLayerContentView = UIView()
-    let masksTapGesture = UITapGestureRecognizer()
-    let masksPanGesture = UIPanGestureRecognizer()
-    let masksPinchGesture = UIPinchGestureRecognizer()
-    let masksRotationGesture = UIRotationGestureRecognizer()
-    let masksTrashCanView = PhotoEditMaskTrashCanView()
-    var hasHighlightMasksTrashCanView: Bool = false
+    private let maskLayerContentView = UIView()
+    private let masksTapGesture = UITapGestureRecognizer()
+    private let masksPanGesture = UIPanGestureRecognizer()
+    private let masksPinchGesture = UIPinchGestureRecognizer()
+    private let masksRotationGesture = UIRotationGestureRecognizer()
+    private let masksTrashCanView = PhotoEditMaskTrashCanView()
+    private var hasHighlightMasksTrashCanView: Bool = false
     
-    var currentFilterImage: UIImage?
-    var currentFilter: PhotoEditFilterProvider?
+    private var currentFilterImage: UIImage?
+    private var currentFilter: PhotoEditFilterProvider?
     
-    var imageBeforeAdjust: UIImage?
-    var currentAdjustMode: PhotoEditAdjustMode?
-    var adjustValue: [PhotoEditAdjustMode: Double] = [:]
-    let adjustSlideView = PhotoEditAdjustSlideView()
+    private var imageBeforeAdjust: UIImage?
+    private var currentAdjustMode: PhotoEditAdjustMode?
+    private var adjustValue: [PhotoEditAdjustMode: Double] = [:]
+    private let adjustSlideView = PhotoEditAdjustSlideView()
     
     public override var prefersStatusBarHidden: Bool {
         true
     }
     
-    init(assetModel: AssetModel?, photoEditConfig: PhotoEditConfig) {
+    public init(assetModel: AssetModel?, photoEditConfig: PhotoEditConfig) {
         self.photo = assetModel?.previewImage
         self.assetModel = assetModel
         self.photoEditConfig = photoEditConfig
@@ -77,7 +77,7 @@ public class PhotoEditViewController: UIViewController {
         modalPresentationCapturesStatusBarAppearance = true
     }
     
-    init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
+    public init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
         self.photo = photo
         self.assetModel = nil
         self.photoEditConfig = photoEditConfig
@@ -87,19 +87,16 @@ public class PhotoEditViewController: UIViewController {
         modalPresentationCapturesStatusBarAppearance = true
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
         setupView()
+        setupGesture()
         setupPhoto()
         setupEditedImage()
     }
     
-    func setupView() {
+    private func setupView() {
         view.backgroundColor = .black
         
         editContentView.backgroundColor = .black
@@ -166,7 +163,9 @@ public class PhotoEditViewController: UIViewController {
             make.right.equalTo(-32)
             make.bottom.equalTo(bottomToolBar.snp.top).offset(16)
         }
-        
+    }
+    
+    private func setupGesture() {
         singleTapGesture.addTarget(self, action: #selector(contentViewSingleTap))
         singleTapGesture.delegate = self
         editContentView.addGestureRecognizer(singleTapGesture)
@@ -207,7 +206,7 @@ public class PhotoEditViewController: UIViewController {
         masksTapGesture.require(toFail: masksPanGesture)
     }
     
-    func setupPhoto() {
+    private func setupPhoto() {
         contentImageView.image = assetModel?.editedImage ?? assetModel?.previewImage ?? photo
         
         guard let photo = self.photo else { return }
@@ -231,7 +230,7 @@ public class PhotoEditViewController: UIViewController {
         }
     }
     
-    func setupEditedImage() {
+    private func setupEditedImage() {
         guard let assetModel = self.assetModel, assetModel.hasEdit else { return }
         graffitiDrawPath = assetModel.editGraffitiPath
         currentFilter = assetModel.filter
@@ -258,12 +257,12 @@ public class PhotoEditViewController: UIViewController {
         }
     }
     
-    @objc func contentViewSingleTap() {
+    @objc private func contentViewSingleTap() {
         dismissAllMaskActive()
         setToolBarsHidden(bottomToolBar.alpha == 1)
     }
     
-    func setToolBarsHidden(_ isHidden: Bool) {
+    private func setToolBarsHidden(_ isHidden: Bool) {
         UIView.animate(withDuration: 0.1) {
             self.topToolBar.alpha = isHidden ? 0 : 1
             self.bottomToolBar.alpha = isHidden ? 0 : 1
@@ -271,12 +270,16 @@ public class PhotoEditViewController: UIViewController {
         }
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }
 
 // MARK: Graffiti
 extension PhotoEditViewController {
     
-    @objc func graffitiDraw(_ gesture: UIPanGestureRecognizer) {
+    @objc private func graffitiDraw(_ gesture: UIPanGestureRecognizer) {
         let location = gesture.location(in: contentImageView)
         let zoomScale = contentScrollView.zoomScale
         switch gesture.state {
@@ -300,18 +303,18 @@ extension PhotoEditViewController {
 // MARK: Mosaic
 extension PhotoEditViewController {
     
-    func prepareForMosaic() {
+    private func prepareForMosaic() {
         let adjustedImage = currentFilterImage?.adjustImageFrom(adjustValue)
         mosaicMaskImage = adjustedImage?.mosaicImage(level: photoEditConfig.photoEditMosaicWidth)
         mosaicDrawLayer.contents = mosaicMaskImage?.cgImage
     }
     
-    func drawMosaicImage()  {
+    private func drawMosaicImage()  {
         let adjustImage = currentFilterImage?.adjustImageFrom(adjustValue)
         contentImageView.image = mosaicDrawPath.drawMosaicImage(from: adjustImage, mosaicImage: mosaicMaskImage)
     }
     
-    @objc func mosaicDraw(_ gesture: UIPanGestureRecognizer) {
+    @objc private func mosaicDraw(_ gesture: UIPanGestureRecognizer) {
         let location = gesture.location(in: contentImageView)
         let zoomScale = contentScrollView.zoomScale
         switch gesture.state {
@@ -338,8 +341,8 @@ extension PhotoEditViewController {
 // MARK: MaskLayer
 extension PhotoEditViewController {
     
-    func showEditTextController(textMaskLayer: PhotoEditTextMaskLayer?) {
-        let backgroundImage = editContentView.screenShot()
+    private func showEditTextController(textMaskLayer: PhotoEditTextMaskLayer?) {
+        let backgroundImage = editContentView.screenShot(scale: 1)
         let vc = PhotoEditTextViewController(backgroundImage: backgroundImage,
                                              textMaskLayer: textMaskLayer,
                                              photoEditConfig: photoEditConfig)
@@ -347,7 +350,7 @@ extension PhotoEditViewController {
         present(vc, animated: true, completion: nil)
     }
     
-    func addMaskLayer(maskLayer: PhotoEditMaskLayer) {
+    private func addMaskLayer(maskLayer: PhotoEditMaskLayer) {
         var maskLayer = maskLayer
         let viewCenter = CGPoint(x: UIScreen.width * 0.5, y: UIScreen.height * 0.5)
         maskLayer.center = view.convert(viewCenter, to: contentImageView)
@@ -357,15 +360,15 @@ extension PhotoEditViewController {
         maskView.updateMaskLayer()
     }
     
-    func maskViewAt(_ location: CGPoint) -> PhotoEditMaskView? {
+    private func maskViewAt(_ location: CGPoint) -> PhotoEditMaskView? {
         return maskLayerContentView.subviews.last(where: { $0.frame.contains(location) }) as? PhotoEditMaskView
     }
     
-    func activeMaskView() -> PhotoEditMaskView? {
+    private func activeMaskView() -> PhotoEditMaskView? {
         return maskLayerContentView.subviews.first(where: { ($0 as? PhotoEditMaskView)?.isActive ?? false }) as? PhotoEditMaskView
     }
     
-    func showMaskActiveAt(_ location: CGPoint) {
+    private func showMaskActiveAt(_ location: CGPoint) {
         guard let maskView = maskViewAt(location) else {
             return
         }
@@ -374,13 +377,13 @@ extension PhotoEditViewController {
         maskLayerContentView.bringSubviewToFront(maskView)
     }
     
-    func dismissAllMaskActive() {
+    private func dismissAllMaskActive() {
         maskLayerContentView.subviews.forEach {
             ($0 as? PhotoEditMaskView)?.dismissActive()
         }
     }
     
-    func maskGestureBeginAt(_ location: CGPoint) {
+    private func maskGestureBeginAt(_ location: CGPoint) {
         hasHighlightMasksTrashCanView = false
         setTrashCanViweHidden(false, animated: true)
         setToolBarsHidden(true)
@@ -388,7 +391,7 @@ extension PhotoEditViewController {
         showMaskActiveAt(location)
     }
     
-    func setTrashCanViweHidden(_ isHidden: Bool, animated: Bool) {
+    private func setTrashCanViweHidden(_ isHidden: Bool, animated: Bool) {
         masksTrashCanView.isHidden = isHidden
         UIView.animate(withDuration: animated ? 0.15 : 0) {
             self.masksTrashCanView.snp.updateConstraints { make in
@@ -399,7 +402,7 @@ extension PhotoEditViewController {
         }
     }
     
-    @objc func handleMasksTapGesture(_ gesture: UITapGestureRecognizer) {
+    @objc private func handleMasksTapGesture(_ gesture: UITapGestureRecognizer) {
         let location = gesture.location(in: maskLayerContentView)
         guard let maskView = maskViewAt(location) else {
             return
@@ -412,7 +415,7 @@ extension PhotoEditViewController {
         }
     }
     
-    @objc func handleMasksPanGesture(_ gesture: UIPanGestureRecognizer) {
+    @objc private func handleMasksPanGesture(_ gesture: UIPanGestureRecognizer) {
         let location = gesture.location(in: maskLayerContentView)
         switch gesture.state {
         case .began:
@@ -455,7 +458,7 @@ extension PhotoEditViewController {
         }
     }
     
-    @objc func handleMasksPinchGesture(_ gesture: UIPinchGestureRecognizer) {
+    @objc private func handleMasksPinchGesture(_ gesture: UIPinchGestureRecognizer) {
         let location = gesture.location(in: maskLayerContentView)
         switch gesture.state {
         case .began:
@@ -476,7 +479,7 @@ extension PhotoEditViewController {
         }
     }
     
-    @objc func handleMasksRotationGesture(_ gesture: UIRotationGestureRecognizer) {
+    @objc private func handleMasksRotationGesture(_ gesture: UIRotationGestureRecognizer) {
         let location = gesture.location(in: maskLayerContentView)
         switch gesture.state {
         case .began:
@@ -502,7 +505,7 @@ extension PhotoEditViewController {
 // MARK: Filter
 extension PhotoEditViewController {
     
-    func drawFilterImage(filter: PhotoEditFilterProvider) {
+    private func drawFilterImage(filter: PhotoEditFilterProvider) {
         currentFilter = filter
         currentFilterImage = filter.filterImage(photo)
         let filterMosaicImage = currentFilterImage?.mosaicImage(level: photoEditConfig.photoEditMosaicWidth)
@@ -516,18 +519,18 @@ extension PhotoEditViewController {
 // MARK: Adjust
 extension PhotoEditViewController {
     
-    @objc func adjustSlideValueChange() {
+    @objc private func adjustSlideValueChange() {
         let value = adjustSlideView.value
         changeAdjustValue(value)
     }
     
-    func prepareForAdjust() {
+    private func prepareForAdjust() {
         let mosaicImage = currentFilterImage?.mosaicImage(level: photoEditConfig.photoEditMosaicWidth)
         imageBeforeAdjust = mosaicDrawPath.drawMosaicImage(from: currentFilterImage,
                                                            mosaicImage: mosaicImage)
     }
     
-    func changeAdjustValue(_ value: Double) {
+    private func changeAdjustValue(_ value: Double) {
         guard let currentAdjustMode = self.currentAdjustMode  else {
             return
         }
@@ -601,15 +604,16 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
             present(vc, animated: true, completion: nil)
         case .text:
             showEditTextController(textMaskLayer: nil)
-//        case .crop:
-//            let maskLayers = maskLayerContentView.subviews.compactMap{
-//                ($0 as? PhotoEditMaskView)?.maskLayer
-//            }
-//            let image = EditManager.drawMasksAt(photo: contentImageView.image, with: graffitiDrawPath, maskLayers: maskLayers)
-//            guard let editedImage = image else { return }
-//            let vc = PhotoEditCropViewController(photo: editedImage, assetModel: assetModel)
-//            present(vc, animated: true, completion: nil)
-//            break
+            //        case .crop:
+            //            let maskLayers = maskLayerContentView.subviews.compactMap{
+            //                ($0 as? PhotoEditMaskView)?.maskLayer
+            //            }
+            //            let image = EditManager.drawMasksAt(photo: contentImageView.image, editGraffitiPath: graffitiDrawPath, maskLayers: maskLayers)
+            //            guard let editedImage = image else { return }
+            //            let vc = PhotoEditCropViewController(photo: editedImage, assetModel: assetModel)
+            //            vc.modalPresentationStyle = .custom
+            //            vc.transitioningDelegate = vc
+            //            present(vc, animated: true, completion: nil)
         case .mosaic:
             prepareForMosaic()
         case .adjust:

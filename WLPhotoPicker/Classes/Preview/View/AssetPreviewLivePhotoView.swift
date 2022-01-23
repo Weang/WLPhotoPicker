@@ -39,7 +39,7 @@ class AssetPreviewLivePhotoView: VisualEffectView {
         
     }
     
-    public override var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         return CGSize(width: -1, height: 26)
     }
     

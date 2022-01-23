@@ -8,12 +8,13 @@
 import Photos
 import MobileCoreServices
 
-public typealias GIFPhotoFetchCompletion = (Result<GIFFetchResponse, AssetFetchError>, PHImageRequestID) -> Void
+typealias GIFPhotoFetchCompletion = (Result<GIFFetchResponse, AssetFetchError>, PHImageRequestID) -> Void
 
 extension AssetFetchTool {
     
     @discardableResult
-    public static func requestGIF(for asset: PHAsset, options: AssetFetchOptions, completion: @escaping GIFPhotoFetchCompletion) -> AssetFetchRequest {
+     static func requestGIF(for asset: PHAsset, options: AssetFetchOptions, completion: @escaping GIFPhotoFetchCompletion) -> AssetFetchRequest {
+        let request = AssetFetchRequest()
         let requestId = requestImageData(for: asset, options: options) { result, requestId in
             switch result {
             case .success(let response):
@@ -36,7 +37,6 @@ extension AssetFetchTool {
                 completion(.failure(error), requestId)
             }
         }
-        let request = AssetFetchRequest()
         request.appendRequestId(requestId)
         return request
     }

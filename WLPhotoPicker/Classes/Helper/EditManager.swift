@@ -7,17 +7,9 @@
 
 import UIKit
 
-public class EditManager {
+class EditManager {
     
     private static let queue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.EditManager.Draw")
-    
-//    static func drawEditPreviewImageFrom(asset: AssetModel, photoEditConfig: PhotoEditConfig, completion: @escaping (UIImage?) -> Void) {
-//        guard let previewImage = asset.previewImage else {
-//            completion(nil)
-//            return
-//        }
-//        imageFrom(photo: previewImage, asset: asset, photoEditConfig: photoEditConfig, completion: completion)
-//    }
     
     static func drawEditOriginalImageFrom(asset: AssetModel, photoEditConfig: PhotoEditConfig, completion: @escaping (UIImage?) -> Void) {
         guard let originalImage = asset.originalImage else {
