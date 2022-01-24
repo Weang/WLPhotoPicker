@@ -18,18 +18,16 @@ class ViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let config = WLPhotoConfig()
-//        config.pickerConfig.selectableType = .all
-//        config.pickerConfig.saveImageToLocalWhenPick = true
-//        config.pickerConfig.exportVideoToLocalWhenPick = true
-//        config.pickerConfig.videoExportOriginal = true
-//        config.photoEditConfig.photoEditPasters = (1...18).map { "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) }
-//        if #available(iOS 13.0, *) {
-//            config.captureConfig.captureVideoStabilizationMode = .cinematicExtended
-//        }
-//        let vc = WLPhotoPickerController(config: config)
-//        vc.pickerDelegate = self
-//        self.present(vc, animated: true, completion: nil)
+        let config = WLPhotoConfig()
+        config.pickerConfig.selectableType = .all
+        config.pickerConfig.saveImageToLocalWhenPick = true
+        config.photoEditConfig.photoEditPasters = (1...18).map { "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) }
+        if #available(iOS 13.0, *) {
+            config.captureConfig.captureVideoStabilizationMode = .cinematicExtended
+        }
+        let vc = WLPhotoPickerController(config: config)
+        vc.pickerDelegate = self
+        self.present(vc, animated: true, completion: nil)
         
         self.navigationItem.title = "WLPhotoPicker"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Picker", style: .done, target: self, action: #selector(openPicker))

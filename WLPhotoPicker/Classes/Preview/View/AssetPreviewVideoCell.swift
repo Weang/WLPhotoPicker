@@ -17,6 +17,7 @@ class AssetPreviewVideoCell: AssetPreviewCell {
     var playerLayer: AVPlayerLayer?
     
     var isVideoFinishLoading: Bool = false
+    var isVideoFetching: Bool = false
     var isPlaying: Bool = false
     
     override init(frame: CGRect) {
@@ -68,9 +69,10 @@ class AssetPreviewVideoCell: AssetPreviewCell {
     }
     
     func requestVideo() {
-        guard let model = self.model else {
+        guard let model = self.model, !isVideoFetching else {
             return
         }
+        isVideoFetching = true
         
         let options = AssetFetchOptions()
         options.videoDeliveryMode = .highQualityFormat
@@ -80,6 +82,7 @@ class AssetPreviewVideoCell: AssetPreviewCell {
             self?.setICloudProgress(1)
             if case .success(let response) = result {
                 self?.isVideoFinishLoading = true
+                self?.isVideoFetching = false
                 self?.setupPlayer(playerItem: response.playerItem)
             }
         }
@@ -147,6 +150,7 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         playerLayer?.removeFromSuperlayer()
         playerLayer = nil
         isVideoFinishLoading = false
+        isVideoFetching = false
         iCloudView.isHidden = true
     }
     

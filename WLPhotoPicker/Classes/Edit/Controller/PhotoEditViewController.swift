@@ -250,6 +250,7 @@ public class PhotoEditViewController: UIViewController {
                     maskView.updateMaskLayer(showActive: false)
                     self.maskLayerContentView.addSubview(maskView)
                 }
+                self.currentFilterImage = filterImage
                 self.graffitiDrawLayer.contents = self.graffitiDrawPath.draw()?.cgImage
                 self.graffitiDrawLayer.removeAllAnimations()
                 self.contentImageView.image = image

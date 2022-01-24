@@ -47,8 +47,6 @@ extension PHAsset {
         return PHAssetResource.assetResources(for: self)
             .lazy
             .filter {
-                $0.value(forKey: "isCurrent") as? Bool == true
-            }.filter {
                 $0.type == .video || $0.type == .fullSizeVideo
             }.filter {
                 $0.value(forKey: "locallyAvailable") as? Bool == true

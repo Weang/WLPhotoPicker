@@ -8,8 +8,7 @@
 import UIKit
 
 class AssetSizeHelper {
-
-    // 根据图片大小返回在屏幕大小中的自适应位置
+    
     static func imageViewRectFrom(imageSize: CGSize, mediaType: AssetMediaType) -> CGRect {
         let viewWidth = UIScreen.width
         let viewHeight = UIScreen.height
@@ -29,25 +28,20 @@ class AssetSizeHelper {
         }
         
         imageViewRect.size.width = viewWidth
-        if imageRatio == viewRatio { // 屏幕比例，返回屏幕尺寸
-            imageViewRect.size.height = viewHeight
-            imageViewRect.origin.x = 0
-            imageViewRect.origin.y = 0
-        } else if imageRatio > viewRatio { // 相较于屏幕是宽图
+        if imageRatio > viewRatio {
             imageViewRect.size.height = viewWidth / imageRatio
             imageViewRect.origin.x = 0
             imageViewRect.origin.y = (viewHeight - imageViewRect.size.height) * 0.5
-        } else {  // 老长老长的图
+        } else {
             imageViewRect.size.height = viewWidth / imageRatio
             imageViewRect.origin.y = 0
             imageViewRect.origin.x = 0
         }
         return imageViewRect
     }
-
-    // 根据图片尺寸获得最大的放大比例
+    
     static func imageViewMaxZoomScaleFrom(imageSize: CGSize) -> CGFloat {
-        if imageSize.ratio > 1 { // 宽图
+        if imageSize.ratio > 1 {
             return max(imageSize.width / UIScreen.width * 2, 2)
         } else {
             return 3

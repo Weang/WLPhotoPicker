@@ -20,7 +20,7 @@ class AssetPreviewCell: UICollectionViewCell {
     
     weak var delegate: AssetPreviewCellDelegate?
     
-    let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
+    let activityIndicator = UIActivityIndicatorView(style: .white)
     let assetImageView = UIImageView()
     let contentScrollView = UIScrollView()
     
