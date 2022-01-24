@@ -13,7 +13,7 @@ class PhotoEditItemCollectionViewCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            iconImageView.tintColor = isSelected ? WLPhotoPickerUIConfig.default.themeColor : .white
+            iconImageView.tintColor = isSelected ? WLPhotoUIConfig.default.color.primaryColor : .white
         }
     }
     

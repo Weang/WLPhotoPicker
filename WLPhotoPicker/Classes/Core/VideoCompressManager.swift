@@ -12,10 +12,10 @@ import VideoToolbox
 public class VideoCompressManager {
     
     // 视频压缩尺寸
-    public var compressSize: VideoCompressSize = ._960x540
+    public var compressSize: AssetVideoCompressSize = ._960x540
     
     // 视频导出格式
-    public var videoExportFileType: VideoExportFileType = .mp4
+    public var videoExportFileType: AssetVideoExportFileType = .mp4
     
     // 视频压缩帧率
     public var frameDuration: Float = 30 {

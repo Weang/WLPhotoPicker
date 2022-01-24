@@ -10,7 +10,7 @@ import UIKit
 public class ImageGenerator {
 
     // UIImage Data 转对应尺寸图片
-    static func createImage(from data: Data, targetSize: CGFloat) -> UIImage? {
+    static public func createImage(from data: Data, targetSize: CGFloat) -> UIImage? {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let imageSource = CGImageSourceCreateWithData(data as CFData, imageSourceOptions) else {
             return nil

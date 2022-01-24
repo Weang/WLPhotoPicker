@@ -39,7 +39,7 @@ class AssetPreviewThumbnailCell: UICollectionViewCell {
         
         highlightCover.isHidden = true
         highlightCover.layer.borderWidth = 4
-        highlightCover.layer.borderColor = WLPhotoPickerUIConfig.default.themeColor.cgColor
+        highlightCover.layer.borderColor = WLPhotoUIConfig.default.color.primaryColor.cgColor
         contentView.addSubview(highlightCover)
         highlightCover.snp.makeConstraints { make in
             make.edges.equalToSuperview()

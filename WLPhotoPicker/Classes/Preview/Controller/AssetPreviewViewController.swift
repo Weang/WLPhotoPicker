@@ -115,7 +115,7 @@ class AssetPreviewViewController: UIViewController {
     
     private func changeToolBarStatus() {
         showToolBar.toggle()
-        view.backgroundColor = showToolBar ? .white : .black
+        view.backgroundColor = showToolBar ? WLPhotoUIConfig.default.color.previewBackground : .black
         toolbars.forEach{
             $0.alpha = showToolBar ? 1 : 0
         }

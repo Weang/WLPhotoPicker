@@ -21,10 +21,10 @@ class AssetDescriptionView: UIView {
         
         GIFLabel.text = "GIF"
         GIFLabel.textColor = .white
-        GIFLabel.font = UIFont.systemFont(ofSize: 14)
+        GIFLabel.font = UIFont.systemFont(ofSize: 13)
         addSubview(GIFLabel)
         GIFLabel.snp.makeConstraints { make in
-            make.left.equalTo(10)
+            make.left.equalTo(6)
             make.centerY.equalToSuperview()
         }
         
@@ -32,16 +32,16 @@ class AssetDescriptionView: UIView {
         iconImageView.contentMode = .scaleAspectFit
         addSubview(iconImageView)
         iconImageView.snp.makeConstraints { make in
-            make.left.equalTo(10)
+            make.left.equalTo(GIFLabel.snp.left)
             make.centerY.equalToSuperview()
             make.height.width.equalTo(20)
         }
         
         videoDurationLabel.textColor = .white
-        videoDurationLabel.font = UIFont.systemFont(ofSize: 14)
+        videoDurationLabel.font = UIFont.systemFont(ofSize: 13)
         addSubview(videoDurationLabel)
         videoDurationLabel.snp.makeConstraints { make in
-            make.right.equalTo(-10)
+            make.right.equalTo(-6)
             make.centerY.equalToSuperview()
         }
         
@@ -51,12 +51,14 @@ class AssetDescriptionView: UIView {
         isHidden = !(asset.mediaType == .GIF || asset.mediaType == .video || asset.hasEdit)
         GIFLabel.isHidden = asset.mediaType != .GIF
         videoDurationLabel.text = asset.videoDuration
+        iconImageView.isHidden = false
         if asset.hasEdit  {
             iconImageView.image = BundleHelper.imageNamed("photo_edited")?.withRenderingMode(.alwaysTemplate)
         } else if asset.asset.isVideo {
             iconImageView.image = BundleHelper.imageNamed("video")?.withRenderingMode(.alwaysTemplate)
         } else {
             iconImageView.image = nil
+            iconImageView.isHidden = true
         }
     }
     

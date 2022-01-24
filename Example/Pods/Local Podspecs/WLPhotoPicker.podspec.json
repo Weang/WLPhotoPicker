@@ -24,6 +24,6 @@
     ]
   },
   "source_files": "WLPhotoPicker/Classes/**/*",
-  "resources": "WLPhotoPicker/Resources/*",
+  "resources": "WLPhotoPicker/Resources/**/*",
   "swift_version": "5.0"
 }

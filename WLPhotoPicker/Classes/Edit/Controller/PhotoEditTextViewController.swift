@@ -112,7 +112,7 @@ class PhotoEditTextViewController: UIViewController {
                                                         bottom: textWrapPadding,
                                                         right: textWrapPadding)
         inputTextView.textContainer.lineFragmentPadding = 0
-        inputTextView.tintColor = WLPhotoPickerUIConfig.default.themeColor
+        inputTextView.tintColor = WLPhotoUIConfig.default.color.primaryColor
         inputTextView.backgroundColor = .clear
         inputTextView.delegate = self
         inputTextView.font = UIFont.systemFont(ofSize: 32, weight: .bold)

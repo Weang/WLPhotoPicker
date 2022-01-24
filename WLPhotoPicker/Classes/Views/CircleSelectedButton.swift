@@ -9,6 +9,7 @@ import UIKit
 
 class CircleSelectedButton: UIControl {
     
+    private let buttonSize: CGFloat = 24
     private let unselectedCurcle = UIView()
     private let selectedCurcle = UIView()
     private let numebrLabel = UILabel()
@@ -27,25 +28,25 @@ class CircleSelectedButton: UIControl {
         accessibilityTraits = .button
         
         unselectedCurcle.isUserInteractionEnabled = false
-        unselectedCurcle.layer.borderColor = UIColor.white.cgColor
+        unselectedCurcle.layer.borderColor = WLPhotoUIConfig.default.color.textColorDark.cgColor
         unselectedCurcle.layer.borderWidth = 0.5 * UIScreen.main.scale
-        unselectedCurcle.backgroundColor = UIColor(white: 0, alpha: 0.3)
+        unselectedCurcle.backgroundColor = UIColor(white: 0, alpha: 0.4)
         addSubview(unselectedCurcle)
         unselectedCurcle.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.height.width.equalTo(24)
+            make.height.width.equalTo(buttonSize)
         }
         
         selectedCurcle.isUserInteractionEnabled = false
-        selectedCurcle.backgroundColor = WLPhotoPickerUIConfig.default.themeColor
+        selectedCurcle.backgroundColor = WLPhotoUIConfig.default.color.primaryColor
         selectedCurcle.layer.masksToBounds = true
         addSubview(selectedCurcle)
         selectedCurcle.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.height.width.equalTo(unselectedCurcle.snp.height)
+            make.height.width.equalTo(buttonSize)
         }
         
-        numebrLabel.textColor = .white
+        numebrLabel.textColor = WLPhotoUIConfig.default.color.textColorDark
         numebrLabel.font = UIFont.systemFont(ofSize: 14)
         selectedCurcle.addSubview(numebrLabel)
         numebrLabel.snp.makeConstraints { make in

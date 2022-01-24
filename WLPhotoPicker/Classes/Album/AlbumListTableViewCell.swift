@@ -25,6 +25,8 @@ class AlbumListTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        backgroundColor = WLPhotoUIConfig.default.color.albumBackground
+        
         albumCover.clipsToBounds = true
         albumCover.contentMode = .scaleAspectFill
         contentView.addSubview(albumCover)
@@ -33,14 +35,14 @@ class AlbumListTableViewCell: UITableViewCell {
             make.width.equalTo(albumCover.snp.height)
         }
         
-        albumNameLabel.textColor = WLPhotoPickerUIConfig.default.textColor
+        albumNameLabel.textColor = WLPhotoUIConfig.default.color.textColor
         contentView.addSubview(albumNameLabel)
         albumNameLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.left.equalTo(albumCover.snp.right).offset(12)
         }
         
-        photoCountLabel.textColor = WLPhotoPickerUIConfig.default.textColor.withAlphaComponent(0.7)
+        photoCountLabel.textColor = WLPhotoUIConfig.default.color.textColor.withAlphaComponent(0.7)
         contentView.addSubview(photoCountLabel)
         photoCountLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
@@ -48,7 +50,7 @@ class AlbumListTableViewCell: UITableViewCell {
         }
         
         checkedIconView.image = BundleHelper.imageNamed("checked")?.withRenderingMode(.alwaysTemplate)
-        checkedIconView.tintColor = WLPhotoPickerUIConfig.default.themeColor
+        checkedIconView.tintColor = WLPhotoUIConfig.default.color.primaryColor
         checkedIconView.contentMode = .scaleAspectFit
         contentView.addSubview(checkedIconView)
         checkedIconView.snp.makeConstraints { make in

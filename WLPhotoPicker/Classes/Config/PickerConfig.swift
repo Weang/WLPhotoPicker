@@ -25,10 +25,10 @@ public class PickerConfig {
     public var pickerSectionInset: UIEdgeInsets = .zero
     
     // 排序方式
-    public var sortType: AssetSortType = .asc
+    public var sortType: PickerSortType = .asc
     
     // 可选择资源类型
-    public var selectableType: PhotoPickerSelectionType = .all
+    public var selectableType: PickerSelectionType = .all
     
     // 选择个数限制
     public var selectCountLimit: Int = 9
@@ -87,14 +87,14 @@ public class PickerConfig {
     
     // 导出视频尺寸
     // 如果videoCanSaveOriginal为true并且勾选原图，那么这个参数将被忽略
-    public var videoExportCompressSize: VideoCompressSize = ._960x540
+    public var videoExportCompressSize: AssetVideoCompressSize = ._960x540
     
     // 导出视频帧率
     // 如果videoCanSaveOriginal为true并且勾选原图，那么这个参数将被忽略
     public var videoExportFrameDuration: Float = 30
     
     // 视频导出格式
-    public var videoExportFileType: VideoExportFileType = .mp4
+    public var videoExportFileType: AssetVideoExportFileType = .mp4
     
     // 点击确定是否自动关闭
     public var dismissPickerAfterDone: Bool = true

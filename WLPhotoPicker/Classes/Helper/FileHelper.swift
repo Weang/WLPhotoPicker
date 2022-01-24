@@ -35,7 +35,7 @@ public extension FileHelper {
         return temporaryPath + fileName
     }
     
-    static func createVideoPathFrom(asset: AssetModel, videoFileType: VideoExportFileType) -> String {
+    static func createVideoPathFrom(asset: AssetModel, videoFileType: AssetVideoExportFileType) -> String {
         let fileNamePrefix = createFileNamePrefixFrom(asset: asset)
         let fileName = fileNamePrefix + videoFileType.suffix
         return temporaryPath + fileName
@@ -54,7 +54,7 @@ public extension FileHelper {
         return createCapturePath(suffix: ".jpg")
     }
     
-    static func createCaptureVideoPath(fileType: CaptureFileType) -> String {
+    static func createCaptureVideoPath(fileType: CaptureVideoFileType) -> String {
         return createCapturePath(suffix: fileType.suffix)
     }
     

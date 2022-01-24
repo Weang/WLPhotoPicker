@@ -13,17 +13,17 @@ protocol AssetPickerToolBarDelegate: AnyObject {
     func pickerToolBarDidClickDoneButton(_ toolBar: AssetPickerToolBar)
 }
 
-class AssetPickerToolBar: VisualEffectView {
+class AssetPickerToolBar: UIView {
     
     private let limitedPermissionViewHeight: CGFloat = 64
     private let toolBarHeight: CGFloat = 54
     
     weak var delegate: AssetPickerToolBarDelegate?
     
+    private let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
     private let contentView = UIStackView()
     private let originButton = NormalStyleButton()
     private let doneButton = UIButton()
-    
     private let limitedPermissionView = AssetPickerLimitedPermissionView()
     
     var isOriginal: Bool = false {
@@ -56,6 +56,12 @@ class AssetPickerToolBar: VisualEffectView {
         self.pickerConfig = pickerConfig
         super.init(frame: .zero)
         
+        backgroundView.contentView.backgroundColor = WLPhotoUIConfig.default.color.toolBarColor.withAlphaComponent(0.8)
+        addSubview(backgroundView)
+        backgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         limitedPermissionView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(permissionLimitedViewClick)))
         limitedPermissionView.isHidden = true
         addSubview(limitedPermissionView)
@@ -78,9 +84,9 @@ class AssetPickerToolBar: VisualEffectView {
         if pickerConfig.allowSelectOriginal {
             originButton.setImage(BundleHelper.imageNamed("select_normal"), for: .normal)
             originButton.setImage(BundleHelper.imageNamed("select_fill")?.withRenderingMode(.alwaysTemplate), for: .selected)
-            originButton.tintColor = WLPhotoPickerUIConfig.default.themeColor
+            originButton.tintColor = WLPhotoUIConfig.default.color.primaryColor
             originButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: -6)
-            originButton.setTitleColor(WLPhotoPickerUIConfig.default.textColor, for: .normal)
+            originButton.setTitleColor(WLPhotoUIConfig.default.color.textColor, for: .normal)
             originButton.setTitle("原图", for: .normal)
             originButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
             originButton.addTarget(self, action: #selector(originButtonClick), for: .touchUpInside)
@@ -93,7 +99,7 @@ class AssetPickerToolBar: VisualEffectView {
             doneButton.isEnabled = false
             doneButton.layer.cornerRadius = 4
             doneButton.layer.masksToBounds = true
-            doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoPickerUIConfig.default.themeColor), for: .normal)
+            doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoUIConfig.default.color.primaryColor), for: .normal)
             doneButton.setTitle("完成", for: .normal)
             doneButton.setTitleColor(.white, for: .normal)
             doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)

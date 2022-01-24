@@ -12,11 +12,11 @@ class AssetAddCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = WLPhotoPickerUIConfig.default.functionItemBackgroundColor
+        backgroundColor = WLPhotoUIConfig.default.color.functionItemBackgroundColor
         
         let addIconView = UIImageView()
         addIconView.image = BundleHelper.imageNamed("add")?.withRenderingMode(.alwaysTemplate)
-        addIconView.tintColor = .darkGray
+        addIconView.tintColor = WLPhotoUIConfig.default.color.functionItemForegroundColor
         contentView.addSubview(addIconView)
         addIconView.snp.makeConstraints { make in
             make.height.width.equalTo(20)
@@ -28,7 +28,7 @@ class AssetAddCollectionViewCell: UICollectionViewCell {
         tipLabel.textAlignment = .center
         tipLabel.numberOfLines = 0
         tipLabel.font = UIFont.systemFont(ofSize: 14)
-        tipLabel.textColor = .darkGray
+        tipLabel.textColor = WLPhotoUIConfig.default.color.functionItemForegroundColor
         tipLabel.text = "添加更多\n可访问照片"
         contentView.addSubview(tipLabel)
         tipLabel.snp.makeConstraints { make in

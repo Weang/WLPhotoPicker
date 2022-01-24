@@ -14,7 +14,7 @@ class PhotoEditFilterCollectionViewCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            let selectedColor = WLPhotoPickerUIConfig.default.themeColor
+            let selectedColor = WLPhotoUIConfig.default.color.primaryColor
             imageView.layer.borderColor = isSelected ? selectedColor.cgColor : UIColor.clear.cgColor
             nameLabel.textColor = isSelected ? selectedColor : .white
         }
@@ -27,7 +27,6 @@ class PhotoEditFilterCollectionViewCell: UICollectionViewCell {
         imageView.layer.borderWidth = 4
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 4
-        imageView.backgroundColor = .lightGray
         imageView.contentMode = .scaleAspectFill
         contentView.addSubview(imageView)
         imageView.snp.makeConstraints { make in

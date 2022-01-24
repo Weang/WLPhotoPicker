@@ -14,7 +14,7 @@ class PhotoEditAdjustCollectionViewCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            let selectedColor = WLPhotoPickerUIConfig.default.themeColor
+            let selectedColor = WLPhotoUIConfig.default.color.primaryColor
             iconImageView.tintColor = isSelected ? selectedColor : .white
             nameLabel.textColor = isSelected ? selectedColor : .white
         }

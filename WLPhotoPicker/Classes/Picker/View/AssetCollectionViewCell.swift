@@ -67,7 +67,6 @@ class AssetCollectionViewCell: UICollectionViewCell {
     
     func bind(_ model: AssetModel, pickerConfig: PickerConfig) {
         selectedButton.isHidden = !pickerConfig.allowSelectMultiPhoto
-        update(model, animated: false)
         
         cancelCurrentRequest()
         

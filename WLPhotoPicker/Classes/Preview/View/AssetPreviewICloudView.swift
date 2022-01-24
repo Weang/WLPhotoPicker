@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AssetPreviewICloudView: VisualEffectView {
+class AssetPreviewICloudView: UIView {
     
     private let imageView = UIImageView()
     private let progressLabel = UILabel()
@@ -28,7 +28,14 @@ class AssetPreviewICloudView: VisualEffectView {
         layer.cornerRadius = 4
         layer.masksToBounds = true
         
-        imageView.tintColor = WLPhotoPickerUIConfig.default.textColor
+        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+        backgroundView.contentView.backgroundColor = WLPhotoUIConfig.default.color.previewTipBackground.withAlphaComponent(0.8)
+        addSubview(backgroundView)
+        backgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        imageView.tintColor = WLPhotoUIConfig.default.color.textColor
         imageView.image = BundleHelper.imageNamed("icloud")?.withRenderingMode(.alwaysTemplate)
         imageView.contentMode = .scaleAspectFit
         addSubview(imageView)
@@ -38,7 +45,7 @@ class AssetPreviewICloudView: VisualEffectView {
             make.height.width.equalTo(20)
         }
         
-        progressLabel.textColor = WLPhotoPickerUIConfig.default.textColor
+        progressLabel.textColor = WLPhotoUIConfig.default.color.textColor
         progressLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular)
         addSubview(progressLabel)
         progressLabel.snp.makeConstraints { make in

@@ -14,7 +14,7 @@ class AssetPickerDeniedPermissionView: UIView {
         
         let titleLabel = UILabel()
         titleLabel.text = "无法访问相册中照片"
-        titleLabel.textColor = WLPhotoPickerUIConfig.default.textColor
+        titleLabel.textColor = WLPhotoUIConfig.default.color.textColor
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
@@ -25,7 +25,7 @@ class AssetPickerDeniedPermissionView: UIView {
         let tipLabel = UILabel()
         tipLabel.text = "您已关闭\(UIApplication.shared.appName ?? "")照片访问权限，建议允许访问「所有照片」"
         tipLabel.numberOfLines = 2
-        tipLabel.textColor = WLPhotoPickerUIConfig.default.textColor
+        tipLabel.textColor = WLPhotoUIConfig.default.color.textColor
         tipLabel.font = UIFont.systemFont(ofSize: 15, weight: .medium)
         tipLabel.textAlignment = .center
         addSubview(tipLabel)
@@ -38,7 +38,7 @@ class AssetPickerDeniedPermissionView: UIView {
         let openSettingButton = UIButton()
         openSettingButton.layer.cornerRadius = 5
         openSettingButton.layer.masksToBounds = true
-        openSettingButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoPickerUIConfig.default.themeColor), for: .normal)
+        openSettingButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoUIConfig.default.color.primaryColor), for: .normal)
         openSettingButton.setTitleColor(.white, for: .normal)
         openSettingButton.setTitle("前往系统设置", for: .normal)
         openSettingButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)

@@ -27,7 +27,7 @@ public class CaptureConfig {
     public var captureMaximumVideoDuration: TimeInterval = 20
     
     // 视频拍摄格式
-    public var captureFileType: CaptureFileType = .mp4
+    public var captureFileType: CaptureVideoFileType = .mp4
     
     // 视频帧率
     public var captureVideoFrameRate: Double = 60

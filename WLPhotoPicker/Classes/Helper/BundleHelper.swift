@@ -14,10 +14,7 @@ fileprivate let bundle = Bundle(for: _BundleClass.self)
 class BundleHelper {
     
     static func imageNamed(_ name: String) -> UIImage? {
-        guard let image = UIImage(named: name, in: bundle, compatibleWith: nil) else {
-            return nil
-        }
-        return image
+        return UIImage(named: name, in: bundle, compatibleWith: nil)
     }
     
 }

@@ -34,7 +34,7 @@ class AlbumTitleButton: UIControl {
         arrowImageView.transform = CGAffineTransform(rotationAngle: Double.pi * -0.5)
         arrowImageView.contentMode = .scaleAspectFit
         arrowImageView.image = BundleHelper.imageNamed("arrow_left")?.withRenderingMode(.alwaysTemplate)
-        arrowImageView.tintColor = WLPhotoPickerUIConfig.default.textColor
+        arrowImageView.tintColor = WLPhotoUIConfig.default.color.textColor
         contentView.addSubview(arrowImageView)
         arrowImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
@@ -43,7 +43,7 @@ class AlbumTitleButton: UIControl {
         }
         
         titleLabel.isUserInteractionEnabled = false
-        titleLabel.textColor = WLPhotoPickerUIConfig.default.textColor
+        titleLabel.textColor = WLPhotoUIConfig.default.color.textColor
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()

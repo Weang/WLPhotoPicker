@@ -97,7 +97,7 @@ class AssetPickerController: UIViewController {
         let cancelButton = UIButton()
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         cancelButton.setTitle("取消", for: .normal)
-        cancelButton.setTitleColor(WLPhotoPickerUIConfig.default.textColor, for: .normal)
+        cancelButton.setTitleColor(WLPhotoUIConfig.default.color.textColor, for: .normal)
         cancelButton.addTarget(self, action: #selector(cancelButtonClick), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: cancelButton)
         
@@ -105,7 +105,7 @@ class AssetPickerController: UIViewController {
         titleButton.addTarget(self, action: #selector(showAlbumList), for: .touchUpInside)
         navigationItem.titleView = titleButton
         
-        view.backgroundColor = .white
+        view.backgroundColor = WLPhotoUIConfig.default.color.pickerBackground
         
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = config.pickerConfig.pickerSectionInset
@@ -114,7 +114,7 @@ class AssetPickerController: UIViewController {
         layout.itemSize = config.pickerConfig.photoCollectionViewItemSize
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = true
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -291,6 +291,15 @@ extension AssetPickerController: UICollectionViewDelegate, UICollectionViewDataS
         cell.bind(albumModel.assets[indexPath.item], pickerConfig: config.pickerConfig)
         cell.delegate = self
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let cell = cell as? AssetCollectionViewCell,
+              let albumModel = assetFetchTool.albumModel else {
+                  return
+              }
+        let indexPath = IndexPath(item: assetIndexFromCell(indexPath.item), section: 0)
+        cell.update(albumModel.assets[indexPath.item], animated: false)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -61,6 +61,7 @@ class AlbumListViewController: UIViewController {
             make.height.equalTo(0)
         }
         
+        tableView.backgroundColor = WLPhotoUIConfig.default.color.albumBackground
         tableView.register(AlbumListTableViewCell.self)
         tableView.estimatedRowHeight = 0
         tableView.estimatedSectionFooterHeight = 0

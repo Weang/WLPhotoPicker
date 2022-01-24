@@ -58,7 +58,7 @@ class PhotoEditAdjustSlideView: UIControl {
         }
         
         highlightView.layer.cornerRadius = 2
-        highlightView.backgroundColor = WLPhotoPickerUIConfig.default.themeColor
+        highlightView.backgroundColor = WLPhotoUIConfig.default.color.primaryColor
         sliderLine.addSubview(highlightView)
         
         sliderBar.layer.cornerRadius = 10

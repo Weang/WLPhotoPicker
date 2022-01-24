@@ -34,7 +34,7 @@ private class AssetPreviewShowTransitioning: NSObject, UIViewControllerAnimatedT
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.4
+        return 0.45
     }
     
 }
@@ -90,8 +90,8 @@ extension AssetPreviewViewController {
             $0.alpha = 0
         }
         
-        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, options: .curveEaseInOut, animations: {
-            self.view.backgroundColor = .white
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
+            self.view.backgroundColor = WLPhotoUIConfig.default.color.previewBackground
             animations()
             self.toolbars.forEach {
                 $0.alpha = 1

@@ -9,7 +9,7 @@ import UIKit
 
 public class GIFGenerator {
 
-    static func animatedImageWith(data: Data) -> UIImage? {
+    static public func animatedImageWith(data: Data) -> UIImage? {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let imageSource = CGImageSourceCreateWithData(data as CFData, imageSourceOptions) else {
             return nil

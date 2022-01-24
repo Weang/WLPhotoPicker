@@ -12,11 +12,11 @@ class AssetCameraCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = WLPhotoPickerUIConfig.default.functionItemBackgroundColor
+        backgroundColor = WLPhotoUIConfig.default.color.functionItemBackgroundColor
         
         let cameraImageView = UIImageView()
         cameraImageView.image = BundleHelper.imageNamed("camera")?.withRenderingMode(.alwaysTemplate)
-        cameraImageView.tintColor = .darkGray
+        cameraImageView.tintColor = WLPhotoUIConfig.default.color.functionItemForegroundColor
         cameraImageView.contentMode = .scaleAspectFit
         contentView.addSubview(cameraImageView)
         cameraImageView.snp.makeConstraints { make in

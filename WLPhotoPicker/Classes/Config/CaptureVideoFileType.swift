@@ -1,5 +1,5 @@
 //
-//  CaptureFileType.swift
+//  CaptureVideoFileType.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2022/1/1.
@@ -8,12 +8,12 @@
 import UIKit
 import AVFoundation
 
-public enum CaptureFileType {
+public enum CaptureVideoFileType {
     case mp4
     case mov
 }
 
-extension CaptureFileType {
+extension CaptureVideoFileType {
     
     var avFileType: AVFileType {
         switch self {

@@ -89,7 +89,7 @@ class PhotoEditBottomToolBar: UIView {
         doneButton.layer.cornerRadius = 6
         doneButton.layer.masksToBounds = true
         doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)
-        doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoPickerUIConfig.default.themeColor), for: .normal)
+        doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoUIConfig.default.color.primaryColor), for: .normal)
         doneButton.setTitle("确定", for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)

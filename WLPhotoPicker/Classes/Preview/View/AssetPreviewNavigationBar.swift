@@ -12,7 +12,7 @@ protocol AssetPreviewNavigationBarDelegate: AnyObject {
     func navigationBar(_ navigationBar: AssetPreviewNavigationBar, didClickSelectButton isSelected: Bool)
 }
 
-class AssetPreviewNavigationBar: VisualEffectView {
+class AssetPreviewNavigationBar: UIView {
     
     weak var delegate: AssetPreviewNavigationBarDelegate?
     
@@ -25,15 +25,22 @@ class AssetPreviewNavigationBar: VisualEffectView {
         self.pickerConfig = pickerConfig
         super.init(frame: .zero)
         
+        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+        backgroundView.contentView.backgroundColor = WLPhotoUIConfig.default.color.toolBarColor.withAlphaComponent(0.8)
+        addSubview(backgroundView)
+        backgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         cancelButton.setImage(BundleHelper.imageNamed("arrow_left")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        cancelButton.tintColor = WLPhotoPickerUIConfig.default.textColor
+        cancelButton.tintColor = WLPhotoUIConfig.default.color.textColor
         cancelButton.addTarget(self, action: #selector(cancelButtonClick), for: .touchUpInside)
         addSubview(cancelButton)
         cancelButton.snp.makeConstraints { make in
             make.centerY.equalTo(snp.bottom).offset(-22)
-            make.left.equalTo(20)
-            make.height.equalTo(32)
-            make.width.equalTo(32)
+            make.left.equalTo(12)
+            make.height.equalTo(40)
+            make.width.equalTo(40)
         }
         
         if pickerConfig.allowSelectMultiPhoto {

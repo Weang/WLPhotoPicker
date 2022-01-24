@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AssetPreviewLivePhotoView: VisualEffectView {
+class AssetPreviewLivePhotoView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -15,8 +15,15 @@ class AssetPreviewLivePhotoView: VisualEffectView {
         layer.cornerRadius = 4
         layer.masksToBounds = true
         
+        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+        backgroundView.contentView.backgroundColor = WLPhotoUIConfig.default.color.previewTipBackground.withAlphaComponent(0.8)
+        addSubview(backgroundView)
+        backgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
         let imageView = UIImageView()
-        imageView.tintColor = WLPhotoPickerUIConfig.default.textColor
+        imageView.tintColor = WLPhotoUIConfig.default.color.textColor
         imageView.image = BundleHelper.imageNamed("livephoto")?.withRenderingMode(.alwaysTemplate)
         imageView.contentMode = .scaleAspectFit
         addSubview(imageView)
@@ -27,7 +34,7 @@ class AssetPreviewLivePhotoView: VisualEffectView {
         }
         
         let tipLabel = UILabel()
-        tipLabel.textColor = WLPhotoPickerUIConfig.default.textColor
+        tipLabel.textColor = WLPhotoUIConfig.default.color.textColor
         tipLabel.text = "实况"
         tipLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular)
         addSubview(tipLabel)

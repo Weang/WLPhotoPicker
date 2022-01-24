@@ -14,7 +14,7 @@ protocol AssetPreviewToolBarDelegate: AnyObject {
     func toolBarDidClickDoneButton(_ toolBar: AssetPreviewToolBar)
 }
 
-class AssetPreviewToolBar: VisualEffectView {
+class AssetPreviewToolBar: UIView {
     
     private let previewThumbnailItemSize: CGSize = CGSize(width: 64, height: 64)
     private let previewThumbnailColumnSpace: CGFloat = 16
@@ -34,7 +34,7 @@ class AssetPreviewToolBar: VisualEffectView {
     
     private let toolBarContentView = UIStackView()
     private let editButton = UIButton()
-    private let originButton = UIButton()
+    private let originButton = NormalStyleButton()
     private let doneButton = UIButton()
     
     private var selectedAssets: [AssetModel] = []
@@ -43,6 +43,13 @@ class AssetPreviewToolBar: VisualEffectView {
     init(pickerConfig: PickerConfig) {
         self.pickerConfig = pickerConfig
         super.init(frame: .zero)
+        
+        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+        backgroundView.contentView.backgroundColor = WLPhotoUIConfig.default.color.toolBarColor.withAlphaComponent(0.8)
+        addSubview(backgroundView)
+        backgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
         addSubview(thumbnailContentView)
         thumbnailContentView.snp.makeConstraints { make in
@@ -84,7 +91,7 @@ class AssetPreviewToolBar: VisualEffectView {
         }
         
         if pickerConfig.allowEditPhoto {
-            editButton.setTitleColor(WLPhotoPickerUIConfig.default.textColor, for: .normal)
+            editButton.setTitleColor(WLPhotoUIConfig.default.color.textColor, for: .normal)
             editButton.setTitle("编辑", for: .normal)
             editButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
             editButton.addTarget(self, action: #selector(editButtonClick), for: .touchUpInside)
@@ -92,11 +99,11 @@ class AssetPreviewToolBar: VisualEffectView {
         }
         
         if pickerConfig.allowSelectOriginal {
+            originButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: -6)
             originButton.setImage(BundleHelper.imageNamed("select_normal"), for: .normal)
             originButton.setImage(BundleHelper.imageNamed("select_fill")?.withRenderingMode(.alwaysTemplate), for: .selected)
-            originButton.tintColor = WLPhotoPickerUIConfig.default.themeColor
-            originButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: -6)
-            originButton.setTitleColor(WLPhotoPickerUIConfig.default.textColor, for: .normal)
+            originButton.tintColor = WLPhotoUIConfig.default.color.primaryColor
+            originButton.setTitleColor(WLPhotoUIConfig.default.color.textColor, for: .normal)
             originButton.setTitle("原图", for: .normal)
             originButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
             originButton.addTarget(self, action: #selector(originButtonClick), for: .touchUpInside)
@@ -107,7 +114,7 @@ class AssetPreviewToolBar: VisualEffectView {
         }
         doneButton.layer.cornerRadius = 4
         doneButton.layer.masksToBounds = true
-        doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoPickerUIConfig.default.themeColor), for: .normal)
+        doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoUIConfig.default.color.primaryColor), for: .normal)
         doneButton.setTitle("完成", for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)

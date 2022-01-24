@@ -61,7 +61,7 @@ class ViewController: FormViewController {
             row.options = ["照片", "视频", "动图", "实况"]
             row.value = ["照片", "视频", "动图", "实况"]
         }.onChange({ row in
-            var type: PhotoPickerSelectionType = []
+            var type: PickerSelectionType = []
             let value = row.value ?? Set<String>()
             if value.contains("照片") {
                 type.insert(.photo)
@@ -142,7 +142,7 @@ class ViewController: FormViewController {
             row.title = "是否导出选取视频"
             row.value = self.config.pickerConfig.saveVideoToLocalWhenPick
         }.onChange { row in
-            self.config.pickerConfig.videoCanSaveOriginal = (row.value ?? false)
+            self.config.pickerConfig.saveVideoToLocalWhenPick = (row.value ?? false)
         }
         
         <<< SwitchRow() { row in
@@ -157,7 +157,7 @@ class ViewController: FormViewController {
             row.options = ["_640x480", "_960x540", "_1280x720", "_1920x1080", "_3840x2160"]
             row.value = "_960x540"
         }.onChange({ row in
-            let value: VideoCompressSize
+            let value: AssetVideoCompressSize
             switch (row.value ?? "_960x540") {
             case "_640x480": value = ._640x480
             case "_960x540": value = ._960x540
