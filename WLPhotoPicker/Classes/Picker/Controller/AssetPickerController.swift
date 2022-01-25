@@ -7,6 +7,7 @@
 
 import UIKit
 import Photos
+import MobileCoreServices
 
 protocol AssetPickerControllerDelegate: AnyObject {
     func pickerControllerDidCancel(_ pickerController: AssetPickerController)
@@ -249,9 +250,22 @@ class AssetPickerController: UIViewController {
     }
     
     private func openCaptureController() {
-        let vc = CaptureViewController(config: config)
-        vc.delegate = self
-        present(vc, animated: true, completion: nil)
+        if config.captureConfig.useSystemImagePickerController {
+            if !UIImagePickerController.isSourceTypeAvailable(.camera) {
+                return
+            }
+            let vc = UIImagePickerController()
+            vc.delegate = self
+            vc.sourceType = .camera
+            vc.videoMaximumDuration = config.captureConfig.captureMaximumVideoDuration
+            vc.mediaTypes = config.captureConfig.imagePickerControllerMediaTypes
+            vc.cameraFlashMode = config.captureConfig.captureFlashMode.cameraFlashMode
+            present(vc, animated: true, completion: nil)
+        } else {
+            let vc = CaptureViewController(config: config)
+            vc.delegate = self
+            present(vc, animated: true, completion: nil)
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -486,6 +500,37 @@ extension AssetPickerController: CaptureViewControllerDelegate {
                   }
             self.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
         }
+    }
+    
+}
+
+// MARK: UIImagePickerControllerDelegate & UINavigationControllerDelegate
+extension AssetPickerController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        guard let mediaType = info[.mediaType] as? String else {
+            return
+        }
+        
+        if mediaType == kUTTypeImage as String, let originalImage = info[.originalImage] as? UIImage {
+            AssetFetchTool.savePhoto(image: originalImage) { [weak self] result in
+                guard case .success(let asset) = result else {
+                    return
+                }
+                self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
+            }
+        }
+        
+        if mediaType == kUTTypeMovie as String, let mediaURL = info[.mediaURL] as? URL {
+            AssetFetchTool.saveVideo(url: mediaURL) { [weak self] result in
+                guard case .success(let asset) = result else {
+                    return
+                }
+                self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
+            }
+        }
+        
     }
     
 }

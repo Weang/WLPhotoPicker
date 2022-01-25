@@ -57,8 +57,8 @@ extension PickerResultViewController: UITableViewDataSource, UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = result[indexPath.section]
-        if let playerItem = model.playerItem {
-            let player = AVPlayer(playerItem: playerItem.copy() as! AVPlayerItem)
+        if let playerItem = model.playerItem?.copy() as? AVPlayerItem {
+            let player = AVPlayer(playerItem: playerItem)
             let controller = AVPlayerViewController()
             controller.player = player
             controller.modalPresentationStyle = .fullScreen

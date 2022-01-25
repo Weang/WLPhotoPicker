@@ -65,6 +65,14 @@ public class WLPhotoPickerController: UINavigationController {
 //        }
     }
     
+    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
+    public override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .statusBarStyle(style: WLPhotoUIConfig.default.color.userInterfaceStyle)
+    }
+    
 }
 
 // MARK: AssetPickerControllerDelegate

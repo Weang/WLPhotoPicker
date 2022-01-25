@@ -152,6 +152,7 @@ class AssetPreviewToolBar: UIView {
            let shouldSelectIndex = selectedAssets.firstIndex(where: { $0.localIdentifier == asset.localIdentifier }) {
             let indxPath = IndexPath(item: shouldSelectIndex, section: 0)
             if !selectedIndexPaths.contains(indxPath) {
+                layoutIfNeeded()
                 collectionView.selectItem(at: indxPath, animated: animated, scrollPosition: .centeredHorizontally)
             }
         } else {

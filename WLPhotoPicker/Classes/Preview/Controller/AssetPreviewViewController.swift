@@ -32,15 +32,12 @@ class AssetPreviewViewController: UIViewController {
     weak var animateDataSource: AssetPreviewViewControllerAnimateDataSource?
     weak var deleagte: AssetPreviewViewControllerDelegate?
     
-    public var currentIndex: Int?
+    var currentIndex: Int?
     private var showToolBar: Bool = true
+    private var previewCellIsDragging: Bool = false
     
     var toolbars: [UIView] {
         [topToolBar, bottomToolBar]
-    }
-    
-    public override var prefersStatusBarHidden: Bool {
-        !showToolBar
     }
     
     let assetFetchTool: AssetFetchTool
@@ -122,13 +119,13 @@ class AssetPreviewViewController: UIViewController {
         setNeedsStatusBarAppearanceUpdate()
     }
     
-    private func updateToolBarsAt(_ index: Int) {
+    private func updateToolBarsAt(_ index: Int, animated: Bool = true) {
         guard let albumModel = assetFetchTool.albumModel else {
             return
         }
         let assetModel = albumModel.assets[index]
         topToolBar.setCircleButton(isSelected: assetModel.isSelected, selectedIndex: assetModel.selectedIndex, animated: false)
-        bottomToolBar.setCurrentAsset(assetModel, animated: true)
+        bottomToolBar.setCurrentAsset(assetModel, animated: animated)
     }
     
     private func openEditViewController(_ assetModel: AssetModel) {
@@ -145,8 +142,20 @@ class AssetPreviewViewController: UIViewController {
         }
         let offsetX = CGFloat(currentIndex) * (UIScreen.width + itemSpacing)
         collectionView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
-        updateToolBarsAt(currentIndex)
+        updateToolBarsAt(currentIndex, animated: false)
         self.currentIndex = nil
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .statusBarStyle(style: WLPhotoUIConfig.default.color.userInterfaceStyle)
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return !showToolBar && (showToolBar || !previewCellIsDragging)
     }
     
     deinit {
@@ -242,6 +251,8 @@ extension AssetPreviewViewController: AssetPreviewCellDelegate {
     }
     
     func previewCellSingleTapDidBeginPan(_ previewCell: AssetPreviewCell) {
+        previewCellIsDragging = true
+        setNeedsStatusBarAppearanceUpdate()
         guard showToolBar else {
             return
         }
@@ -261,6 +272,8 @@ extension AssetPreviewViewController: AssetPreviewCellDelegate {
             self.dismiss(animated: true, completion: nil)
             return
         }
+        previewCellIsDragging = false
+        setNeedsStatusBarAppearanceUpdate()
         view.backgroundColor = view.backgroundColor?.withAlphaComponent(1)
         if showToolBar {
             toolbars.forEach {

@@ -93,6 +93,10 @@ class PhotoEditPasterViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
 }
 
 extension PhotoEditPasterViewController: UICollectionViewDelegate, UICollectionViewDataSource {

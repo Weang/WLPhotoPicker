@@ -209,6 +209,10 @@ class PhotoEditTextViewController: UIViewController {
         drawLineLayers()
     }
     
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }

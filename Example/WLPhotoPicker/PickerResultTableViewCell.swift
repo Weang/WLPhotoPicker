@@ -51,9 +51,9 @@ class PickerResultTableViewCell: UITableViewCell {
             if let fileURL = model.fileURL {
                 playerItem = AVPlayerItem(asset: AVAsset(url: fileURL))
             }
-            var text = "时长： \(playerItem?.asset.duration.seconds ?? 0)"
+            var text = String(format: "时长：%.0fs", playerItem?.asset.duration.seconds ?? 0)
             text += "\n宽高： \(playerItem?.asset.tracks(withMediaType: .video).first?.naturalSize ?? .zero)"
-            text += "\n帧率： \(playerItem?.asset.tracks(withMediaType: .video).first?.nominalFrameRate ?? 0)"
+            text += String(format: "\n帧率：%.0f", playerItem?.asset.tracks(withMediaType: .video).first?.nominalFrameRate ?? 0)
             if let path = model.fileURL?.relativePath,
                let attr = try? FileManager.default.attributesOfItem(atPath: path) as NSDictionary {
                 let fileSize = Double(attr.fileSize())

@@ -34,7 +34,7 @@ private class AssetPreviewShowTransitioning: NSObject, UIViewControllerAnimatedT
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.45
+        return 0.4
     }
     
 }

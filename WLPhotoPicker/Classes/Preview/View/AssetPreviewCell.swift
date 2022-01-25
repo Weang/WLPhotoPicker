@@ -112,7 +112,6 @@ class AssetPreviewCell: UICollectionViewCell {
     
     @objc func handleSingleTapGesture() {
         delegate?.previewCellSingleTap(self)
-        print(contentScrollView.frame)
     }
     
     @objc func handleDoubleTapGesture(_ gesture: UITapGestureRecognizer) {

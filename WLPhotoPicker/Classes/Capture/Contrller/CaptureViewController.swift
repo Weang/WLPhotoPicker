@@ -15,7 +15,7 @@ public protocol CaptureViewControllerDelegate: AnyObject {
 
 public class CaptureViewController: UIViewController {
     
-    private let captureManager: CaptureManager
+    private var captureManager: CaptureManager!
     private let controlView: CaptureControlView
     private let config: WLPhotoConfig
     
@@ -24,10 +24,10 @@ public class CaptureViewController: UIViewController {
     public init(config: WLPhotoConfig) {
         self.config = config
         self.controlView = CaptureControlView(pickerConfig: config)
-        self.captureManager = CaptureManager(pickerConfig: config)
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
         modalPresentationCapturesStatusBarAppearance = true
+        captureManager = CaptureManager(pickerConfig: config, delegate: self)
     }
     
     required init?(coder: NSCoder) {
@@ -47,9 +47,7 @@ public class CaptureViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if TARGET_IPHONE_SIMULATOR == 1 && TARGET_OS_IPHONE == 1 {
-            return
-        }
+        
         captureManager.starRunning()
         controlView.showRunningAnimation()
         controlView.showFocusAnimationAt(point: CGPoint(x: controlView.previewContentView.width * 0.5,
@@ -80,6 +78,10 @@ public class CaptureViewController: UIViewController {
         captureManager.setupPreviewLayer(to: controlView.previewContentView)
     }
     
+    public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
     deinit {
         captureManager.stopRunning()
     }
@@ -90,7 +92,9 @@ extension CaptureViewController: CaptureManagerDelegate {
     
     public func captureManager(_ captureManager: CaptureManager, didOccurredError error: CaptureError) {
         let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: { [weak self] _ in
+            self?.dismiss(animated: true, completion: nil)
+        }))
         self.present(alert, animated: true, completion: nil)
     }
     
