@@ -13,16 +13,13 @@ public class CaptureConfig {
     public init() { }
     
     // 是否使用系统UIImagePickerController拍摄
-    public var useSystemImagePickerController: Bool = true
+    public var useSystemImagePickerController: Bool = false
     
     // 是否允许拍摄照片
     public var captureAllowTakingPhoto: Bool = true
     
     // 是否允许拍摄视频
     public var captureAllowTakingVideo: Bool = true
-    
-    // 拍摄比例
-    public var captureAspectRatio: CaptureAspectRatio = .ratio16x9
     
     // 拍摄闪光灯开关
     public var captureFlashMode: CaptureFlashMode = .off

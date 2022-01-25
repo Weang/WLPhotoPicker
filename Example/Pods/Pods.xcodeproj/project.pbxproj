@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		008E02A88C10E3688B4431BFD393F0BE /* DateRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336C73235F283B1D40802FB927849D30 /* DateRow.swift */; };
-		028C14FB9750E3121D0EF361077B14FB /* CaptureAspectRatio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41B9042B2A959FBBBDAA3E05E6C7231C /* CaptureAspectRatio.swift */; };
 		033B69980CEDA626958870DE7AC2CD48 /* PhotoEditItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F230071A0ECB3ECD10B79610DCC2CC /* PhotoEditItemType.swift */; };
 		035929EAA0FDF4D0249363D227CBCC4A /* CoreTextHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80FD8688256178514A0CB861BA483AFA /* CoreTextHelper.swift */; };
 		04EFD8FD04A3355A5998C31A2EC41C16 /* UITextConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD611FD3F5AB7C612537A9454A84F888 /* UITextConfig.swift */; };
@@ -376,7 +375,6 @@
 		40A79E4CFF640A90BB3C2050F14183D9 /* AlertRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AlertRow.swift; path = Source/Rows/AlertRow.swift; sourceTree = "<group>"; };
 		415CBBA17E2088C7194A6EC0602EF814 /* AssetPickerLimitedPermissionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetPickerLimitedPermissionView.swift; sourceTree = "<group>"; };
 		419D15CF82B6AC741A19F10927EF8331 /* PhotoEditAdjustCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditAdjustCollectionViewCell.swift; sourceTree = "<group>"; };
-		41B9042B2A959FBBBDAA3E05E6C7231C /* CaptureAspectRatio.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CaptureAspectRatio.swift; sourceTree = "<group>"; };
 		440C5132E1614126749ECD8FE89B11D4 /* AssetPreviewVideoCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetPreviewVideoCell.swift; sourceTree = "<group>"; };
 		444BBB87224460B1893B782F8BB55D06 /* SelectorAlertController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelectorAlertController.swift; path = Source/Rows/Controllers/SelectorAlertController.swift; sourceTree = "<group>"; };
 		44596C971EB95961BBCA221CA08E4AB9 /* CaptureFlashMode.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CaptureFlashMode.swift; sourceTree = "<group>"; };
@@ -916,8 +914,8 @@
 		7CADCB26D0D40E036407ABF9DBB22F2F /* Contrller */ = {
 			isa = PBXGroup;
 			children = (
-				9B36DA423F73967CA1D7AA913A66CB50 /* CapturePreviewViewController.swift */,
 				DB658DD140111661B0C55BAA8F121964 /* CaptureViewController.swift */,
+				9B36DA423F73967CA1D7AA913A66CB50 /* CapturePreviewViewController.swift */,
 			);
 			path = Contrller;
 			sourceTree = "<group>";
@@ -1155,7 +1153,6 @@
 				92BB676F3914165EF5874F1A5DA9EC37 /* WLPhotoUIConfig.swift */,
 				CCD581C1D0FCD4AD97905A44884AD346 /* AssetVideoCompressSize.swift */,
 				0E8B0FDF83A95F4A87B9EDC01F480475 /* AssetVideoExportFileType.swift */,
-				41B9042B2A959FBBBDAA3E05E6C7231C /* CaptureAspectRatio.swift */,
 				2A6270B9CD0A0B0C8CCF1E6DB5178B81 /* CaptureConfig.swift */,
 				44596C971EB95961BBCA221CA08E4AB9 /* CaptureFlashMode.swift */,
 				339644D49C85F49A99AFCE8A8DDB6F96 /* CaptureSessionPreset.swift */,
@@ -1621,7 +1618,6 @@
 				C50042400F9312DBDC36FAE9552699C0 /* AVCaptureDevice+Extensions.swift in Sources */,
 				8C184F09CAEFBF8B5732F64CAF2AF9A4 /* BundleHelper.swift in Sources */,
 				30FB145800A3894077838D1B45858C7A /* Camera.swift in Sources */,
-				028C14FB9750E3121D0EF361077B14FB /* CaptureAspectRatio.swift in Sources */,
 				D23B47CDC4E0FBB770CE99FF3012A463 /* CaptureCameraButton.swift in Sources */,
 				74A7B10E8829045A1D3B93B01C32EE31 /* CaptureConfig.swift in Sources */,
 				A8C1AF52AFE57BA0E9B6553B9FEEBA70 /* CaptureControlView.swift in Sources */,

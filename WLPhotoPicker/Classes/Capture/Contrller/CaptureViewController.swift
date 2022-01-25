@@ -45,8 +45,8 @@ public class CaptureViewController: UIViewController {
         setupManager()
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         captureManager.starRunning()
         controlView.showRunningAnimation()
@@ -110,6 +110,12 @@ extension CaptureViewController: CaptureManagerDelegate {
         }
     }
     
+    public func captureManager(_ captureManager: CaptureManager, finishTakingVideo url: URL) {
+        let previewVC = CapturePreviewViewController(videoUrl: url)
+        previewVC.delegate = self
+        self.present(previewVC, animated: false, completion: nil)
+    }
+    
 }
 
 // MARK: WLCameraControlDelegate
@@ -136,11 +142,7 @@ extension CaptureViewController: WLCameraControlDelegate {
     }
     
     func controlViewDidEndTakingVideo(_ controlView: CaptureControlView) {
-        captureManager.stopRecordingVideo { [weak self] url in
-            let previewVC = CapturePreviewViewController(videoUrl: url)
-            previewVC.delegate = self
-            self?.present(previewVC, animated: false, completion: nil)
-        }
+        captureManager.stopRecordingVideo()
     }
     
     func cameraControlDidPrepareForZoom(_ controlView: CaptureControlView) {

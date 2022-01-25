@@ -13,11 +13,13 @@ import VideoToolbox
 public protocol CaptureManagerDelegate: AnyObject {
     func captureManager(_ captureManager: CaptureManager, didOccurredError error: CaptureError)
     func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage?)
+    func captureManager(_ captureManager: CaptureManager, finishTakingVideo url: URL)
 }
 
 public extension CaptureManagerDelegate {
     func captureManager(_ captureManager: CaptureManager, didOccurredError error: CaptureError) { }
     func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage?) { }
+    func captureManager(_ captureManager: CaptureManager, finishTakingVideo url: URL) { }
 }
 
 public class CaptureManager: NSObject {
@@ -36,19 +38,13 @@ public class CaptureManager: NSObject {
     private var videoDeviceInput: AVCaptureDeviceInput?
     private var audioDeviceInput: AVCaptureDeviceInput?
     
-    private var assetWriter: AVAssetWriter?
-    private var assetWriterAudioInput: AVAssetWriterInput?
-    private var assetWriterVideoInput: AVAssetWriterInput?
-    
-    private let videoDataOutput = AVCaptureVideoDataOutput()
-    private let audioDataOutput = AVCaptureAudioDataOutput()
+    private let movieFileOutput = AVCaptureMovieFileOutput()
     private let photoOutput = AVCapturePhotoOutput()
     
-    private var isRecording: Bool = false
     private var isFocusing: Bool = false
     private var videoCurrentZoom: Double = 1.0
     
-    private var currentOrientation: UIInterfaceOrientation = .portrait
+    private var currentOrientation: AVCaptureVideoOrientation = .portrait
     private let deviceOrientation = DeviceOrientation()
     
     private let pickerConfig: WLPhotoConfig
@@ -83,29 +79,22 @@ public class CaptureManager: NSObject {
             captureSession.sessionPreset = CaptureSessionPreset.hd1920x1080.avSessionPreset
         }
         
-        setupDataOut()
+        setupDataOutput()
         setupCameraDevice(position: .back)
         setupAudioDevice()
         
         captureSession.commitConfiguration()
     }
     
-    private func setupDataOut() {
-        videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey : kCVPixelFormatType_32BGRA] as [String : Any]
-        videoDataOutput.alwaysDiscardsLateVideoFrames = true
-        videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
-        if captureSession.canAddOutput(videoDataOutput) {
-            captureSession.addOutput(videoDataOutput)
-        }
-        
-        audioDataOutput.setSampleBufferDelegate(self, queue: audioDataOutputQueue)
-        if captureSession.canAddOutput(audioDataOutput) {
-            captureSession.addOutput(audioDataOutput)
-        }
-        
+    private func setupDataOutput() {
         photoOutput.isHighResolutionCaptureEnabled = true
         if captureSession.canAddOutput(photoOutput) {
             captureSession.addOutput(photoOutput)
+        }
+        
+        movieFileOutput.movieFragmentInterval = .invalid
+        if captureSession.canAddOutput(movieFileOutput) {
+            captureSession.addOutput(movieFileOutput)
         }
     }
     
@@ -140,7 +129,7 @@ public class CaptureManager: NSObject {
             videoDevice.activeVideoMaxFrameDuration = frameDuration
         }
         
-        if let connection = videoDataOutput.connection(with: .video) {
+        if let connection = movieFileOutput.connection(with: .video) {
             let stabilizationMode = pickerConfig.captureConfig.captureVideoStabilizationMode.avPreferredVideoStabilizationMode
             connection.preferredVideoStabilizationMode = stabilizationMode
             if connection.isVideoMirroringSupported {
@@ -167,7 +156,7 @@ public class CaptureManager: NSObject {
     
     public func setupPreviewLayer(to superView: UIView) {
         let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.videoGravity = .resizeAspect
         previewLayer.frame = superView.layer.bounds
         superView.layer.addSublayer(previewLayer)
         self.previewLayer = previewLayer
@@ -193,38 +182,6 @@ public class CaptureManager: NSObject {
         }
     }
     
-    func initializeVideoWriter() {
-        let fileType = pickerConfig.captureConfig.captureFileType
-        let videoPath = FileHelper.createCaptureVideoPath(fileType: pickerConfig.captureConfig.captureFileType)
-        let fileUrl = URL(fileURLWithPath: videoPath)
-        
-        guard let assetWriter = try? AVAssetWriter(outputURL: fileUrl, fileType: fileType.avFileType) else {
-            delegate?.captureManager(self, didOccurredError: .failedToInitializeAssetWriter)
-            return
-        }
-        
-        let rotate = OrientationHelper.videoRotateWith(currentOrientation)
-        let outputSettings = videoDataOutput.recommendedVideoSettingsForAssetWriter(writingTo: fileType.avFileType)
-        
-        let assetWriterVideoInput = AVAssetWriterInput(mediaType: .video, outputSettings: outputSettings)
-        assetWriterVideoInput.transform = CGAffineTransform(rotationAngle: CGFloat(rotate))
-        assetWriterVideoInput.expectsMediaDataInRealTime = true
-        if assetWriter.canAdd(assetWriterVideoInput) {
-            assetWriter.add(assetWriterVideoInput)
-        }
-        self.assetWriterVideoInput = assetWriterVideoInput
-        
-        let audioOutputSettings = audioDataOutput.recommendedAudioSettingsForAssetWriter(writingTo: fileType.avFileType)
-        let assetWriterAudioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioOutputSettings)
-        assetWriterAudioInput.expectsMediaDataInRealTime = true
-        if assetWriter.canAdd(assetWriterAudioInput) {
-            assetWriter.add(assetWriterAudioInput)
-        }
-        self.assetWriterAudioInput = assetWriterAudioInput
-        
-        self.assetWriter = assetWriter
-    }
-    
     deinit {
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
@@ -241,29 +198,16 @@ public extension CaptureManager {
     }
     
     func startRecordingVideo() {
-        sessionQueue.async { [weak self] in
-            self?.initializeVideoWriter()
-            self?.isRecording = true
-        }
+        let videoPath = FileHelper.createCaptureVideoPath(fileType: pickerConfig.captureConfig.captureFileType)
+        let fileUrl = URL(fileURLWithPath: videoPath)
+        let connection = movieFileOutput.connection(with: .video)
+        connection?.videoOrientation = currentOrientation
+        movieFileOutput.startRecording(to: fileUrl, recordingDelegate: self)
     }
     
-    func stopRecordingVideo(completion: @escaping (URL) -> ()) {
-        if !isRecording { return }
-        isRecording = false
-        assetWriterAudioInput?.markAsFinished()
-        assetWriterVideoInput?.markAsFinished()
-        guard let outputURL = assetWriter?.outputURL else {
-            return
-        }
-        assetWriter?.finishWriting { [weak self] in
-            guard let self = self else { return }
-            self.assetWriter = nil
-            self.assetWriterVideoInput = nil
-            self.assetWriterAudioInput = nil
-            DispatchQueue.main.async {
-                completion(outputURL)
-            }
-        }
+    func stopRecordingVideo() {
+        LoadingHUD.shared.showLoading()
+        movieFileOutput.stopRecording()
     }
 }
 
@@ -271,7 +215,7 @@ public extension CaptureManager {
 extension CaptureManager {
     
     public func switchCamera() {
-        if isRecording { return }
+        if movieFileOutput.isRecording { return }
         
         guard let videoDeviceInput = self.videoDeviceInput else { return }
         let currentPosition = videoDeviceInput.device.position
@@ -345,8 +289,7 @@ extension CaptureManager: AVCapturePhotoCaptureDelegate {
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard let photoData = photo.fileDataRepresentation(),
               let photo = OrientationHelper.rotateImage(photoData: photoData,
-                                                        orientation: currentOrientation,
-                                                        aspectRatio: pickerConfig.captureConfig.captureAspectRatio) else {
+                                                        orientation: currentOrientation) else {
                   return
               }
         delegate?.captureManager(self, finishTakingPhoto: photo)
@@ -354,25 +297,14 @@ extension CaptureManager: AVCapturePhotoCaptureDelegate {
     
 }
 
-extension CaptureManager: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
+extension CaptureManager: AVCaptureFileOutputRecordingDelegate {
     
-    public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard isRecording else { return }
-        
-        if output.isKind(of: AVCaptureVideoDataOutput.self) {
-            if self.assetWriter?.status == .unknown {
-                self.assetWriter?.startWriting()
-                self.assetWriter?.startSession(atSourceTime: CMSampleBufferGetPresentationTimeStamp(sampleBuffer))
-            }
-            if self.assetWriterVideoInput?.isReadyForMoreMediaData ?? false {
-                self.assetWriterVideoInput?.append(sampleBuffer)
-            }
-        }
-        
-        if output.isKind(of: AVCaptureAudioDataOutput.self) {
-            if self.assetWriterAudioInput?.isReadyForMoreMediaData ?? false {
-                self.assetWriterAudioInput?.append(sampleBuffer)
-            }
+    public func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        LoadingHUD.shared.hideLoading()
+        if let error = error {
+            delegate?.captureManager(self, didOccurredError: .underlying(error))
+        } else {
+            delegate?.captureManager(self, finishTakingVideo: outputFileURL)
         }
     }
     
@@ -380,7 +312,7 @@ extension CaptureManager: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptur
 
 extension CaptureManager: DeviceOrientationDelegate {
     
-    func deviceOrientation(_ deviceOrientation: DeviceOrientation, didUpdate orientation: UIInterfaceOrientation) {
+    func deviceOrientation(_ deviceOrientation: DeviceOrientation, didUpdate orientation: AVCaptureVideoOrientation) {
         currentOrientation = orientation
     }
     

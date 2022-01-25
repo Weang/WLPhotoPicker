@@ -11,7 +11,7 @@ public enum CaptureError {
     case simulator
     case failedToInitializeCameraDevice
     case failedToInitializeAudioDevice
-    case failedToInitializeAssetWriter
+    case underlying(Error)
 }
 
 extension CaptureError: LocalizedError {
@@ -24,8 +24,8 @@ extension CaptureError: LocalizedError {
             return "设备初始化失败"
         case .failedToInitializeAudioDevice:
             return "设备初始化失败"
-        case .failedToInitializeAssetWriter:
-            return "无法写入文件"
+        case .underlying(let error):
+            return error.localizedDescription
         }
     }
     

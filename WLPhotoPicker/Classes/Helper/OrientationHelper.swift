@@ -10,17 +10,17 @@ import CoreImage
 
 class OrientationHelper {
     
-    static func cgImageOrientationFrom(_ orientation: UIInterfaceOrientation) -> CGImagePropertyOrientation {
+    static func cgImageOrientationFrom(_ orientation: AVCaptureVideoOrientation) -> CGImagePropertyOrientation {
         switch orientation {
         case .portrait:
             return .up
         case .portraitUpsideDown:
             return .down
         case .landscapeLeft:
-            return .left
-        case .landscapeRight:
             return .right
-        default:
+        case .landscapeRight:
+            return .left
+        @unknown default:
             return .up
         }
     }
@@ -59,31 +59,15 @@ class OrientationHelper {
 
 extension OrientationHelper {
     
-    static func rotateImage(photoData: Data, orientation: UIInterfaceOrientation, aspectRatio: CaptureAspectRatio) -> UIImage? {
+    static func rotateImage(photoData: Data, orientation: AVCaptureVideoOrientation) -> UIImage? {
         guard let source = CGImageSourceCreateWithData(photoData as CFData, nil),
               let metadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any],
               let orlginalOrientation = metadata[kCGImagePropertyOrientation as String] as? Int32,
               let orlginalImage = CIImage(data: photoData)?.oriented(forExifOrientation: orlginalOrientation) else {
                   return nil
               }
-        let imageSize = orlginalImage.extent.size
-        let imageRatio = imageSize.width / imageSize.height
-        let aspectRatio = aspectRatio.ratioValue
-        let cropRect: CGRect
-        if imageRatio < aspectRatio {
-            cropRect = CGRect(x: 0,
-                          y: (imageSize.height - imageSize.width / aspectRatio) * 0.5,
-                          width: orlginalImage.extent.size.width,
-                          height: imageSize.width / aspectRatio)
-        } else {
-            cropRect = CGRect(x: (imageSize.width - imageSize.height * aspectRatio) * 0.5,
-                          y: 0,
-                          width: imageSize.height * aspectRatio,
-                          height: orlginalImage.extent.size.height)
-        }
-        let croppedImage = orlginalImage.cropped(to: cropRect)
         let toOrientation = Int32(cgImageOrientationFrom(orientation).rawValue)
-        let fixedImage = croppedImage.oriented(forExifOrientation: toOrientation)
+        let fixedImage = orlginalImage.oriented(forExifOrientation: toOrientation)
         guard let cgImage = CIContext().createCGImage(fixedImage, from: fixedImage.extent) else {
             return nil
         }

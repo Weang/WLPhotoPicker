@@ -6,16 +6,15 @@
 //
 
 import CoreMotion
+import AVFoundation
 
 protocol DeviceOrientationDelegate: AnyObject {
-    func deviceOrientation(_ deviceOrientation: DeviceOrientation, didUpdate orientation: UIInterfaceOrientation)
+    func deviceOrientation(_ deviceOrientation: DeviceOrientation, didUpdate orientation: AVCaptureVideoOrientation)
 }
 
 class DeviceOrientation: NSObject {
 
     weak var delegate: DeviceOrientationDelegate?
-    
-    typealias DevideUpdateClocure = (UIInterfaceOrientation) -> ()
     
     let motionManager = CMMotionManager()
     
@@ -40,7 +39,7 @@ class DeviceOrientation: NSObject {
     func deviceMotion(_ motion: CMDeviceMotion?) {
         let sensitive = 0.77
         guard let motion = motion else {
-            delegate?.deviceOrientation(self, didUpdate: .unknown)
+            delegate?.deviceOrientation(self, didUpdate: .portrait)
             return
         }
         let x = motion.gravity.x
@@ -53,9 +52,9 @@ class DeviceOrientation: NSObject {
         }
         
         if x < 0 && fabs(x) > sensitive {
-            delegate?.deviceOrientation(self, didUpdate: .landscapeLeft)
-        } else if x > sensitive {
             delegate?.deviceOrientation(self, didUpdate: .landscapeRight)
+        } else if x > sensitive {
+            delegate?.deviceOrientation(self, didUpdate: .landscapeLeft)
         }
     }
     

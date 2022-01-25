@@ -56,15 +56,14 @@ class CaptureControlView: UIView {
     }
     
     private func setupView() {
-        previewContentView.alpha = 0
+        previewContentView.layer.opacity = 0
         previewContentView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(focusTapGes(_:))))
         previewContentView.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(zoomPinchGes(_:))))
         previewContentView.backgroundColor = .clear
         addSubview(previewContentView)
         previewContentView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.equalToSuperview()
-            make.height.equalTo(snp.width).multipliedBy(1 / pickerConfig.captureConfig.captureAspectRatio.ratioValue)
+            make.width.height.equalToSuperview()
         }
         
         cameraButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGesture)))
@@ -105,13 +104,16 @@ class CaptureControlView: UIView {
     }
     
     func showRunningAnimation() {
-        UIView.animate(withDuration: 0.6) {
-            self.previewContentView.alpha = 1
-        }
+        previewContentView.layer.opacity = 1
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.duration = 0.6
+        animation.isRemovedOnCompletion = false
+        animation.timingFunction = .init(name: .easeInEaseOut)
+        previewContentView.layer.add(animation, forKey: nil)
     }
     
     func showStopRunningAnimation() {
-        self.previewContentView.alpha = 0
+        self.previewContentView.layer.opacity = 0
     }
     
     @objc private func zoomPinchGes(_ gesture: UIPinchGestureRecognizer) {
