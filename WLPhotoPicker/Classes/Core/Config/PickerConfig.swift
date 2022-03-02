@@ -22,13 +22,19 @@ public class PickerConfig {
     public var pickerColumnSpace: CGFloat = 2
     
     // SectionInset
-    public var pickerSectionInset: UIEdgeInsets = UIEdgeInsets(top: 0, left: 2, bottom: 0, right: 2)
+    public var pickerSectionInset: UIEdgeInsets = .zero
     
     // 排序方式
     public var sortType: PickerSortType = .asc
     
     // 可选择资源类型
     public var selectableType: PickerSelectionType = .all
+    
+    // 是否显示隐藏相册
+    public var showHiddenAlbum: Bool = false
+    
+    // 是否显示最近删除的相册
+    public var showRecentlyDeletedAlbum: Bool = false
     
     // 选择个数限制
     public var selectCountLimit: Int = 9
@@ -56,6 +62,9 @@ public class PickerConfig {
     
     // 从LimitedLibraryPicker选择图片之后，是否自动选中选择的照片
     public var autoSelectAssetFromLimitedLibraryPicker: Bool = true
+    
+    // Limietd权限时，底部是否显示提示框
+    public var showLimitedTip: Bool = true
     
     // 图片是否可编辑
     // 如果为true，拍摄照片后会直接跳转到编辑页面

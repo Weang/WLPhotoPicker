@@ -101,7 +101,6 @@
 		62F299B4704A7C95FB5866C6CDE2E2FD /* ConstraintOffsetTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E475EC45FE05B990939FBFE2E255B51 /* ConstraintOffsetTarget.swift */; };
 		62F8ABE6476167474D41A900216ACDF2 /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78A2067A1F5A9C822C9247D5C78104BC /* Reusable.swift */; };
 		6328C306E03099885C3EFCA798C9F5D1 /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1EE16D0263377A02056DE31DBD0036 /* Operators.swift */; };
-		6388162F5E5567BD7B6210B8F122AE6C /* AssetFetchTool+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA91D68902CD4DFC56904E7417DFDDCF /* AssetFetchTool+Image.swift */; };
 		65E06A05052F589A40C0C19B0B561C9E /* CaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B45BDA972BE3B355DE4947F807E17B /* CaptureManager.swift */; };
 		66B80BFB2017B426FABF4F2056D56C80 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E8C125AEE234CA6A7F15787ABAAE3B8 /* UIImage+Extensions.swift */; };
 		684E267E0E8DBFA9275F352F44E879B8 /* PhotoEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3068593C89065A9B3DF3F0E26131F8BA /* PhotoEditViewController.swift */; };
@@ -151,7 +150,6 @@
 		8FF92C53FAAAC2ED824C1E535C187424 /* SwipeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AE3EAF66D908C96C2107A738303883 /* SwipeActions.swift */; };
 		90FD5AE525E138A473723FD79AF73273 /* ConstraintDSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C7A6F955A77D256326546BCC37C55F /* ConstraintDSL.swift */; };
 		91B0EE8C7679DFFD7D0D27DC32BD07D3 /* RowProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A68707744963CD4578E61BF5A606782 /* RowProtocols.swift */; };
-		9231BB11B00354170566AAA0DA922E61 /* ImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD7BD32C524B214F54A8F469CF1F8519 /* ImageGenerator.swift */; };
 		929ECFE806E00DD45530958E72FCB633 /* PhotoEditPasterMaskLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A45ACC5E72F3F35349CB7BF6DE422 /* PhotoEditPasterMaskLayer.swift */; };
 		95DEEE38D632C816737E8AB538428A50 /* SelectorRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D927D9842BD9B9D2C4D6818587B0F32 /* SelectorRow.swift */; };
 		968B4874A9F12D67C8B901136C9C8157 /* SnapKit-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6025C1A176C0F3CDD2A183A2A66172B7 /* SnapKit-dummy.m */; };
@@ -160,7 +158,7 @@
 		97F01CD1288311CE78BE7D8A100F8DB7 /* CaptureVideoFileType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21164939B8A75CC03CDEF8EA91C1E90E /* CaptureVideoFileType.swift */; };
 		98318C0D9CEB5FD6BE3C24AAC8AA1CA8 /* AssetPreviewPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8569A828C2EC6DBE9C73C60C9709B84F /* AssetPreviewPhotoCell.swift */; };
 		995A8A4C2445BD86C2DC375B14394682 /* ListCheckRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E496268ADF5BFBC511206BA4D7FD2BC /* ListCheckRow.swift */; };
-		9C9D479D5B1B0F9242CA28F463683456 /* AssetFetchTool+PhotoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8A8B99D10723D1C440EB1576B35843 /* AssetFetchTool+PhotoData.swift */; };
+		9C9D479D5B1B0F9242CA28F463683456 /* AssetFetchTool+ImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8A8B99D10723D1C440EB1576B35843 /* AssetFetchTool+ImageData.swift */; };
 		9DD38F4CF4A6346CBD109088F3A6C18F /* AssetPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E783179752CE7F410A58CB428DF3C8 /* AssetPreviewViewController.swift */; };
 		9EC0552EE1D84C190BC4C65E3F481A39 /* PermissionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3EAFD5DA1DA4114EB57C8143EF04D53 /* PermissionProvider.swift */; };
 		9F76E121D69531B566221B3F7A046325 /* PhotoEditCropViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E9DE37077EB322111C616E83C3BE042 /* PhotoEditCropViewController.swift */; };
@@ -197,6 +195,7 @@
 		C11DBC286F46067EFC0E4C15FF014CC6 /* RuleRegExp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700E215F3D688D4A129A639173F515A2 /* RuleRegExp.swift */; };
 		C1DD0DF2AD5C6EF4916081E2EA20D62E /* WLPhotoUIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BB676F3914165EF5874F1A5DA9EC37 /* WLPhotoUIConfig.swift */; };
 		C241A011154907D4A4B377DB529E9C9D /* DoublePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCC2738BD372F4AA19F450A6256EA21 /* DoublePickerRow.swift */; };
+		C2C0B35A27CE00A9004D7FE8 /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0B35927CE00A9004D7FE8 /* UIScrollView+Extensions.swift */; };
 		C30507373C061CC06045337ED508368C /* AssetPreviewThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26DB4A1CE8F697B8ABD77065CEC0AD0 /* AssetPreviewThumbnailCell.swift */; };
 		C50042400F9312DBDC36FAE9552699C0 /* AVCaptureDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB38E095686F9ED7AE9ED639A18D46 /* AVCaptureDevice+Extensions.swift */; };
 		C597F82386A47A66F2DD7F1828B51885 /* PhotoEditTextMaskLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94076FF26A7ECED59AE108D30A5FEA8 /* PhotoEditTextMaskLayer.swift */; };
@@ -239,7 +238,7 @@
 		E35AC1FEE4563C3575F7F552D7855870 /* PHAssetCollection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE5519630CFF1CFF11F2CC3C2AAB3F7 /* PHAssetCollection+Extensions.swift */; };
 		E36244E8BF4AC941E82DAF16DDF4BBC2 /* ConstraintPriorityTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EB449E2D7BD16AFBCFA2B9D866428 /* ConstraintPriorityTarget.swift */; };
 		E3D3815401288A32B309F2454204ABFA /* BaseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6275A9DF1C28FDC8F7443AD46C3F387C /* BaseRow.swift */; };
-		E3FCABC8388C0E1C2D94DC4BE078669D /* AssetFetchTool+Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C43D65DDC6B94972F0BD7FDBECAE042 /* AssetFetchTool+Photo.swift */; };
+		E3FCABC8388C0E1C2D94DC4BE078669D /* AssetFetchTool+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C43D65DDC6B94972F0BD7FDBECAE042 /* AssetFetchTool+Image.swift */; };
 		E8A93BC48D74D7CDF77D85290F0244C5 /* AssetFetchTool+Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1608EB284129D2AC5371B481183167D1 /* AssetFetchTool+Album.swift */; };
 		E8EAADACF3BAE33BDECBC7214EAE9CD2 /* ConstraintRelatableTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1E57BBFC9FA634E5B38C90CEE622EA /* ConstraintRelatableTarget.swift */; };
 		EA1F322A2BC1D842773115E8B60374CD /* DateInlineRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAEC70885E4189442F9C0DAF856F5686 /* DateInlineRow.swift */; };
@@ -310,7 +309,7 @@
 		04C749AA4D14773D7CC5871427751CDF /* ConstraintMakerFinalizable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintMakerFinalizable.swift; path = Source/ConstraintMakerFinalizable.swift; sourceTree = "<group>"; };
 		057C226EE1C58D4A1B61A95678BC52A9 /* DatePickerRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DatePickerRow.swift; path = Source/Rows/DatePickerRow.swift; sourceTree = "<group>"; };
 		060E33CA979A0F5D458424299A779B2D /* CapturePreviewToolBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CapturePreviewToolBar.swift; sourceTree = "<group>"; };
-		082977F3777A7D434AB35C357B487F83 /* Eureka */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Eureka; path = Eureka.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		082977F3777A7D434AB35C357B487F83 /* Eureka.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Eureka.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		09E193CA168310876F4D9750E390B7F0 /* Eureka.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Eureka.debug.xcconfig; sourceTree = "<group>"; };
 		0A88757836468294CF10B39294408702 /* UIColorConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UIColorConfig.swift; sourceTree = "<group>"; };
 		0C9859FD03CC51AE1EFD3A2D9A4656E4 /* AssetCameraCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetCameraCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -412,7 +411,7 @@
 		612E14310665A56D2DE46A228637E980 /* AssetFetchTool+LivePhoto.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AssetFetchTool+LivePhoto.swift"; sourceTree = "<group>"; };
 		6148E8EFA858E720E0659474449F4743 /* OrientationHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OrientationHelper.swift; sourceTree = "<group>"; };
 		6275A9DF1C28FDC8F7443AD46C3F387C /* BaseRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BaseRow.swift; path = Source/Core/BaseRow.swift; sourceTree = "<group>"; };
-		63DC9AF0F0534539201B17DBCE4217E3 /* WLPhotoPicker */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = WLPhotoPicker; path = WLPhotoPicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63DC9AF0F0534539201B17DBCE4217E3 /* WLPhotoPicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WLPhotoPicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6440347900E912A6675176379E30A142 /* AssetPreviewToolBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetPreviewToolBar.swift; sourceTree = "<group>"; };
 		650A6AB86D40683E97101422B4BE540F /* PhotoEditTextColor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditTextColor.swift; sourceTree = "<group>"; };
 		656287A97322F21DE905B61A007C9B0E /* AssetDescriptionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetDescriptionView.swift; sourceTree = "<group>"; };
@@ -424,7 +423,7 @@
 		6A861ABEC988B4BE9B8824AE3B8ED9F0 /* BundleHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BundleHelper.swift; sourceTree = "<group>"; };
 		6A87BCB6F7963ED77AF7D291F3DA256F /* ConstraintDescription.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintDescription.swift; path = Source/ConstraintDescription.swift; sourceTree = "<group>"; };
 		6BE5519630CFF1CFF11F2CC3C2AAB3F7 /* PHAssetCollection+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "PHAssetCollection+Extensions.swift"; sourceTree = "<group>"; };
-		6C43D65DDC6B94972F0BD7FDBECAE042 /* AssetFetchTool+Photo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AssetFetchTool+Photo.swift"; sourceTree = "<group>"; };
+		6C43D65DDC6B94972F0BD7FDBECAE042 /* AssetFetchTool+Image.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AssetFetchTool+Image.swift"; sourceTree = "<group>"; };
 		6C60DAB530C8FD4BB706BE695F3EFC9D /* ConstraintMultiplierTarget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintMultiplierTarget.swift; path = Source/ConstraintMultiplierTarget.swift; sourceTree = "<group>"; };
 		6CD2F8A152B9033E98C39008648318BE /* AssetFetchTool+GIF.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AssetFetchTool+GIF.swift"; sourceTree = "<group>"; };
 		6D1CD1723907B6FACE45019E67E361F2 /* PickerRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PickerRow.swift; path = Source/Rows/PickerRow.swift; sourceTree = "<group>"; };
@@ -458,7 +457,7 @@
 		802DDF271298BB45CED3C812266EC05D /* CaptureControlView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CaptureControlView.swift; sourceTree = "<group>"; };
 		807DEC019A11109162092D57082E3C3D /* PhotoEditFiltersView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditFiltersView.swift; sourceTree = "<group>"; };
 		80FD8688256178514A0CB861BA483AFA /* CoreTextHelper.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CoreTextHelper.swift; sourceTree = "<group>"; };
-		8131F1B6FD18B1E2BD4C142B26441CC7 /* Pods-WLPhotoPicker_Example */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-WLPhotoPicker_Example"; path = Pods_WLPhotoPicker_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8131F1B6FD18B1E2BD4C142B26441CC7 /* Pods_WLPhotoPicker_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WLPhotoPicker_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81BB1049D5F6CC3244E514DE4CD29AEB /* AssetPreviewLivePhotoCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetPreviewLivePhotoCell.swift; sourceTree = "<group>"; };
 		81F97E46C6D2890262F747D2A0B479C6 /* ConstraintViewDSL.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintViewDSL.swift; path = Source/ConstraintViewDSL.swift; sourceTree = "<group>"; };
 		8250DA6896011EEB1FC801EC7FAE2D28 /* PhotoEditCropRatio.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditCropRatio.swift; sourceTree = "<group>"; };
@@ -486,7 +485,7 @@
 		93AE3EAF66D908C96C2107A738303883 /* SwipeActions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SwipeActions.swift; path = Source/Core/SwipeActions.swift; sourceTree = "<group>"; };
 		953A45ACC5E72F3F35349CB7BF6DE422 /* PhotoEditPasterMaskLayer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditPasterMaskLayer.swift; sourceTree = "<group>"; };
 		96225784148CA1D345807E2D04B5F497 /* Permission.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
-		979486118B3E90C08386079D57962701 /* SnapKit */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SnapKit; path = SnapKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		979486118B3E90C08386079D57962701 /* SnapKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SnapKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		991EE5E003AF3A5BAB0675C24C7E0152 /* PhotoEditCropRectangleView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditCropRectangleView.swift; sourceTree = "<group>"; };
 		99B815BD97799910D48EE23F07269E5B /* WLPhotoPickerController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLPhotoPickerController.swift; sourceTree = "<group>"; };
 		9B36DA423F73967CA1D7AA913A66CB50 /* CapturePreviewViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CapturePreviewViewController.swift; sourceTree = "<group>"; };
@@ -518,13 +517,13 @@
 		BA66220AA9720905A310EEC9156C85AC /* MultipleSelectorViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MultipleSelectorViewController.swift; path = Source/Rows/Controllers/MultipleSelectorViewController.swift; sourceTree = "<group>"; };
 		BA67AFB7D6D48B3A59B91862F8D8D911 /* AssetPreviewLivePhotoView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetPreviewLivePhotoView.swift; sourceTree = "<group>"; };
 		BA7A2937896D6DB7EC7172A17DC53159 /* DoublePickerInputRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DoublePickerInputRow.swift; path = Source/Rows/DoublePickerInputRow.swift; sourceTree = "<group>"; };
-		BA91D68902CD4DFC56904E7417DFDDCF /* AssetFetchTool+Image.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AssetFetchTool+Image.swift"; sourceTree = "<group>"; };
 		BCB7E0ABCD160CFD24D6D9A6C222E7AF /* AssetAddCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetAddCollectionViewCell.swift; sourceTree = "<group>"; };
 		BF5ABC5CF9F3EABBE69FFA3F832AA711 /* InlineRowType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InlineRowType.swift; path = Source/Core/InlineRowType.swift; sourceTree = "<group>"; };
 		C04C0CC655976948AABD673F1DF068C2 /* Pods-WLPhotoPicker_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-WLPhotoPicker_Example-frameworks.sh"; sourceTree = "<group>"; };
 		C18BAE4999C04E3AB1F2836AAA17EA67 /* UIScreen+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIScreen+Extensions.swift"; sourceTree = "<group>"; };
 		C1A309CA4B529B8BD7786C2384E47C8E /* PhotoEditPasterCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditPasterCollectionViewCell.swift; sourceTree = "<group>"; };
 		C1B7FBD28B028AA76B8BC876690F7A54 /* ConstraintDirectionalInsets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintDirectionalInsets.swift; path = Source/ConstraintDirectionalInsets.swift; sourceTree = "<group>"; };
+		C2C0B35927CE00A9004D7FE8 /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
 		C4397CA9380889D83329562784F245B1 /* ConstraintPriority.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintPriority.swift; path = Source/ConstraintPriority.swift; sourceTree = "<group>"; };
 		C51D7FC968CF92AE9FBBE8D0E0EE6C55 /* SelectableSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelectableSection.swift; path = Source/Core/SelectableSection.swift; sourceTree = "<group>"; };
 		C6B58CC1A424FB3B42BF22AAFCCCFA6D /* PHAsset+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "PHAsset+Extensions.swift"; sourceTree = "<group>"; };
@@ -539,8 +538,7 @@
 		CB4744A5BE1ABD4AF839F9C8D62AF31A /* Pods-WLPhotoPicker_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-WLPhotoPicker_Example.release.xcconfig"; sourceTree = "<group>"; };
 		CC702F4973472A0A4389C2C7081D2D02 /* SwitchRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SwitchRow.swift; path = Source/Rows/SwitchRow.swift; sourceTree = "<group>"; };
 		CCD581C1D0FCD4AD97905A44884AD346 /* AssetVideoCompressSize.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetVideoCompressSize.swift; sourceTree = "<group>"; };
-		CD7BD32C524B214F54A8F469CF1F8519 /* ImageGenerator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ImageGenerator.swift; sourceTree = "<group>"; };
-		CE8A8B99D10723D1C440EB1576B35843 /* AssetFetchTool+PhotoData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AssetFetchTool+PhotoData.swift"; sourceTree = "<group>"; };
+		CE8A8B99D10723D1C440EB1576B35843 /* AssetFetchTool+ImageData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AssetFetchTool+ImageData.swift"; sourceTree = "<group>"; };
 		CEFB6FCCC22C09A16839D8485DD940F0 /* Row.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Row.swift; path = Source/Core/Row.swift; sourceTree = "<group>"; };
 		CF0BFBFE7D4411FB6A3E9140B6B3A5E6 /* Eureka-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Eureka-umbrella.h"; sourceTree = "<group>"; };
 		CF176C03ACFE4B60D953946E83886C79 /* PhotoEditFadeFilter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditFadeFilter.swift; sourceTree = "<group>"; };
@@ -811,15 +809,15 @@
 		398CC98E64E44AB54FE500F51398C6C6 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				AAB6A42AA015CC3FF7C6853D8018EF39 /* AlbumListTableViewCell.swift */,
+				12B7D654CFB2B95A1C7AC965B3ED1A47 /* AssetPickerToolBar.swift */,
+				D3E674104E04DFD868D767AB633EA9FE /* AssetPickerDeniedPermissionView.swift */,
+				415CBBA17E2088C7194A6EC0602EF814 /* AssetPickerLimitedPermissionView.swift */,
 				B1AE0A1272403430040CACF763380ED3 /* AlbumTitleButton.swift */,
+				AAB6A42AA015CC3FF7C6853D8018EF39 /* AlbumListTableViewCell.swift */,
 				BCB7E0ABCD160CFD24D6D9A6C222E7AF /* AssetAddCollectionViewCell.swift */,
 				0C9859FD03CC51AE1EFD3A2D9A4656E4 /* AssetCameraCollectionViewCell.swift */,
 				127E586AF027F8D88D8B9FE20390C157 /* AssetCollectionViewCell.swift */,
 				656287A97322F21DE905B61A007C9B0E /* AssetDescriptionView.swift */,
-				D3E674104E04DFD868D767AB633EA9FE /* AssetPickerDeniedPermissionView.swift */,
-				415CBBA17E2088C7194A6EC0602EF814 /* AssetPickerLimitedPermissionView.swift */,
-				12B7D654CFB2B95A1C7AC965B3ED1A47 /* AssetPickerToolBar.swift */,
 				7E755582091CC2CAE653D73EE5A30E41 /* CircleSelectedButton.swift */,
 				D802401CDDC0E1FC0DFF9CFF5276BE5F /* NormalStyleButton.swift */,
 			);
@@ -870,6 +868,7 @@
 				0D35982F1B9D1DA5B3DA811FEFB0A82E /* UIImage+Orientation.swift */,
 				C18BAE4999C04E3AB1F2836AAA17EA67 /* UIScreen+Extensions.swift */,
 				2E5FC0490717E56FA999952460910BF5 /* UIView+Extensions.swift */,
+				C2C0B35927CE00A9004D7FE8 /* UIScrollView+Extensions.swift */,
 			);
 			name = Extensions;
 			path = WLPhotoPicker/Classes/Extensions;
@@ -1039,10 +1038,10 @@
 		A25A8306D67EBFA7D6642D78B2C04F26 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				082977F3777A7D434AB35C357B487F83 /* Eureka */,
-				8131F1B6FD18B1E2BD4C142B26441CC7 /* Pods-WLPhotoPicker_Example */,
-				979486118B3E90C08386079D57962701 /* SnapKit */,
-				63DC9AF0F0534539201B17DBCE4217E3 /* WLPhotoPicker */,
+				082977F3777A7D434AB35C357B487F83 /* Eureka.framework */,
+				8131F1B6FD18B1E2BD4C142B26441CC7 /* Pods_WLPhotoPicker_Example.framework */,
+				979486118B3E90C08386079D57962701 /* SnapKit.framework */,
+				63DC9AF0F0534539201B17DBCE4217E3 /* WLPhotoPicker.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1101,7 +1100,6 @@
 			isa = PBXGroup;
 			children = (
 				D12A1F8E8436906D1A6D294793241074 /* Fetch */,
-				CD7BD32C524B214F54A8F469CF1F8519 /* ImageGenerator.swift */,
 				67CD05D023139A147574A96754BC15A4 /* GIFGenerator.swift */,
 				220A71416657B3E1EB36E555CBD7F640 /* VideoCompressManager.swift */,
 				75C4A53A19E509BDCA486F03B829E530 /* EditManager.swift */,
@@ -1178,9 +1176,8 @@
 				86215B2B2B3FDD57DD510E46DD5D4C84 /* AssetFetchResponse.swift */,
 				C8D8AFB0045CCDB62182CABBDABA6BD8 /* AssetFetchTool.swift */,
 				1608EB284129D2AC5371B481183167D1 /* AssetFetchTool+Album.swift */,
-				6C43D65DDC6B94972F0BD7FDBECAE042 /* AssetFetchTool+Photo.swift */,
-				CE8A8B99D10723D1C440EB1576B35843 /* AssetFetchTool+PhotoData.swift */,
-				BA91D68902CD4DFC56904E7417DFDDCF /* AssetFetchTool+Image.swift */,
+				6C43D65DDC6B94972F0BD7FDBECAE042 /* AssetFetchTool+Image.swift */,
+				CE8A8B99D10723D1C440EB1576B35843 /* AssetFetchTool+ImageData.swift */,
 				6CD2F8A152B9033E98C39008648318BE /* AssetFetchTool+GIF.swift */,
 				612E14310665A56D2DE46A228637E980 /* AssetFetchTool+LivePhoto.swift */,
 				739517E6A16B5460A71AEC4D194E55AA /* AssetFetchTool+Video.swift */,
@@ -1319,7 +1316,7 @@
 			);
 			name = SnapKit;
 			productName = SnapKit;
-			productReference = 979486118B3E90C08386079D57962701 /* SnapKit */;
+			productReference = 979486118B3E90C08386079D57962701 /* SnapKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		2E420594F0924D8878D6F23C194AB5AF /* WLPhotoPicker */ = {
@@ -1338,7 +1335,7 @@
 			);
 			name = WLPhotoPicker;
 			productName = WLPhotoPicker;
-			productReference = 63DC9AF0F0534539201B17DBCE4217E3 /* WLPhotoPicker */;
+			productReference = 63DC9AF0F0534539201B17DBCE4217E3 /* WLPhotoPicker.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		88BE8BE7A2FE6CED4193CCD8FF3CBEF7 /* Eureka */ = {
@@ -1356,7 +1353,7 @@
 			);
 			name = Eureka;
 			productName = Eureka;
-			productReference = 082977F3777A7D434AB35C357B487F83 /* Eureka */;
+			productReference = 082977F3777A7D434AB35C357B487F83 /* Eureka.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		DCBEB5D41AE2E843584D90A18EDAB0AE /* Pods-WLPhotoPicker_Example */ = {
@@ -1377,7 +1374,7 @@
 			);
 			name = "Pods-WLPhotoPicker_Example";
 			productName = Pods_WLPhotoPicker_Example;
-			productReference = 8131F1B6FD18B1E2BD4C142B26441CC7 /* Pods-WLPhotoPicker_Example */;
+			productReference = 8131F1B6FD18B1E2BD4C142B26441CC7 /* Pods_WLPhotoPicker_Example.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -1581,12 +1578,11 @@
 				0EB9253D3D5FA2A89C9C45EDDEBE43DF /* AssetFetchTool.swift in Sources */,
 				E8A93BC48D74D7CDF77D85290F0244C5 /* AssetFetchTool+Album.swift in Sources */,
 				50FF0C752423D423F1FF45CD2CA615FD /* AssetFetchTool+GIF.swift in Sources */,
-				6388162F5E5567BD7B6210B8F122AE6C /* AssetFetchTool+Image.swift in Sources */,
 				9FEC1D566F0C53ED2BBAEA5AE93BCD9C /* AssetFetchTool+LivePhoto.swift in Sources */,
 				A312628E7092C92E0E2A99BFE1AEB3CE /* AssetFetchTool+Observer.swift in Sources */,
 				7156AC522036C9AD60D6D3C10A51019A /* AssetFetchTool+Operation.swift in Sources */,
-				E3FCABC8388C0E1C2D94DC4BE078669D /* AssetFetchTool+Photo.swift in Sources */,
-				9C9D479D5B1B0F9242CA28F463683456 /* AssetFetchTool+PhotoData.swift in Sources */,
+				E3FCABC8388C0E1C2D94DC4BE078669D /* AssetFetchTool+Image.swift in Sources */,
+				9C9D479D5B1B0F9242CA28F463683456 /* AssetFetchTool+ImageData.swift in Sources */,
 				CF0572DE028C4F6E6D08AD052C6241E3 /* AssetFetchTool+SavePhoto.swift in Sources */,
 				76316FB960FA8B75C8F375F36EA347C4 /* AssetFetchTool+SaveVideo.swift in Sources */,
 				BA8CFD8EEC8676F8B92479BA226AD67F /* AssetFetchTool+Select.swift in Sources */,
@@ -1639,7 +1635,6 @@
 				184158DE4FD107ABE2AD4529A16706F6 /* FileError.swift in Sources */,
 				2EF615E0536378BADA99EACB57175D87 /* FileHelper.swift in Sources */,
 				36A8515A44537A2419AAD6C352FCA475 /* GIFGenerator.swift in Sources */,
-				9231BB11B00354170566AAA0DA922E61 /* ImageGenerator.swift in Sources */,
 				EDBCA10370E16411670BDA14F7E3184F /* LoadingHUD.swift in Sources */,
 				47225B2B706C5D068A4185A9A286EDD1 /* MD5.swift in Sources */,
 				7DCBD45D11989661C5C9EBBCC5C59BBD /* Microphone.swift in Sources */,
@@ -1694,6 +1689,7 @@
 				404BD02EF5DC18ECB75371D30818C412 /* PickerConfig.swift in Sources */,
 				F95B169AFCE804ED1A8415B8EC5A2E75 /* PickerSelectionType.swift in Sources */,
 				075BCE47220F7ECD38CC58318796A00B /* PickerSortType.swift in Sources */,
+				C2C0B35A27CE00A9004D7FE8 /* UIScrollView+Extensions.swift in Sources */,
 				62F8ABE6476167474D41A900216ACDF2 /* Reusable.swift in Sources */,
 				4B1DC665375AEB3902E834A4E8C3F099 /* UIApplication+Extensions.swift in Sources */,
 				69D144676DF6F16EAACF7C51FECD8C33 /* UIColorConfig.swift in Sources */,
@@ -1767,6 +1763,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXCLUDED_ARCHS = "";
 				GCC_PREFIX_HEADER = "Target Support Files/SnapKit/SnapKit-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/SnapKit/SnapKit-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1801,6 +1798,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = "Target Support Files/Pods-WLPhotoPicker_Example/Pods-WLPhotoPicker_Example-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1835,6 +1833,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = "Target Support Files/Pods-WLPhotoPicker_Example/Pods-WLPhotoPicker_Example-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1869,6 +1868,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXCLUDED_ARCHS = "";
 				GCC_PREFIX_HEADER = "Target Support Files/SnapKit/SnapKit-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/SnapKit/SnapKit-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1925,6 +1925,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				EXCLUDED_ARCHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1962,6 +1963,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXCLUDED_ARCHS = "";
 				GCC_PREFIX_HEADER = "Target Support Files/WLPhotoPicker/WLPhotoPicker-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/WLPhotoPicker/WLPhotoPicker-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -1994,6 +1996,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXCLUDED_ARCHS = "";
 				GCC_PREFIX_HEADER = "Target Support Files/WLPhotoPicker/WLPhotoPicker-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/WLPhotoPicker/WLPhotoPicker-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2051,6 +2054,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				EXCLUDED_ARCHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2092,6 +2096,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXCLUDED_ARCHS = "";
 				GCC_PREFIX_HEADER = "Target Support Files/Eureka/Eureka-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/Eureka/Eureka-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2124,6 +2129,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXCLUDED_ARCHS = "";
 				GCC_PREFIX_HEADER = "Target Support Files/Eureka/Eureka-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/Eureka/Eureka-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

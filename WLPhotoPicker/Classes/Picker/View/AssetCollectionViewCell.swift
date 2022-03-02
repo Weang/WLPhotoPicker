@@ -53,7 +53,7 @@ class AssetCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(descriptionView)
         descriptionView.snp.makeConstraints { make in
             make.bottom.left.right.equalToSuperview()
-            make.height.equalTo(24)
+            make.height.equalTo(28)
         }
         
         disabledCover.isUserInteractionEnabled = false
@@ -76,9 +76,9 @@ class AssetCollectionViewCell: UICollectionViewCell {
             let options = AssetFetchOptions()
             let targetSize = pickerConfig.photoCollectionViewItemSize.width * UIScreen.main.scale
             options.sizeOption = .specify(targetSize)
-            assetRequest = AssetFetchTool.requestImage(for: model.asset, options: options, completion: { [weak self] result, requestId in
+            assetRequest = AssetFetchTool.requestPhoto(for: model.asset, options: options, completion: { [weak self] result, requestId in
                 if case .success(let respose) = result {
-                    if respose.isDegraded || (self?.assetRequest?.containsRequestId(requestId) ?? false) {
+                    if respose.isDegraded || (self?.assetRequest?.requestIdIs(requestId) ?? false) {
                         self?.assetImageView.image = respose.image
                     }
                 }

@@ -37,10 +37,6 @@ public class VideoCompressManager {
     private var audioQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.VideoExportTool.Audio")
     private var videoQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.VideoExportTool.Video")
     
-    private var assetVideoTrack: AVAssetTrack?
-    private var assetAudioTrack: AVAssetTrack?
-    private var renderSize: CGSize = .zero
-    
     private let composition = AVMutableComposition()
     private let videoComposition = AVMutableVideoComposition()
     
@@ -61,8 +57,6 @@ public class VideoCompressManager {
                   error = .failedToLoadAssetTrack
                   return
               }
-        self.assetVideoTrack = assetVideoTrack
-        self.assetAudioTrack = assetAudioTrack
         
         let id = kCMPersistentTrackID_Invalid
         guard let videoCompositionTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: id),
@@ -73,7 +67,7 @@ public class VideoCompressManager {
         
         let assetDuration = avAsset.duration
         let timeRange = CMTimeRange(start: .zero, duration: assetDuration)
-        renderSize = assetVideoTrack.naturalSize.applying(assetVideoTrack.preferredTransform)
+        var renderSize = assetVideoTrack.naturalSize.applying(assetVideoTrack.preferredTransform)
         renderSize = CGSize(width: abs(renderSize.width), height: abs(renderSize.height))
         let preferredTransform = fixedTransformFrom(transForm: assetVideoTrack.preferredTransform,
                                                     natureSize: assetVideoTrack.naturalSize)
@@ -94,7 +88,7 @@ public class VideoCompressManager {
     }
     
     private func updateComposition() {
-        guard let assetVideoTrack = self.assetVideoTrack else {
+        guard let assetVideoTrack = composition.tracks(withMediaType: .video).first else {
             return
         }
         let timescale: CMTimeScale
@@ -104,6 +98,44 @@ public class VideoCompressManager {
             timescale = CMTimeScale(assetVideoTrack.nominalFrameRate)
         }
         videoComposition.frameDuration = CMTime(value: 1, timescale: timescale)
+    }
+    
+    // iOS 12以上的模拟器调用这个方法会崩溃，目前还不知道原因
+    public func addWaterMark(image: UIImage?, configuration: (CGSize) -> CGRect) {
+        guard let image = image else {
+            return
+        }
+        let renderSize = videoComposition.renderSize
+        
+        let videoLayer = CALayer()
+        videoLayer.frame = CGRect(origin: .zero, size: renderSize)
+        
+        let parentLayer = CALayer()
+        parentLayer.backgroundColor = UIColor.clear.cgColor
+        parentLayer.frame = videoLayer.bounds
+        parentLayer.addSublayer(videoLayer)
+        
+        let waterMarkLayer = CALayer()
+        var rect = configuration(renderSize)
+        rect.origin.y = renderSize.height - rect.maxY
+        waterMarkLayer.frame = rect
+        waterMarkLayer.contents = image.cgImage
+        parentLayer.addSublayer(waterMarkLayer)
+        
+        videoComposition.animationTool = AVVideoCompositionCoreAnimationTool.init(postProcessingAsVideoLayer: videoLayer, in: parentLayer)
+    }
+    
+    public func addAudio(audioUrl: URL) {
+        composition.tracks(withMediaType: .audio).forEach {
+            composition.removeTrack($0)
+        }
+        let audioAsset = AVAsset.init(url: audioUrl)
+        guard let avAssetAudioTrack = audioAsset.tracks(withMediaType: .audio).first else {
+            return
+        }
+        let audioTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let timeRange = CMTimeRange(start: .zero, duration: avAsset.duration)
+        try? audioTrack?.insertTimeRange(timeRange, of: avAssetAudioTrack, at: .zero)
     }
     
     public func exportVideo(progress: ((Double) -> Void)? = nil, completion: @escaping ((URL) -> Void)) {
@@ -200,7 +232,7 @@ public class VideoCompressManager {
         
         let supportHEVC = VTIsHardwareDecodeSupported(kCMVideoCodecType_HEVC)
         var bitRate = Float(0.1 * videoExportSize.height * videoExportSize.width) * Float(videoComposition.frameDuration.timescale)
-        if !compressVideo, let assetVideoTrack = self.assetVideoTrack {
+        if !compressVideo, let assetVideoTrack = composition.tracks(withMediaType: .video).first {
             bitRate = assetVideoTrack.estimatedDataRate
         }
         let codec = supportHEVC ? AVVideoCodecType.hevc : .h264
@@ -226,6 +258,7 @@ public class VideoCompressManager {
     }
     
     private func computeVideoExportSize() -> CGSize {
+        let renderSize = videoComposition.renderSize
         if compressVideo {
             let videoShortSide = min(renderSize.width, renderSize.height)
             let videoLongSide = max(renderSize.width, renderSize.height)

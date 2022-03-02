@@ -1,5 +1,5 @@
 //
-//  AssetFetchTool+PhotoData.swift
+//  AssetFetchTool+ImageData.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2021/12/20.
@@ -12,7 +12,7 @@ typealias CloudPhotoFetchCompletion = (Result<CloudPhotoFetchResponse, AssetFetc
 extension AssetFetchTool {
     
     @discardableResult
-    static func requestImageData(for asset: PHAsset, options: AssetFetchOptions, completion: @escaping CloudPhotoFetchCompletion) -> PHImageRequestID {
+    static func requestImageData(for asset: PHAsset, options: AssetFetchOptions, completion: @escaping CloudPhotoFetchCompletion) -> AssetFetchRequest {
         let requestOptions = PHImageRequestOptions()
         requestOptions.version = options.imageVersion
         requestOptions.isNetworkAccessAllowed = options.isNetworkAccessAllowed
@@ -20,15 +20,19 @@ extension AssetFetchTool {
             options.progressHandler?(progress)
         }
         
+        let requestId: PHImageRequestID
+        
         if #available(iOS 13.0, *) {
-            return PHImageManager.default().requestImageDataAndOrientation(for: asset, options: requestOptions) { (data, dataUTI, _, info) in
+            requestId = PHImageManager.default().requestImageDataAndOrientation(for: asset, options: requestOptions) { (data, dataUTI, _, info) in
                 handleResponse(data: data, dataUTI: dataUTI, info: info, completion: completion)
             }
         } else {
-            return PHImageManager.default().requestImageData(for: asset, options: requestOptions) { (data, dataUTI, _, info) in
+            requestId = PHImageManager.default().requestImageData(for: asset, options: requestOptions) { (data, dataUTI, _, info) in
                 handleResponse(data: data, dataUTI: dataUTI, info: info, completion: completion)
             }
         }
+        
+        return AssetFetchRequest(requestId: requestId)
     }
     
     private static func handleResponse(data: Data?, dataUTI: String?, info: [AnyHashable: Any]?, completion: @escaping CloudPhotoFetchCompletion) {

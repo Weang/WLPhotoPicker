@@ -175,7 +175,7 @@ extension AssetFetchOperation {
             return
         }
         
-        assetRequest = AssetFetchTool.requestImage(for: assetModel.asset, options: options) { [weak self] result, _ in
+        assetRequest = AssetFetchTool.requestPhoto(for: assetModel.asset, options: options) { [weak self] result, _ in
             guard let self = self else { return }
             switch result {
             case .success(let response):

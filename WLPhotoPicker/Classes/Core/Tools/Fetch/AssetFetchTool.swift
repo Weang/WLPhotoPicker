@@ -99,9 +99,6 @@ extension AssetFetchTool {
         if let isCancelled = info[PHImageCancelledKey] as? Bool, isCancelled {
             return AssetFetchError.canceled
         }
-        if let isInCloud = info[PHImageResultIsInCloudKey] as? Bool, isInCloud {
-            return AssetFetchError.cannotFindInLocal
-        }
         if let error = info[PHImageErrorKey] as? Error {
             return AssetFetchError.underlying(error)
         }

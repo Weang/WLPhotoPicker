@@ -48,7 +48,7 @@ class AssetDescriptionView: UIView {
     }
     
     func bind(_ asset: AssetModel) {
-        isHidden = !(asset.mediaType == .GIF || asset.mediaType == .video || asset.hasEdit)
+        isHidden = !(asset.mediaType == .GIF || asset.mediaType == .video || asset.mediaType == .livePhoto || asset.hasEdit)
         GIFLabel.isHidden = asset.mediaType != .GIF
         videoDurationLabel.text = asset.videoDuration
         iconImageView.isHidden = false
@@ -56,6 +56,8 @@ class AssetDescriptionView: UIView {
             iconImageView.image = BundleHelper.imageNamed("photo_edited")?.withRenderingMode(.alwaysTemplate)
         } else if asset.asset.isVideo {
             iconImageView.image = BundleHelper.imageNamed("video")?.withRenderingMode(.alwaysTemplate)
+        } else if asset.asset.isLivePhoto {
+            iconImageView.image = BundleHelper.imageNamed("livephoto")?.withRenderingMode(.alwaysTemplate)
         } else {
             iconImageView.image = nil
             iconImageView.isHidden = true

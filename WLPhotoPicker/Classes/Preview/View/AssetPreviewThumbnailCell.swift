@@ -58,10 +58,10 @@ class AssetPreviewThumbnailCell: UICollectionViewCell {
         let options = AssetFetchOptions()
         let targetSize = 64 * UIScreen.main.scale
         options.sizeOption = .specify(targetSize)
-        assetRequest = AssetFetchTool.requestImage(for: model.asset, options: options, completion: { [weak self] result, requestId in
+        assetRequest = AssetFetchTool.requestPhoto(for: model.asset, options: options, completion: { [weak self] result, requestId in
             switch result {
             case let .success(respose):
-                if self?.assetRequest?.containsRequestId(requestId) ?? false {
+                if self?.assetRequest?.requestIdIs(requestId) ?? false {
                     self?.assetImageView.image = respose.image
                 }
             case .failure: break

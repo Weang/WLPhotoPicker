@@ -41,9 +41,8 @@ extension AssetFetchTool {
                 completion(.success(response), requestID)
             }
         }
-        let request = AssetFetchRequest()
-        request.appendRequestId(requestId)
-        return request
+        
+        return AssetFetchRequest(requestId: requestId)
     }
     
 }

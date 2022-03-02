@@ -21,15 +21,13 @@ extension AssetFetchTool {
             options.progressHandler?(progress)
         }
         
-        let request = AssetFetchRequest()
-        
-        if let fileURL = asset.locallyVideoFileURL {
+        if #available(iOS 13, *), let fileURL = asset.locallyVideoFileURL {
             let avasset = AVAsset(url: fileURL)
             let playerItem = AVPlayerItem(asset: avasset)
             DispatchQueue.main.async {
                 completion(.success(VideoFetchResponse(avasset: avasset, playerItem: playerItem)), 0)
             }
-            return request
+            return AssetFetchRequest(requestId: 0)
         }
         
         if !asset.isVideoLocallyAvailable {
@@ -56,8 +54,8 @@ extension AssetFetchTool {
                 completion(.success(response), requestID)
             }
         }
-        request.appendRequestId(requestId)
-        return request
+        
+        return AssetFetchRequest(requestId: requestId)
     }
     
 }

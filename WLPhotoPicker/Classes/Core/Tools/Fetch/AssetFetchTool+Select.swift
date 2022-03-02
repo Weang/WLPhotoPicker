@@ -78,7 +78,7 @@ extension AssetFetchTool {
         options.imageDeliveryMode = .highQualityFormat
         options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
         
-        let request = AssetFetchTool.requestImage(for: asset.asset, options: options) { [weak self] result, _ in
+        let request = AssetFetchTool.requestPhoto(for: asset.asset, options: options) { [weak self] result, _ in
             if case .success(let response) = result {
                 asset.previewImage = response.image
                 guard let self = self, delegateEvent else {

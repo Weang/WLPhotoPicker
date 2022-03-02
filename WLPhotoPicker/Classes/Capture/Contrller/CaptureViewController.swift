@@ -75,6 +75,7 @@ public class CaptureViewController: UIViewController {
     
     private func setupManager() {
         captureManager.delegate = self
+        captureManager.starRunning()
         captureManager.setupPreviewLayer(to: controlView.previewContentView)
     }
     

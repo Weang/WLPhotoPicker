@@ -37,7 +37,7 @@ public class WLPhotoPickerController: UINavigationController {
         self.config = config.checkCongfig()
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
-        navigationBar.barTintColor = WLPhotoUIConfig.default.color.toolBarColor
+        navigationBar.barTintColor = WLPhotoUIConfig.default.color.navigationBarColor
         navigationBar.tintColor = WLPhotoUIConfig.default.color.textColor
         
         let viewController = AssetPickerController(config: config)
@@ -47,22 +47,6 @@ public class WLPhotoPickerController: UINavigationController {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    public override func viewDidLoad() {
-        super.viewDidLoad()
-        
-//        if #available(iOS 15.0, *) {
-//            let appearance = UINavigationBarAppearance()
-//            appearance.configureWithTransparentBackground()
-//            appearance.backgroundImage = UIImage.imageWithColor(WLPhotoUIConfig.default.color.pickerNavigationBar)
-//            appearance.shadowImage = UIImage.imageWithColor(.clear)
-//            navigationBar.standardAppearance = appearance
-//            navigationBar.scrollEdgeAppearance = appearance
-//        } else {
-//            navigationBar.setBackgroundImage(UIImage.imageWithColor(WLPhotoUIConfig.default.color.pickerNavigationBar), for: .default)
-//            navigationBar.shadowImage = UIImage()
-//        }
     }
     
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

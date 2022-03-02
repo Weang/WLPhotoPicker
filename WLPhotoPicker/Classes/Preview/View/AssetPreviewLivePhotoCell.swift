@@ -49,7 +49,7 @@ class AssetPreviewLivePhotoCell: AssetPreviewCell {
         
         activityIndicator.startAnimating()
         
-        assetRequest = AssetFetchTool.requestImage(for: model.asset, options: options) { [weak self] result, _ in
+        assetRequest = AssetFetchTool.requestPhoto(for: model.asset, options: options) { [weak self] result, _ in
             if case .success(let response) = result {
                 self?.assetImageView.image = response.image
             }

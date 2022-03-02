@@ -168,13 +168,13 @@ class AssetPickerController: UIViewController {
         bottomToolBar.isHidden = false
         if reloadData {
             collectionView.reloadData()
-        }
-        let items = collectionView(collectionView, numberOfItemsInSection: 0)
-        if config.pickerConfig.sortType == .asc {
-            let indexPath = IndexPath(item: items - 1, section: 0)
-            collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
-        } else if items > 0 {
-            collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: animated)
+            let items = collectionView(collectionView, numberOfItemsInSection: 0)
+            if config.pickerConfig.sortType == .asc {
+                let indexPath = IndexPath(item: items - 1, section: 0)
+                collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
+            } else if items > 0 {
+                collectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: animated)
+            }
         }
     }
     

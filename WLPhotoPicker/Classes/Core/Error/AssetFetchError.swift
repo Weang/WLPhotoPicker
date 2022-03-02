@@ -11,7 +11,6 @@ public enum AssetFetchError: Error {
     // normal
     case invalidInfo
     case canceled
-    case cannotFindInLocal
     
     // image
     case failedToLoadImage
@@ -31,8 +30,6 @@ extension AssetFetchError: LocalizedError {
             return "文件加载失败"
         case .canceled:
             return "下载已取消"
-        case .cannotFindInLocal:
-            return "未找到本地资源"
         case .failedToLoadImage:
             return "无法加载图片"
         case .failedToLoadVideo:

@@ -10,20 +10,18 @@ import Photos
 // 图片请求request对象
 public class AssetFetchRequest {
     
-    private var requestIds: [PHImageRequestID] = []
+    private let requestId: PHImageRequestID
     
-    public func appendRequestId(_ requestId: PHImageRequestID) {
-        requestIds.append(requestId)
+    init(requestId: PHImageRequestID) {
+        self.requestId = requestId
     }
     
-    public func containsRequestId(_ requestId: PHImageRequestID) -> Bool {
-        requestIds.contains(requestId)
+    public func requestIdIs(_ requestId: PHImageRequestID) -> Bool {
+        requestId == requestId
     }
     
     public func cancel() {
-        requestIds.forEach {
-            PHImageManager.default().cancelImageRequest($0)
-        }
+        PHImageManager.default().cancelImageRequest(requestId)
     }
     
 }

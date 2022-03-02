@@ -25,7 +25,7 @@ class AlbumListTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        backgroundColor = WLPhotoUIConfig.default.color.albumBackground
+        backgroundColor = .clear
         
         albumCover.clipsToBounds = true
         albumCover.contentMode = .scaleAspectFill
@@ -70,7 +70,7 @@ class AlbumListTableViewCell: UITableViewCell {
         if let coverAsset = model.coverAsset {
             let options = AssetFetchOptions()
             options.sizeOption = .specify(54 * UIScreen.main.scale)
-            request = AssetFetchTool.requestImage(for: coverAsset.asset, options: options) { [weak self] result, _ in
+            request = AssetFetchTool.requestPhoto(for: coverAsset.asset, options: options) { [weak self] result, _ in
                 switch result {
                 case .success(let response):
                     self?.albumCover.image = response.image

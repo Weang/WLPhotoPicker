@@ -29,7 +29,14 @@ public class UIColorConfig {
         UIColor.color(light: pickerBackgroundLight, dark: pickerBackgroundDark, style: userInterfaceStyle)
     }
     
-    // 底部或者导航栏背景颜色
+    // 导航栏背景颜色
+    public var navigationBarColorLight = #colorLiteral(red: 0.968627451, green: 0.968627451, blue: 0.968627451, alpha: 1)
+    public var navigationBarColorDark = #colorLiteral(red: 0.09803921569, green: 0.09803921569, blue: 0.09803921569, alpha: 1)
+    var navigationBarColor: UIColor {
+        UIColor.color(light: navigationBarColorLight, dark: navigationBarColorDark, style: userInterfaceStyle)
+    }
+    
+    // 底部工具栏背景颜色
     public var toolBarColorLight = #colorLiteral(red: 0.968627451, green: 0.968627451, blue: 0.968627451, alpha: 1)
     public var toolBarColorDark = #colorLiteral(red: 0.09803921569, green: 0.09803921569, blue: 0.09803921569, alpha: 1)
     var toolBarColor: UIColor {

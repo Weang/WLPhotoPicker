@@ -116,7 +116,7 @@ class AssetPickerToolBar: UIView {
     
     private func updateHidden() {
         contentView.isHidden = !pickerConfig.allowSelectOriginal && !pickerConfig.showPickerDoneButton
-        limitedPermissionView.isHidden = !isLimitedPermission
+        limitedPermissionView.isHidden = !isLimitedPermission || !pickerConfig.showLimitedTip
         isHidden = contentView.isHidden && limitedPermissionView.isHidden
         backgroundView.isHidden = isHidden
         invalidateIntrinsicContentSize()
@@ -140,7 +140,7 @@ class AssetPickerToolBar: UIView {
         if !contentView.isHidden {
             height += toolBarHeight
         }
-        if isLimitedPermission {
+        if !limitedPermissionView.isHidden {
             height += limitedPermissionViewHeight
         }
         return CGSize(width: UIScreen.width, height: height)

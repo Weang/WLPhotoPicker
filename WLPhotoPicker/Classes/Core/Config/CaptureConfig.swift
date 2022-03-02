@@ -24,16 +24,16 @@ public class CaptureConfig {
     // 拍摄闪光灯开关
     public var captureFlashMode: CaptureFlashMode = .off
     
-    // 拍摄视频最长时长
+    // 视频拍摄最长时长
     public var captureMaximumVideoDuration: TimeInterval = 20
     
     // 视频拍摄格式
     public var captureFileType: CaptureVideoFileType = .mp4
     
-    // 视频帧率
+    // 视频拍摄帧率
     public var captureVideoFrameRate: Double = 60
     
-    // 视频导出质量
+    // 视频拍摄质量
     public var captureSessionPreset: CaptureSessionPreset = .hd1920x1080
     
     // 视频拍摄防抖级别

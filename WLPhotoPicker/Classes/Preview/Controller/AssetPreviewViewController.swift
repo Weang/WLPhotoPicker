@@ -330,7 +330,7 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
             options.imageDeliveryMode = .highQualityFormat
             options.sizeOption = .specify(config.pickerConfig.maximumPreviewSize)
             
-            AssetFetchTool.requestImage(for: assetModel.asset, options: options) { [weak self] result, _ in
+            AssetFetchTool.requestPhoto(for: assetModel.asset, options: options) { [weak self] result, _ in
                 guard case .success(let response) = result else { return }
                 assetModel.previewImage = response.image
                 self?.openEditViewController(assetModel)

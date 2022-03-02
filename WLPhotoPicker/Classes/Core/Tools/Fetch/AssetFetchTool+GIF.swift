@@ -12,37 +12,31 @@ typealias GIFPhotoFetchCompletion = (Result<GIFFetchResponse, AssetFetchError>, 
 
 extension AssetFetchTool {
     
+    static let GIFGeneratorQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.AssetFetchTool.GIFGenerator")
+    
     @discardableResult
     static func requestGIF(for asset: PHAsset, options: AssetFetchOptions, completion: @escaping GIFPhotoFetchCompletion) -> AssetFetchRequest {
-        let request = AssetFetchRequest()
-        let requestId = requestImageData(for: asset, options: options) { result, requestId in
+        
+        func handleResult(_ result: Result<GIFFetchResponse, AssetFetchError>, requestId: PHImageRequestID) {
+            DispatchQueue.main.async {
+                completion(result, requestId)
+            }
+        }
+        
+        return requestImageData(for: asset, options: options) { result, requestId in
             switch result {
             case .success(let response):
-                guard UTTypeConformsTo(response.dataUTI as CFString, kUTTypeGIF) else {
-                    DispatchQueue.main.async {
-                        completion(.failure(.failedToLoadImage), requestId)
-                    }
-                    return
-                }
-                imageHelperQueue.async {
+                GIFGeneratorQueue.async {
                     if let image = GIFGenerator.animatedImageWith(data: response.data) {
-                        DispatchQueue.main.async {
-                            completion(.success(GIFFetchResponse(image: image, imageData: response.data)), requestId)
-                        }
+                        handleResult(.success(GIFFetchResponse(image: image, imageData: response.data)), requestId: requestId)
                     } else {
-                        DispatchQueue.main.async {
-                            completion(.failure(.failedToLoadImage), requestId)
-                        }
+                        handleResult(.failure(.failedToLoadImage), requestId: requestId)
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion(.failure(error), requestId)
-                }
+                handleResult(.failure(error), requestId: requestId)
             }
         }
-        request.appendRequestId(requestId)
-        return request
     }
     
 }

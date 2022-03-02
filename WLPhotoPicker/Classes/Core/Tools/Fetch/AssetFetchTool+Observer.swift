@@ -62,17 +62,22 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
             // 相机拍摄的照片视频
             if let captureLocalIdentifier = self.captureLocalIdentifier,
                asset.localIdentifier == captureLocalIdentifier {
-                selectedAsset(asset: asset, delegateEvent: false)
                 self.captureLocalIdentifier = nil
+                if !isUptoLimit {
+                    selectedAsset(asset: asset, delegateEvent: false)
+                } else {
+                    asset.isEnabled = false
+                }
             }
             // limited权限选中照片默认选中
             if !detail.hasIncrementalChanges &&
                 PermissionProvider.statusFor(.photoLibrary) == .limited &&
                 pickerConfig.autoSelectAssetFromLimitedLibraryPicker {
-                selectedAsset(asset: asset, delegateEvent: false)
-            }
-            if isUptoLimit {
-                asset.isEnabled = false
+                if !isUptoLimit {
+                    selectedAsset(asset: asset, delegateEvent: false)
+                } else {
+                    asset.isEnabled = false
+                }
             }
         }
         

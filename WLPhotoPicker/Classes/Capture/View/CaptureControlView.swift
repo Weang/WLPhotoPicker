@@ -31,6 +31,7 @@ class CaptureControlView: UIView {
     weak var delegate: WLCameraControlDelegate?
     
     let previewContentView = UIView()
+    private let tipLabel = UILabel()
     private let cameraButton = CaptureCameraButton()
     private let cancelButton = UIButton()
     private let changeCameraButton = UIButton()
@@ -66,14 +67,38 @@ class CaptureControlView: UIView {
             make.width.height.equalToSuperview()
         }
         
-        cameraButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapGesture)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapGesture))
+        tapGesture.isEnabled = pickerConfig.captureConfig.captureAllowTakingPhoto
+        cameraButton.addGestureRecognizer(tapGesture)
+        
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressGesture(_:)))
+        longPressGesture.isEnabled = pickerConfig.captureConfig.captureAllowTakingVideo
         longPressGesture.minimumPressDuration = 0.2
         cameraButton.addGestureRecognizer(longPressGesture)
         addSubview(cameraButton)
         cameraButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(-60 - keyWindowSafeAreaInsets.bottom)
+        }
+        
+        tipLabel.isHidden = true
+        var text = ""
+        if pickerConfig.captureConfig.captureAllowTakingPhoto {
+            text.append("轻触拍照")
+        }
+        if pickerConfig.captureConfig.captureAllowTakingVideo{
+            if text.count > 0 {
+                text.append("，")
+            }
+            text.append("按住摄像")
+        }
+        tipLabel.text = text
+        tipLabel.font = UIFont.systemFont(ofSize: 13)
+        tipLabel.textColor = .white
+        addSubview(tipLabel)
+        tipLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(cameraButton.snp.top).offset(-20)
         }
         
         cancelButton.tintColor = .white
@@ -104,16 +129,27 @@ class CaptureControlView: UIView {
     }
     
     func showRunningAnimation() {
+        self.previewContentView.isHidden = false
         previewContentView.layer.opacity = 1
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.duration = 0.6
-        animation.isRemovedOnCompletion = false
-        animation.timingFunction = .init(name: .easeInEaseOut)
         previewContentView.layer.add(animation, forKey: nil)
+        tipLabel.isHidden = false
+        perform(#selector(hideTipLabel), with: nil, afterDelay: 2)
     }
     
     func showStopRunningAnimation() {
         self.previewContentView.layer.opacity = 0
+        self.previewContentView.isHidden = true
+    }
+    
+    @objc func hideTipLabel() {
+        UIView.animate(withDuration: 0.6) {
+            self.tipLabel.alpha = 0
+        } completion: { _ in
+            self.tipLabel.isHidden = true
+            self.tipLabel.alpha = 1
+        }
     }
     
     @objc private func zoomPinchGes(_ gesture: UIPinchGestureRecognizer) {

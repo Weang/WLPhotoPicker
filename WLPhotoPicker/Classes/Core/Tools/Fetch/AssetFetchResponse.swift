@@ -9,13 +9,8 @@ import UIKit
 import Photos
 import AVKit
 
-public struct PhotoFetchResponse {
-    public let image: UIImage
-    public let isDegraded: Bool
-}
-
-// 本地图片请求结果
-struct LocalPhotoFetchResponse {
+// 图片请求结果
+struct PhotoFetchResponse {
     public let image: UIImage
     public let isDegraded: Bool
 }

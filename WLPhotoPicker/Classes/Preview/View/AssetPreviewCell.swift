@@ -98,7 +98,7 @@ class AssetPreviewCell: UICollectionViewCell {
         
         activityIndicator.startAnimating()
         
-        assetRequest = AssetFetchTool.requestImage(for: model.asset, options: options) { [weak self] result, _ in
+        assetRequest = AssetFetchTool.requestPhoto(for: model.asset, options: options) { [weak self] result, _ in
             self?.activityIndicator.stopAnimating()
             if case .success(let response) = result {
                 self?.assetImageView.image = response.image

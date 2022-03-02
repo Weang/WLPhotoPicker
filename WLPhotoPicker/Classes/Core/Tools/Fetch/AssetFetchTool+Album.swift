@@ -62,17 +62,13 @@ extension AssetFetchTool {
                 .albumCloudShared,
                 .albumRegular
             ]
-            let smartAlbumCollections = subtypes.map {
-                PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: $0, options: nil)
-            }.map {
-                $0.objects
-            }.flatMap{
-                $0
-            }
+            let smartAlbumCollections = subtypes
+                .map { PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: $0, options: nil)  }
+                .map { $0.objects }
+                .flatMap { $0 }
             
-            let topLevelUserCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil).objects.compactMap {
-                $0 as? PHAssetCollection
-            }
+            let topLevelUserCollections = PHCollectionList.fetchTopLevelUserCollections(with: nil).objects
+                .compactMap { $0 as? PHAssetCollection }
             
             collections.append(contentsOf: smartAlbumCollections)
             collections.append(contentsOf: topLevelUserCollections)
@@ -85,7 +81,10 @@ extension AssetFetchTool {
                 if collection.estimatedAssetCount <= 0 && !collection.isCameraRollAlbum {
                     continue
                 }
-                if collection.isHiddenAlbum || collection.isRecentlyDeletedAlbum {
+                if !self.config.pickerConfig.showHiddenAlbum && collection.isHiddenAlbum {
+                    continue
+                }
+                if !self.config.pickerConfig.showRecentlyDeletedAlbum && collection.isRecentlyDeletedAlbum {
                     continue
                 }
                 if assetFetchResult.count == 0 && !collection.isCameraRollAlbum {
