@@ -79,14 +79,15 @@ extension AssetFetchTool {
         options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
         
         let request = AssetFetchTool.requestPhoto(for: asset.asset, options: options) { [weak self] result, _ in
-            if case .success(let response) = result {
-                asset.previewImage = response.image
-                guard let self = self, delegateEvent else {
-                    return
-                }
-                self.delegates.forEach {
-                    $0.value?.assetFetchTool(self, finishFetchSelectedAsset: asset)
-                }
+            guard case .success(let response) = result else {
+                return
+            }
+            asset.previewImage = response.image
+            guard let self = self, delegateEvent else {
+                return
+            }
+            self.delegates.forEach {
+                $0.value?.assetFetchTool(self, finishFetchSelectedAsset: asset)
             }
         }
         selectedAssetRequest[asset.localIdentifier] = request

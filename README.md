@@ -1,15 +1,28 @@
 # WLPhotoPicker
 
-[![CI Status](https://img.shields.io/travis/Weang/WLPhotoPicker.svg?style=flat)](https://travis-ci.org/Weang/WLPhotoPicker)
+WLPhotoPicker is a image picker with multifunction.Support select photos, videos, gif and livePhoto.Also support photo edit and video compress with custom config.
+
 [![Version](https://img.shields.io/cocoapods/v/WLPhotoPicker.svg?style=flat)](https://cocoapods.org/pods/WLPhotoPicker)
 [![License](https://img.shields.io/cocoapods/l/WLPhotoPicker.svg?style=flat)](https://cocoapods.org/pods/WLPhotoPicker)
 [![Platform](https://img.shields.io/cocoapods/p/WLPhotoPicker.svg?style=flat)](https://cocoapods.org/pods/WLPhotoPicker)
+![Language](https://img.shields.io/badge/Language-%20Swift%20-E57141.svg)
 
-## Example
-
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+## Features
+- [x] Photo,Gif,LivePhoto,Video.
+- [x] Support original photos and videos.
+- [x] Custom UI.
+- [x] Light mode, dark mode and auto mode support.
+- [x] Preview selection.
+- [x] Image editor(Drawing/Emoji/Input text/Mosaic/Fliter).
+- [x] Video Compression(Custom video size and video frame).
+- [x] Custom camera(Custom video size, video frame and stabilization mode).
+- [ ] Photo cropping.
+- [ ] Internationalization support.
 
 ## Requirements
+ * iOS 11.0
+ * Swift 5.x
+ * Xcode 12.x
 
 ## Installation
 
@@ -20,10 +33,37 @@ it, simply add the following line to your Podfile:
 pod 'WLPhotoPicker'
 ```
 
-## Author
+## Usage
+```swift
+class ViewController: UIViewController {
+    
+    @objc func openPicker() {
+        let config = WLPhotoConfig()
+        let vc = WLPhotoPickerController(config: config)
+        vc.pickerDelegate = self
+        self.present(vc, animated: true, completion: nil)
+    }
+    
+}
 
-Weang, w704444178@qq.com
+extension ViewController: WLPhotoPickerControllerDelegate {
 
-## License
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult result: [AssetPickerResult]) {
+        
+    }
+    
+    func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController) {
+        
+    }
+    
+    func pickerController(_ pickerController: WLPhotoPickerController, didOccurredError error: WLPhotoError) {
+        
+    }
 
-WLPhotoPicker is available under the MIT license. See the LICENSE file for more info.
+}
+```
+
+## Screenshots
+![image](https://github.com/Weang/Resources/blob/main/WLPhotoPicker/Simulator%20Screen%20Shot%20-%20iPhone%2012%20-%202022-03-08%20at%2010.19.57.png?raw=true)
+![image](https://github.com/Weang/Resources/blob/main/WLPhotoPicker/Simulator%20Screen%20Shot%20-%20iPhone%2012%20-%202022-03-08%20at%2010.20.01.png?raw=true)
+![image](https://github.com/Weang/Resources/blob/main/WLPhotoPicker/Simulator%20Screen%20Shot%20-%20iPhone%2012%20-%202022-03-08%20at%2010.20.08.png?raw=true)

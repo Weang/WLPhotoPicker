@@ -58,6 +58,7 @@ public class PickerConfig {
     public var allowPreview: Bool = true
     
     // 在Limited权限时，是否显示添加更多照片
+    // 如果开启此配置，建议在info.plist中添加"Prevent limited photos access alert"来关闭提示弹框
     public var canAddMoreAssetWhenLimited: Bool = true
     
     // 从LimitedLibraryPicker选择图片之后，是否自动选中选择的照片

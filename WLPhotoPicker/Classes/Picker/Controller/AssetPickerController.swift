@@ -387,7 +387,8 @@ extension AssetPickerController: AssetFetchToolDelegate {
                 IndexPath(item: cellIndexFromAsset($0), section:0)
             })
         }
-        setCurrentAlbum(albumModel, reloadData: false, animated: true)
+        let reloadData = removedItems.count > 0 || insertedItems.count > 0
+        setCurrentAlbum(albumModel, reloadData: reloadData, animated: true)
         updateVisibleCells()
         bottomToolBar.isEnabled = assetFetchTool.selectedAssets.count > 0
     }
