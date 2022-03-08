@@ -64,6 +64,4 @@ extension ViewController: WLPhotoPickerControllerDelegate {
 ```
 
 ## Screenshots
-![image](https://github.com/Weang/Resources/blob/main/WLPhotoPicker/Simulator%20Screen%20Shot%20-%20iPhone%2012%20-%202022-03-08%20at%2010.19.57.png?raw=true)
-![image](https://github.com/Weang/Resources/blob/main/WLPhotoPicker/Simulator%20Screen%20Shot%20-%20iPhone%2012%20-%202022-03-08%20at%2010.20.01.png?raw=true)
-![image](https://github.com/Weang/Resources/blob/main/WLPhotoPicker/Simulator%20Screen%20Shot%20-%20iPhone%2012%20-%202022-03-08%20at%2010.20.08.png?raw=true)
+![image](https://github.com/Weang/Resources/blob/main/WLPhotoPicker/demo.png)
