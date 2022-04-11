@@ -41,11 +41,12 @@ class PhotoEditMaskView: UIView {
         if showActive {
             self.showActive(dismissLater: dismissLater)
         }
+        center = CGPoint(x: maskLayer.center.x * maskLayer.cropScale, y: maskLayer.center.y * maskLayer.cropScale)
         maskImageView.image = maskLayer.maskImage
         maskLayer.scale = max(0.5, min(maskLayer.scale, 3))
         
-        let transform = CGAffineTransform(translationX: maskLayer.translation.x, y: maskLayer.translation.y)
-            .scaledBy(x: maskLayer.scale, y: maskLayer.scale)
+        let transform = CGAffineTransform(translationX: maskLayer.translation.x * maskLayer.cropScale, y: maskLayer.translation.y * maskLayer.cropScale)
+            .scaledBy(x: maskLayer.scale * maskLayer.cropScale, y: maskLayer.scale * maskLayer.cropScale)
             .rotated(by: maskLayer.rotation)
         if animate {
             UIView.animate(withDuration: 0.2, animations: {

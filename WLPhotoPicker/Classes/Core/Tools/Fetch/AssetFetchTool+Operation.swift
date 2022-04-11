@@ -180,10 +180,15 @@ extension AssetFetchOperation {
             switch result {
             case .success(let response):
                 self.assetModel.originalImage = response.image
-                EditManager.drawEditOriginalImageFrom(asset: self.assetModel, photoEditConfig: self.config.photoEditConfig) { [weak self] image in
-                    if let image = image {
-                        self?.finishRequestPhoto(image)
+                if self.assetModel.hasEdit {
+                    EditManager.drawEditOriginalImageFrom(asset: self.assetModel, photoEditConfig: self.config.photoEditConfig) { [weak self] image in
+                        guard let self = self else { return }
+                        if let image = image?.rotate(orientation: self.assetModel.cropRotation).cropToRect(self.assetModel.cropRect) {
+                            self.finishRequestPhoto(image)
+                        }
                     }
+                } else {
+                    self.finishRequestPhoto(response.image)
                 }
             case .failure(let error):
                 self.completion?(.failure(.fetchError(error)))

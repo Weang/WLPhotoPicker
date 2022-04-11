@@ -195,6 +195,8 @@
 		C11DBC286F46067EFC0E4C15FF014CC6 /* RuleRegExp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700E215F3D688D4A129A639173F515A2 /* RuleRegExp.swift */; };
 		C1DD0DF2AD5C6EF4916081E2EA20D62E /* WLPhotoUIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BB676F3914165EF5874F1A5DA9EC37 /* WLPhotoUIConfig.swift */; };
 		C241A011154907D4A4B377DB529E9C9D /* DoublePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCC2738BD372F4AA19F450A6256EA21 /* DoublePickerRow.swift */; };
+		C25DBFD628043B6B00F28F64 /* LivePhotoGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25DBFD528043B6B00F28F64 /* LivePhotoGenerator.swift */; };
+		C25DBFD828043C1C00F28F64 /* AssetFetchTool+SaveLivePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25DBFD728043C1C00F28F64 /* AssetFetchTool+SaveLivePhoto.swift */; };
 		C281E24727FEC47600715954 /* PhotoEditCropOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C281E24627FEC47600715954 /* PhotoEditCropOrientation.swift */; };
 		C2C0B35A27CE00A9004D7FE8 /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0B35927CE00A9004D7FE8 /* UIScrollView+Extensions.swift */; };
 		C2DC9DEE27FFBFD000EF20DF /* WLImageConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DC9DED27FFBFD000EF20DF /* WLImageConfig.swift */; };
@@ -526,6 +528,8 @@
 		C18BAE4999C04E3AB1F2836AAA17EA67 /* UIScreen+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIScreen+Extensions.swift"; sourceTree = "<group>"; };
 		C1A309CA4B529B8BD7786C2384E47C8E /* PhotoEditPasterCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditPasterCollectionViewCell.swift; sourceTree = "<group>"; };
 		C1B7FBD28B028AA76B8BC876690F7A54 /* ConstraintDirectionalInsets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintDirectionalInsets.swift; path = Source/ConstraintDirectionalInsets.swift; sourceTree = "<group>"; };
+		C25DBFD528043B6B00F28F64 /* LivePhotoGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePhotoGenerator.swift; sourceTree = "<group>"; };
+		C25DBFD728043C1C00F28F64 /* AssetFetchTool+SaveLivePhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AssetFetchTool+SaveLivePhoto.swift"; sourceTree = "<group>"; };
 		C281E24627FEC47600715954 /* PhotoEditCropOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditCropOrientation.swift; sourceTree = "<group>"; };
 		C2C0B35927CE00A9004D7FE8 /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
 		C2DC9DED27FFBFD000EF20DF /* WLImageConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WLImageConfig.swift; sourceTree = "<group>"; };
@@ -1109,6 +1113,7 @@
 			children = (
 				D12A1F8E8436906D1A6D294793241074 /* Fetch */,
 				67CD05D023139A147574A96754BC15A4 /* GIFGenerator.swift */,
+				C25DBFD528043B6B00F28F64 /* LivePhotoGenerator.swift */,
 				220A71416657B3E1EB36E555CBD7F640 /* VideoCompressManager.swift */,
 				75C4A53A19E509BDCA486F03B829E530 /* EditManager.swift */,
 				76B45BDA972BE3B355DE4947F807E17B /* CaptureManager.swift */,
@@ -1194,6 +1199,7 @@
 				190FA04687D7FD9AA0747C4B96455504 /* AssetFetchTool+Observer.swift */,
 				E5EBFB1F79512CCEA5426E82F0ECF201 /* AssetFetchTool+Operation.swift */,
 				DC17E41D08F79FB14C3A2BA7AB2B2496 /* AssetFetchTool+SavePhoto.swift */,
+				C25DBFD728043C1C00F28F64 /* AssetFetchTool+SaveLivePhoto.swift */,
 				288B4FD7820CC0B88E6E993BF86B9EB3 /* AssetFetchTool+SaveVideo.swift */,
 				2F5B622B1FAD22079B6F5A71084D9C77 /* WeakAssetFetchToolDelegate.swift */,
 			);
@@ -1643,6 +1649,7 @@
 				978BE4AC5CEBC2B7F6BF2B14B653DAFD /* CoreImage+Extensions.swift in Sources */,
 				035929EAA0FDF4D0249363D227CBCC4A /* CoreTextHelper.swift in Sources */,
 				5B50A060D72B096CE983DAF9869533B4 /* DeviceOrientation.swift in Sources */,
+				C25DBFD828043C1C00F28F64 /* AssetFetchTool+SaveLivePhoto.swift in Sources */,
 				D43F143EC77B4F021E0C3D016780FCD1 /* EditManager.swift in Sources */,
 				184158DE4FD107ABE2AD4529A16706F6 /* FileError.swift in Sources */,
 				2EF615E0536378BADA99EACB57175D87 /* FileHelper.swift in Sources */,
@@ -1681,6 +1688,7 @@
 				089118530B6D51819C475FA75A99CCEC /* PhotoEditGraffitiPath.swift in Sources */,
 				57C81BD493D3525FD026700F963E34F6 /* PhotoEditItemCollectionViewCell.swift in Sources */,
 				033B69980CEDA626958870DE7AC2CD48 /* PhotoEditItemType.swift in Sources */,
+				C25DBFD628043B6B00F28F64 /* LivePhotoGenerator.swift in Sources */,
 				7D8E641AECBDE625C007CC3D61C09B33 /* PhotoEditMaskLayer.swift in Sources */,
 				62580D75DACFAC98CE381B2A5E2CC07D /* PhotoEditMaskTrashCanView.swift in Sources */,
 				82B20C1A1E1558C92A2520E8268FBA37 /* PhotoEditMaskView.swift in Sources */,

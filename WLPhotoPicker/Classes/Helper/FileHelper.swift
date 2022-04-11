@@ -47,6 +47,25 @@ public extension FileHelper {
     
 }
 
+// MARK: LivePhoto
+public extension FileHelper {
+    
+    static func createLivePhotoPath() -> (imagePath: String, videoPath: String) {
+        let directoryPath = temporaryPath + "LivePhoto/"
+        if !FileManager.default.fileExists(atPath: directoryPath) {
+            try? FileManager.default.createDirectory(at: URL(fileURLWithPath: directoryPath),
+                                                     withIntermediateDirectories: true,
+                                                     attributes: nil)
+        }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMddHHmmss"
+        let imagePath = directoryPath + dateFormatter.string(from: Date()).md5 + ".jpeg"
+        let videoPath = directoryPath + dateFormatter.string(from: Date()).md5 + ".mov"
+        return (imagePath: imagePath, videoPath: videoPath)
+    }
+    
+}
+
 // MARK: Capture
 public extension FileHelper {
     
@@ -67,7 +86,7 @@ public extension FileHelper {
         }
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMddHHmmss"
-        let fileName = dateFormatter.string(from: Date()) + suffix
+        let fileName = dateFormatter.string(from: Date()).md5 + suffix
         return directoryPath  + fileName
     }
     

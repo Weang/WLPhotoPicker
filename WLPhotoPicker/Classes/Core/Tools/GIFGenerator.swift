@@ -25,7 +25,7 @@ public class GIFGenerator {
             guard let image = CGImageSourceCreateImageAtIndex(imageSource, i, nil) else {
                 continue
             }
-            images.append(UIImage(cgImage: image, scale: UIScreen.main.scale, orientation: .up))
+            images.append(UIImage(cgImage: image, scale: 1, orientation: .up))
             duration += frameDurationAt(index: i, source: imageSource)
         }
         if duration == 0 {

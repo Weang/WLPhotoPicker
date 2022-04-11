@@ -28,14 +28,16 @@ class PhotoEditCropRectangleView: UIView {
     private let rightBottomCorner = PhotoEditCropRectangleCorner(posotion: .rightBottom)
     private let leftBottomCorner = PhotoEditCropRectangleCorner(posotion: .leftBottom)
     
+    private let photoEditCropRatios: PhotoEditCropRatio
     private var minimumSize: CGFloat = 46
     private var startCropRect: CGRect = .zero
     
     var cropRect: CGRect = .zero
     var maximumCropRect: CGRect = .zero
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(photoEditCropRatios: PhotoEditCropRatio) {
+        self.photoEditCropRatios = photoEditCropRatios
+        super.init(frame: .zero)
         
         setupView()
         setupGesture()

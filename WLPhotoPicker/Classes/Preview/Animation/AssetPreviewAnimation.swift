@@ -78,10 +78,7 @@ extension AssetPreviewViewController {
         if let currentIndex = self.currentIndex,
            let imageView = animateDataSource?.imageBrowser(self, sourceViewFor: currentIndex),
            let image = imageView.image,
-           let imageOrginFrame = imageView.superview?.convert(imageView.frame, to: view.window),
-           let assetSize = animateDataSource?.imageBrowser(self, assetSizeFor: currentIndex) {
-            
-            collectionView.isHidden = true
+           let imageOrginFrame = imageView.superview?.convert(imageView.frame, to: view.window) {
             
             let animateImageView = UIImageView()
             animateImageView.contentMode = .scaleAspectFill
@@ -92,20 +89,22 @@ extension AssetPreviewViewController {
             animateImageView.layer.cornerRadius = imageView.layer.cornerRadius
             view.addSubview(animateImageView)
             
-            toolbars.forEach {
-                view.bringSubviewToFront($0)
-            }
-            
-            let mediaType = self.assetFetchTool.albumModel?.assets[currentIndex].mediaType ?? .photo
-            let animateImageViewToFrame = AssetSizeHelper.imageViewRectFrom(imageSize: assetSize, mediaType: mediaType)
+            let mediaType = assetFetchTool.albumModel?.assets[currentIndex].mediaType ?? .photo
+            let animateImageViewToFrame = AssetSizeHelper.imageViewRectFrom(imageSize: image.size, mediaType: mediaType)
             animator.addAnimations {
                 animateImageView.frame = animateImageViewToFrame
             }
             
-            animator.addCompletion { [unowned self] position in
+            animator.addCompletion { [unowned self] _ in
                 animateImageView.removeFromSuperview()
                 self.collectionView.isHidden = false
             }
+            
+            collectionView.isHidden = true
+            toolbars.forEach {
+                view.bringSubviewToFront($0)
+            }
+            
         } else {
             collectionView.alpha = 0
             animator.addAnimations { [unowned self] in
@@ -129,14 +128,12 @@ extension AssetPreviewViewController {
     }
     
     fileprivate func dismissAnimation(animator: UIViewPropertyAnimator, completion: @escaping (Bool) -> ()) {
-    
         if let currentIndex = collectionView.indexPathsForVisibleItems.first?.item,
            let cellImageView = (collectionView.cellForItem(at: IndexPath(item: currentIndex, section: 0)) as? AssetPreviewCell)?.assetImageView,
            let image = cellImageView.image,
            let sourceImageView = animateDataSource?.imageBrowser(self, sourceViewFor: currentIndex),
            let imageFromFrame = cellImageView.superview?.convert(cellImageView.frame, to: view.window),
            let imageToFrame = sourceImageView.superview?.convert(sourceImageView.frame, to: view.window) {
-            collectionView.isHidden = true
             
             let animateImageView = UIImageView()
             animateImageView.contentMode = .scaleAspectFill
@@ -146,14 +143,16 @@ extension AssetPreviewViewController {
             animateImageView.frame = imageFromFrame
             view.addSubview(animateImageView)
             
-            toolbars.forEach {
-                $0.superview?.bringSubviewToFront($0)
-            }
-            
             animator.addAnimations {
                 animateImageView.layer.cornerRadius = sourceImageView.layer.cornerRadius
                 animateImageView.frame = imageToFrame
             }
+            
+            collectionView.isHidden = true
+            toolbars.forEach {
+                $0.superview?.bringSubviewToFront($0)
+            }
+            
         } else {
             animator.addAnimations { [unowned self] in
                 self.collectionView.alpha = 0

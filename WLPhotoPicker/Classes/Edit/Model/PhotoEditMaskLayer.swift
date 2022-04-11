@@ -14,6 +14,7 @@ protocol PhotoEditMaskLayer {
     var center: CGPoint { set get }
     var id: Double { set get }
     var scale: CGFloat { set get }
+    var cropScale: CGFloat { set get }
     var rotation: CGFloat { set get }
     var translation: CGPoint { set get }
 }

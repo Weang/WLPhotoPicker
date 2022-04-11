@@ -239,7 +239,6 @@ public class PhotoEditViewController: UIViewController {
         
         mosaicDrawPath.shapeSize = imageContainerView.size
         mosaicDrawLayer.frame = imageContainerView.bounds
-        
         maskLayerContentView.frame = imageContainerView.bounds
         
         currentFilterImage = photo
@@ -556,12 +555,21 @@ extension PhotoEditViewController {
         contentImageView.transform = transform
         maskLayerContentView.transform = transform
         
-        let imageFrame = CGRect(x: -cropedImageRect.minX / ratio, y: -cropedImageRect.minY / ratio, width: photoSize.width / ratio, height: photoSize.height / ratio)
+        let imageFrame = CGRect(x: -cropedImageRect.minX / ratio,
+                                y: -cropedImageRect.minY / ratio,
+                                width: photoSize.width / ratio,
+                                height: photoSize.height / ratio)
         imageContainerView.frame = toDisplayFrame
+        contentScrollView.contentSize = toDisplayFrame.size
         contentImageView.frame = imageFrame
+        maskLayerContentView.frame = imageFrame
         graffitiDrawLayer.frame = contentImageView.bounds
         mosaicDrawLayer.frame = contentImageView.bounds
-        maskLayerContentView.frame = contentImageView.bounds
+        
+        maskSubviews.forEach {
+            $0.maskLayer.cropScale = (cropRotation.isPortrait ? imageFrame.width : imageFrame.height) / imageContainerView.width
+            $0.updateMaskLayer(showActive: false, dismissLater: false, animate: false)
+        }
     }
     
 }
@@ -718,16 +726,18 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
     }
     
     func bottomToolBarDidClickDoneButton(_ bottomToolBar: PhotoEditBottomToolBar) {
-        let maskLayers = maskLayerContentView.subviews.compactMap{
-            ($0 as? PhotoEditMaskView)?.maskLayer
-        }
+        let maskLayers = maskSubviews.map { $0.maskLayer }
         if let assetModel = self.assetModel {
             assetModel.editMosaicPath = mosaicDrawPath
             assetModel.editGraffitiPath = graffitiDrawPath
             assetModel.maskLayers = maskLayers
+            assetModel.cropRect = cropRect
+            assetModel.cropRotation = cropRotation
             assetModel.filter = currentFilter
             assetModel.adjustValue = adjustValue
-            assetModel.editedImage = EditManager.drawMasksAt(photo: contentImageView.image, with: assetModel)
+            assetModel.editedImage = EditManager.drawMasksAt(photo: contentImageView.image, with: assetModel)?
+                .rotate(orientation: cropRotation)
+                .cropToRect(cropRect)
             delegate?.editController(self, didDidFinishEditAsset: assetModel)
         } else {
             let editedImage = EditManager.drawMasksAt(photo: contentImageView.image,

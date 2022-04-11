@@ -9,7 +9,6 @@ import UIKit
 
 protocol AssetPreviewViewControllerAnimateDataSource: AnyObject {
     func imageBrowser(_ imageBrowser: AssetPreviewViewController, sourceViewFor index: Int) -> UIImageView?
-    func imageBrowser(_ imageBrowser: AssetPreviewViewController, assetSizeFor index: Int) -> CGSize
 }
 
 protocol AssetPreviewViewControllerDelegate: AnyObject {
@@ -203,7 +202,7 @@ extension AssetPreviewViewController: UICollectionViewDelegate, UICollectionView
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         collectionView.visibleCells.compactMap {
-            $0 as? AssetPreviewCell
+            $0 as? AssetPreviewVideoCell
         }.forEach {
             $0.cellDidScroll()
         }

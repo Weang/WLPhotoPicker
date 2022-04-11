@@ -23,17 +23,19 @@ class AssetPreviewVideoCell: AssetPreviewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        doubleTapGesture.isEnabled = false
+        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidPlayToEndTime), name: .AVPlayerItemDidPlayToEndTime, object: nil)
+    }
+    
+    override func setupView() {
+        super.setupView()
+        
+        activityIndicator.removeFromSuperview()
         
         playButton.backgroundColor = .clear
         playButton.setBackgroundImage(BundleHelper.imageNamed("video_play"), for: .normal)
         playButton.isUserInteractionEnabled = false
         playButton.tintColor = .white
-        contentView.addSubview(playButton)
-        playButton.snp.makeConstraints { make in
-            make.height.width.equalTo(60)
-            make.center.equalToSuperview()
-        }
+        contentScrollView.addSubview(playButton)
         
         iCloudView.isHidden = true
         contentView.addSubview(iCloudView)
@@ -41,14 +43,28 @@ class AssetPreviewVideoCell: AssetPreviewCell {
             make.left.equalTo(8)
             make.top.equalTo(keyWindowSafeAreaInsets.top + 52)
         }
-        
-        activityIndicator.removeFromSuperview()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidPlayToEndTime), name: .AVPlayerItemDidPlayToEndTime, object: nil)
     }
     
-    override func cellDidScroll() {
-        super.cellDidScroll()
+    override func setupGesture() {
+        super.setupGesture()
+        
+        doubleTapGesture.isEnabled = false
+    }
+    
+    override func setAsset(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
+        super.setAsset(model, thumbnail: thumbnail, pickerConfig: pickerConfig)
+        
+        resetPlayer()
+    }
+    
+    override func layoutImage(_ image: UIImage?) {
+        super.layoutImage(image)
+        
+        contentScrollView.minimumZoomScale = 1
+        contentScrollView.maximumZoomScale = 1
+    }
+    
+    func cellDidScroll() {
         setPlayingStatus(isPlaying: false, changeToolbar: false)
     }
     
@@ -59,13 +75,22 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         }
     }
     
-    override func setAsset(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
-        super.setAsset(model, thumbnail: thumbnail, pickerConfig: pickerConfig)
-        
-        contentScrollView.minimumZoomScale = 1
-        contentScrollView.maximumZoomScale = 1
-        
-        resetPlayer()
+    func setPlayingStatus(isPlaying: Bool, changeToolbar: Bool) {
+        self.isPlaying = isPlaying
+        playButton.isHidden = isPlaying
+        if isPlaying {
+            if isVideoFinishLoading {
+                player?.play()
+                playerLayer?.isHidden = false
+            } else {
+                requestVideo()
+            }
+        } else {
+            player?.pause()
+        }
+        if changeToolbar {
+            delegate?.previewCellSingleTap(self, shouldShowToolbar: !isPlaying)
+        }
     }
     
     func requestVideo() {
@@ -107,24 +132,6 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         setPlayingStatus(isPlaying: false, changeToolbar: true)
     }
     
-    func setPlayingStatus(isPlaying: Bool, changeToolbar: Bool) {
-        self.isPlaying = isPlaying
-        playButton.isHidden = isPlaying
-        if isPlaying {
-            if isVideoFinishLoading {
-                player?.play()
-                playerLayer?.isHidden = false
-            } else {
-                requestVideo()
-            }
-        } else {
-            player?.pause()
-        }
-        if changeToolbar {
-            delegate?.previewCellSingleTap(self, shouldShowToolbar: !isPlaying)
-        }
-    }
-    
     override func handleSingleTapGesture() {
         setPlayingStatus(isPlaying: !isPlaying, changeToolbar: true)
     }
@@ -154,8 +161,20 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         iCloudView.isHidden = true
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        playButton.frame = CGRect(x: (contentScrollView.width - 60) * 0.5,
+                                  y: (contentScrollView.height - 60) * 0.5,
+                                  width: 60,
+                                  height: 60)
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
+        resetPlayer()
+    }
+    
+    deinit {
         resetPlayer()
     }
     

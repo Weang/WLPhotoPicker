@@ -19,8 +19,8 @@ class AssetPreviewLivePhotoCell: AssetPreviewCell {
         }
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func setupView() {
+        super.setupView()
         
         livePhotoView.isHidden = true
         livePhotoView.playbackGestureRecognizer.isEnabled = false
@@ -33,6 +33,10 @@ class AssetPreviewLivePhotoCell: AssetPreviewCell {
             make.left.equalTo(8)
             make.top.equalTo(keyWindowSafeAreaInsets.top + 52)
         }
+    }
+    
+    override func setupGesture() {
+        super.setupGesture()
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(livePhotoLongPress(_:)))
         longPressGesture.delaysTouchesBegan = true
@@ -40,9 +44,7 @@ class AssetPreviewLivePhotoCell: AssetPreviewCell {
         contentScrollView.addGestureRecognizer(longPressGesture)
     }
     
-    override func requestImage(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
-        assetImageView.image = thumbnail
-        
+    override func requestImage(_ model: AssetModel, pickerConfig: PickerConfig) {
         let options = AssetFetchOptions()
         options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
         options.imageDeliveryMode = .highQualityFormat
@@ -107,10 +109,6 @@ class AssetPreviewLivePhotoCell: AssetPreviewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         livePhotoView.livePhoto = nil
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
 }

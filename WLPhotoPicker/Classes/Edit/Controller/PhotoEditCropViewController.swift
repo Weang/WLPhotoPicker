@@ -27,7 +27,7 @@ class PhotoEditCropViewController: UIViewController {
     
     let contentScrollView = UIScrollView()
     let contentImageView = UIImageView()
-    let cropRectangleView = PhotoEditCropRectangleView()
+    let cropRectangleView: PhotoEditCropRectangleView
     let bottomToolBar = PhotoEditCropToolBar()
     
     var currentImageViewsize: CGSize = .zero
@@ -49,6 +49,7 @@ class PhotoEditCropViewController: UIViewController {
         self.cropRect = cropRect
         self.cropRotation = cropRotation
         self.photoEditCropRatios = photoEditCropRatios
+        self.cropRectangleView = PhotoEditCropRectangleView(photoEditCropRatios: photoEditCropRatios)
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
         modalPresentationCapturesStatusBarAppearance = true

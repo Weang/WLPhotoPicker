@@ -36,6 +36,11 @@ class AssetPreviewCell: UICollectionViewCell {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
+        setupView()
+        setupGesture()
+    }
+    
+    func setupView() {
         contentView.backgroundColor = .clear
         
         contentScrollView.contentInsetAdjustmentBehavior = .never
@@ -58,7 +63,9 @@ class AssetPreviewCell: UICollectionViewCell {
         activityIndicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
-        
+    }
+    
+    func setupGesture() {
         singleTapGesture.addTarget(self, action: #selector(handleSingleTapGesture))
         contentScrollView.addGestureRecognizer(singleTapGesture)
         
@@ -73,25 +80,27 @@ class AssetPreviewCell: UICollectionViewCell {
         singleTapGesture.require(toFail: doubleTapGesture)
     }
     
+    // MARK: Set Data & Request
     func setAsset(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
         self.model = model
+        
         cancelCurrentRequest()
         
-        assetImageView.frame = AssetSizeHelper.imageViewRectFrom(imageSize: model.asset.pixelSize, mediaType: model.mediaType)
-        contentScrollView.setZoomScale(1, animated: false)
-        contentScrollView.contentSize = assetImageView.frame.size
-        contentScrollView.maximumZoomScale = AssetSizeHelper.imageViewMaxZoomScaleFrom(imageSize: model.asset.pixelSize)
-        
-        requestImage(model, thumbnail: thumbnail, pickerConfig: pickerConfig)
+        if let image = model.displayingImage {
+            layoutImage(image)
+        } else {
+            layoutImage(thumbnail)
+            requestImage(model, pickerConfig: pickerConfig)
+        }
     }
     
-    func requestImage(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
-        if let image = model.displayingImage {
-            assetImageView.image = image
-            return
-        }
-        assetImageView.image = thumbnail
-        
+    func cancelCurrentRequest() {
+        assetRequest?.cancel()
+        assetRequest = nil
+        layoutImage(nil)
+    }
+    
+    func requestImage(_ model: AssetModel, pickerConfig: PickerConfig) {
         let options = AssetFetchOptions()
         options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
         options.imageDeliveryMode = .highQualityFormat
@@ -101,15 +110,26 @@ class AssetPreviewCell: UICollectionViewCell {
         assetRequest = AssetFetchTool.requestPhoto(for: model.asset, options: options) { [weak self] result, _ in
             self?.activityIndicator.stopAnimating()
             if case .success(let response) = result {
-                self?.assetImageView.image = response.image
+                self?.layoutImage(response.image)
             }
         }
     }
     
-    func cellDidScroll() {
-        
+    func layoutImage(_ image: UIImage?) {
+        contentScrollView.setZoomScale(1, animated: false)
+        assetImageView.image = image
+        if let image = image {
+            assetImageView.frame = AssetSizeHelper.imageViewRectFrom(imageSize: image.size, mediaType: model?.mediaType ?? .photo)
+            contentScrollView.maximumZoomScale = AssetSizeHelper.imageViewMaxZoomScaleFrom(imageSize: image.size)
+            contentScrollView.contentSize = assetImageView.frame.size
+        } else {
+            contentScrollView.maximumZoomScale = 1
+            contentScrollView.contentSize = .zero
+            assetImageView.frame = .zero
+        }
     }
     
+    // MARK: Gesture
     @objc func handleSingleTapGesture() {
         delegate?.previewCellSingleTap(self)
     }
@@ -170,12 +190,6 @@ class AssetPreviewCell: UICollectionViewCell {
                 self.delegate?.previewCellSingleTap(self, didFinishPanDismiss: false)
             })
         }
-    }
-    
-    func cancelCurrentRequest() {
-        assetRequest?.cancel()
-        assetRequest = nil
-        assetImageView.image = nil
     }
     
     override func prepareForReuse() {

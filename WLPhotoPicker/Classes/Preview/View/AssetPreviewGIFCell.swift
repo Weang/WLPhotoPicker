@@ -9,9 +9,7 @@ import UIKit
 
 class AssetPreviewGIFCell: AssetPreviewCell {
     
-    override func requestImage(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
-        assetImageView.image = thumbnail
-        
+    override func requestImage(_ model: AssetModel, pickerConfig: PickerConfig) {
         let options = AssetFetchOptions()
         
         activityIndicator.startAnimating()

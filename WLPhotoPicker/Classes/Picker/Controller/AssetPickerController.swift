@@ -457,13 +457,6 @@ extension AssetPickerController: AssetPreviewViewControllerAnimateDataSource, As
         return cell.assetImageView
     }
     
-    func imageBrowser(_ imageBrowser: AssetPreviewViewController, assetSizeFor index: Int) -> CGSize {
-        guard let albumModel = assetFetchTool.albumModel else {
-            return .zero
-        }
-        return albumModel.assets[index].asset.pixelSize
-    }
-    
     func imageBrowser(_ imageBrowser: AssetPreviewViewController, didScrollTo indexPath: IndexPath) {
         collectionView.scrollToItem(at: IndexPath(item: cellIndexFromAsset(indexPath.item), section: 0),
                                     at: .centeredVertically,
