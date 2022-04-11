@@ -13,4 +13,8 @@ extension CGSize {
         width / height
     }
 
+    var turn: CGSize {
+        CGSize(width: height, height: width)
+    }
+    
 }

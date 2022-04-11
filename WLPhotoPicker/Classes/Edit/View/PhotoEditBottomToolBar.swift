@@ -177,7 +177,7 @@ class PhotoEditBottomToolBar: UIView {
     
     private func selectEditItem(_ itemType: PhotoEditItemType?) {
         delegate?.bottomToolBar(self, didSelectItemType: itemType)
-        guard itemType?.hasNextStep ?? true else {
+        guard itemType?.canBeHighlight ?? true else {
             return
         }
         currentItemType = itemType
@@ -262,9 +262,12 @@ extension PhotoEditBottomToolBar: UICollectionViewDelegateFlowLayout, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-        let canBeHighlight = photoEditConfig.photoEditItemTypes[indexPath.item].hasNextStep
-        if collectionView.indexPathsForSelectedItems?.first == indexPath && canBeHighlight {
+        let canBeHighlight = photoEditConfig.photoEditItemTypes[indexPath.item].canBeHighlight
+        let isCurrentSelected = collectionView.indexPathsForSelectedItems?.first == indexPath
+        if canBeHighlight && !isCurrentSelected {
+            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        }
+        if isCurrentSelected && canBeHighlight {
             collectionView.deselectItem(at: indexPath, animated: false)
             selectEditItem(nil)
             return false

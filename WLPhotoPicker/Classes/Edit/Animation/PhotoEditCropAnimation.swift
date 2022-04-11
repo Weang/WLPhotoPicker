@@ -56,7 +56,7 @@ private class PhotoEditCropDismissTransitioning: NSObject, UIViewControllerAnima
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.4
+        return 0.6
     }
     
 }
@@ -64,9 +64,10 @@ private class PhotoEditCropDismissTransitioning: NSObject, UIViewControllerAnima
 extension PhotoEditCropViewController {
     
     fileprivate func showAnimation(duration: Double, from editViewController: PhotoEditViewController, completion: @escaping (Bool) -> ()) {
+        let photo = self.photo.rotate(orientation: cropRotation).cropToRect(cropRect)
         let animateImageView = UIImageView()
         animateImageView.image = photo
-        animateImageView.frame = editViewController.contentScrollView.convert(editViewController.contentImageView.frame, to: editViewController.view)
+        animateImageView.frame = editViewController.contentScrollView.convert(editViewController.imageContainerView.frame, to: editViewController.view)
         editViewController.view.addSubview(animateImageView)
         
         editViewController.view.bringSubviewToFront(editViewController.topToolBar)
@@ -74,7 +75,7 @@ extension PhotoEditCropViewController {
         editViewController.contentImageView.isHidden = true
         view.alpha = 0
         
-        let toFrame = adaptionDisplay(displaySize: photo.size)
+        let toFrame = adaptionDisplayRect(displaySize: photo.size)
         
         UIView.animate(withDuration: duration - 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
             animateImageView.frame = toFrame
@@ -94,9 +95,11 @@ extension PhotoEditCropViewController {
     }
     
     fileprivate func dismissAnimation(duration: Double, to editViewController: PhotoEditViewController, completion: @escaping (Bool) -> ()) {
+        let image = cropedImage ?? photo
+        let fromRect = adaptionDisplayRect(displaySize: image.size)
         let animateImageView = UIImageView()
-        animateImageView.image = photo
-        animateImageView.frame = contentScrollView.convert(contentImageView.frame, to: editViewController.view)
+        animateImageView.image = image
+        animateImageView.frame = fromRect
         editViewController.view.addSubview(animateImageView)
         
         editViewController.view.bringSubviewToFront(editViewController.topToolBar)
@@ -106,7 +109,7 @@ extension PhotoEditCropViewController {
         editViewController.bottomToolBar.alpha = 0
         view.alpha = 0
         
-        let toFrame = editViewController.contentScrollView.convert(editViewController.contentImageView.frame, to: editViewController.view)
+        let toFrame = editViewController.contentScrollView.convert(editViewController.imageContainerView.frame, to: editViewController.view)
         
         UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
             animateImageView.frame = toFrame

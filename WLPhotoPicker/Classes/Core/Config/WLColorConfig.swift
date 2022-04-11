@@ -1,5 +1,5 @@
 //
-//  UIColorConfig.swift
+//  WLColorConfig.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2022/1/24.
@@ -7,13 +7,13 @@
 
 import UIKit
 
-public class UIColorConfig {
+public class WLColorConfig {
 
     private init() { }
     
-    static public let `default` = UIColorConfig()
+    static public let `default` = WLColorConfig()
     
-    public var userInterfaceStyle: UserInterfaceStyle = .auto
+    var userInterfaceStyle: UserInterfaceStyle = .auto
     
     // Picker 背景颜色
     public var pickerBackgroundLight = UIColor.white

@@ -11,7 +11,7 @@ class PhotoEditMaskView: UIView {
     
     var isActive: Bool = false
     var maskLayer: PhotoEditMaskLayer
-    
+
     let maskImageView = UIImageView()
     
     init(maskLayer: PhotoEditMaskLayer) {

@@ -106,7 +106,7 @@
 		684E267E0E8DBFA9275F352F44E879B8 /* PhotoEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3068593C89065A9B3DF3F0E26131F8BA /* PhotoEditViewController.swift */; };
 		697D5116696270B7361C180573C495D3 /* AlertRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A79E4CFF640A90BB3C2050F14183D9 /* AlertRow.swift */; };
 		69B91E7FF91730260D4137B09C015636 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D232BB8CC277DC8C20515F665464D9E /* Protocols.swift */; };
-		69D144676DF6F16EAACF7C51FECD8C33 /* UIColorConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A88757836468294CF10B39294408702 /* UIColorConfig.swift */; };
+		69D144676DF6F16EAACF7C51FECD8C33 /* WLColorConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A88757836468294CF10B39294408702 /* WLColorConfig.swift */; };
 		6A206DE4F312D86FFB7534EED24CC1E2 /* PhotoEditCropAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2834D893251F4B74AB60ED28EF3688 /* PhotoEditCropAnimation.swift */; };
 		6B905F2AC740B767D002FBB0CA795A7C /* RuleClosure.swift in Sources */ = {isa = PBXBuildFile; fileRef = B915431A9F83655891770544ED8C3400 /* RuleClosure.swift */; };
 		6D5229D0C161D5FF2D638883E86BC97A /* UIScreen+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18BAE4999C04E3AB1F2836AAA17EA67 /* UIScreen+Extensions.swift */; };
@@ -195,7 +195,10 @@
 		C11DBC286F46067EFC0E4C15FF014CC6 /* RuleRegExp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 700E215F3D688D4A129A639173F515A2 /* RuleRegExp.swift */; };
 		C1DD0DF2AD5C6EF4916081E2EA20D62E /* WLPhotoUIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BB676F3914165EF5874F1A5DA9EC37 /* WLPhotoUIConfig.swift */; };
 		C241A011154907D4A4B377DB529E9C9D /* DoublePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCC2738BD372F4AA19F450A6256EA21 /* DoublePickerRow.swift */; };
+		C281E24727FEC47600715954 /* PhotoEditCropOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C281E24627FEC47600715954 /* PhotoEditCropOrientation.swift */; };
 		C2C0B35A27CE00A9004D7FE8 /* UIScrollView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2C0B35927CE00A9004D7FE8 /* UIScrollView+Extensions.swift */; };
+		C2DC9DEE27FFBFD000EF20DF /* WLImageConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2DC9DED27FFBFD000EF20DF /* WLImageConfig.swift */; };
+		C2FC6B9B28014DFC007D59DD /* PhotoEditCropRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FC6B9A28014DFC007D59DD /* PhotoEditCropRect.swift */; };
 		C30507373C061CC06045337ED508368C /* AssetPreviewThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26DB4A1CE8F697B8ABD77065CEC0AD0 /* AssetPreviewThumbnailCell.swift */; };
 		C50042400F9312DBDC36FAE9552699C0 /* AVCaptureDevice+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB38E095686F9ED7AE9ED639A18D46 /* AVCaptureDevice+Extensions.swift */; };
 		C597F82386A47A66F2DD7F1828B51885 /* PhotoEditTextMaskLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94076FF26A7ECED59AE108D30A5FEA8 /* PhotoEditTextMaskLayer.swift */; };
@@ -311,7 +314,7 @@
 		060E33CA979A0F5D458424299A779B2D /* CapturePreviewToolBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CapturePreviewToolBar.swift; sourceTree = "<group>"; };
 		082977F3777A7D434AB35C357B487F83 /* Eureka.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Eureka.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		09E193CA168310876F4D9750E390B7F0 /* Eureka.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Eureka.debug.xcconfig; sourceTree = "<group>"; };
-		0A88757836468294CF10B39294408702 /* UIColorConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UIColorConfig.swift; sourceTree = "<group>"; };
+		0A88757836468294CF10B39294408702 /* WLColorConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLColorConfig.swift; sourceTree = "<group>"; };
 		0C9859FD03CC51AE1EFD3A2D9A4656E4 /* AssetCameraCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetCameraCollectionViewCell.swift; sourceTree = "<group>"; };
 		0CA404F43115052AB8FB79C32C093AB9 /* PhotoLibrary.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoLibrary.swift; sourceTree = "<group>"; };
 		0D1E61F723ABBB0EFC92500B0925679F /* ConstraintMakerExtendable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintMakerExtendable.swift; path = Source/ConstraintMakerExtendable.swift; sourceTree = "<group>"; };
@@ -523,7 +526,10 @@
 		C18BAE4999C04E3AB1F2836AAA17EA67 /* UIScreen+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIScreen+Extensions.swift"; sourceTree = "<group>"; };
 		C1A309CA4B529B8BD7786C2384E47C8E /* PhotoEditPasterCollectionViewCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditPasterCollectionViewCell.swift; sourceTree = "<group>"; };
 		C1B7FBD28B028AA76B8BC876690F7A54 /* ConstraintDirectionalInsets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintDirectionalInsets.swift; path = Source/ConstraintDirectionalInsets.swift; sourceTree = "<group>"; };
+		C281E24627FEC47600715954 /* PhotoEditCropOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditCropOrientation.swift; sourceTree = "<group>"; };
 		C2C0B35927CE00A9004D7FE8 /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
+		C2DC9DED27FFBFD000EF20DF /* WLImageConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WLImageConfig.swift; sourceTree = "<group>"; };
+		C2FC6B9A28014DFC007D59DD /* PhotoEditCropRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditCropRect.swift; sourceTree = "<group>"; };
 		C4397CA9380889D83329562784F245B1 /* ConstraintPriority.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConstraintPriority.swift; path = Source/ConstraintPriority.swift; sourceTree = "<group>"; };
 		C51D7FC968CF92AE9FBBE8D0E0EE6C55 /* SelectableSection.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SelectableSection.swift; path = Source/Core/SelectableSection.swift; sourceTree = "<group>"; };
 		C6B58CC1A424FB3B42BF22AAFCCCFA6D /* PHAsset+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "PHAsset+Extensions.swift"; sourceTree = "<group>"; };
@@ -1064,6 +1070,8 @@
 			children = (
 				461638C4D25D942A82FC5C0A85BB5656 /* PhotoEditAdjustMode.swift */,
 				8250DA6896011EEB1FC801EC7FAE2D28 /* PhotoEditCropRatio.swift */,
+				C281E24627FEC47600715954 /* PhotoEditCropOrientation.swift */,
+				C2FC6B9A28014DFC007D59DD /* PhotoEditCropRect.swift */,
 				D2DE369765B7E502BB80C5422DDB082F /* PhotoEditFilter.swift */,
 				458B5D0C94DF2E195478DF5B7C880645 /* PhotoEditGraffitiPath.swift */,
 				F64D626E7E55740469DB1C646319EF83 /* PhotoEditMaskLayer.swift */,
@@ -1149,6 +1157,9 @@
 			children = (
 				A41DE71FFC0197C4499E32F6143B9486 /* WLPhotoConfig.swift */,
 				92BB676F3914165EF5874F1A5DA9EC37 /* WLPhotoUIConfig.swift */,
+				C2DC9DED27FFBFD000EF20DF /* WLImageConfig.swift */,
+				0A88757836468294CF10B39294408702 /* WLColorConfig.swift */,
+				DD611FD3F5AB7C612537A9454A84F888 /* UITextConfig.swift */,
 				CCD581C1D0FCD4AD97905A44884AD346 /* AssetVideoCompressSize.swift */,
 				0E8B0FDF83A95F4A87B9EDC01F480475 /* AssetVideoExportFileType.swift */,
 				2A6270B9CD0A0B0C8CCF1E6DB5178B81 /* CaptureConfig.swift */,
@@ -1162,8 +1173,6 @@
 				AA006051D16E11992E8212154EE067C5 /* PickerSelectionType.swift */,
 				AC86535F8FDB5A882CCC1CD07C2C8FE5 /* PickerSortType.swift */,
 				1A2B4F5CE07C630EA2574DF9EEA84DDF /* UserInterfaceStyle.swift */,
-				0A88757836468294CF10B39294408702 /* UIColorConfig.swift */,
-				DD611FD3F5AB7C612537A9454A84F888 /* UITextConfig.swift */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -1604,6 +1613,7 @@
 				98318C0D9CEB5FD6BE3C24AAC8AA1CA8 /* AssetPreviewPhotoCell.swift in Sources */,
 				C30507373C061CC06045337ED508368C /* AssetPreviewThumbnailCell.swift in Sources */,
 				CF3EDEA617800AD7025249A349E0A3BC /* AssetPreviewToolBar.swift in Sources */,
+				C2FC6B9B28014DFC007D59DD /* PhotoEditCropRect.swift in Sources */,
 				3F6F95284FAC89688065324AF78655EE /* AssetPreviewVideoCell.swift in Sources */,
 				9DD38F4CF4A6346CBD109088F3A6C18F /* AssetPreviewViewController.swift in Sources */,
 				0694409902FB63A48081466326BA5847 /* AssetSaveError.swift in Sources */,
@@ -1616,6 +1626,7 @@
 				30FB145800A3894077838D1B45858C7A /* Camera.swift in Sources */,
 				D23B47CDC4E0FBB770CE99FF3012A463 /* CaptureCameraButton.swift in Sources */,
 				74A7B10E8829045A1D3B93B01C32EE31 /* CaptureConfig.swift in Sources */,
+				C2DC9DEE27FFBFD000EF20DF /* WLImageConfig.swift in Sources */,
 				A8C1AF52AFE57BA0E9B6553B9FEEBA70 /* CaptureControlView.swift in Sources */,
 				F35A99E854774E827ADD3C8FAFBAB861 /* CaptureError.swift in Sources */,
 				A0FB1537F1D150331054A250E9266D84 /* CaptureFlashMode.swift in Sources */,
@@ -1628,6 +1639,7 @@
 				ACC40867AF18418FAE88146ED658D34E /* CaptureViewController.swift in Sources */,
 				2A8E5DEC6E529C248AAA6384FDF5CFF5 /* CGSize+Extensions.swift in Sources */,
 				A19EF180DF874820450BA7CC1BCD02E3 /* CircleSelectedButton.swift in Sources */,
+				C281E24727FEC47600715954 /* PhotoEditCropOrientation.swift in Sources */,
 				978BE4AC5CEBC2B7F6BF2B14B653DAFD /* CoreImage+Extensions.swift in Sources */,
 				035929EAA0FDF4D0249363D227CBCC4A /* CoreTextHelper.swift in Sources */,
 				5B50A060D72B096CE983DAF9869533B4 /* DeviceOrientation.swift in Sources */,
@@ -1692,7 +1704,7 @@
 				C2C0B35A27CE00A9004D7FE8 /* UIScrollView+Extensions.swift in Sources */,
 				62F8ABE6476167474D41A900216ACDF2 /* Reusable.swift in Sources */,
 				4B1DC665375AEB3902E834A4E8C3F099 /* UIApplication+Extensions.swift in Sources */,
-				69D144676DF6F16EAACF7C51FECD8C33 /* UIColorConfig.swift in Sources */,
+				69D144676DF6F16EAACF7C51FECD8C33 /* WLColorConfig.swift in Sources */,
 				F03AB280682649C883CE36ECC28DC878 /* UIImage+CIFilter.swift in Sources */,
 				66B80BFB2017B426FABF4F2056D56C80 /* UIImage+Extensions.swift in Sources */,
 				888F56E771F1A8CA3AE3DE8B03172BCF /* UIImage+Orientation.swift in Sources */,

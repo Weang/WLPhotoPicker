@@ -15,19 +15,21 @@ protocol PhotoEditCropToolBarDelegate: AnyObject {
     func toolBarDidClickDoneButton(_ toolBar: PhotoEditCropToolBar)
 }
 
-extension PhotoEditCropToolBarDelegate {
-    func toolBarDidClickCancelButton(_ toolBar: PhotoEditCropToolBar) { }
-    func toolBarDidClickRotateLeftButton(_ toolBar: PhotoEditCropToolBar) { }
-    func toolBarDidClickResetButton(_ toolBar: PhotoEditCropToolBar) { }
-    func toolBarDidClickRotateRightButton(_ toolBar: PhotoEditCropToolBar) { }
-    func toolBarDidClickDoneButton(_ toolBar: PhotoEditCropToolBar) { }
-}
-
 class PhotoEditCropToolBar: UIView {
 
     weak var delegate: PhotoEditCropToolBarDelegate?
     
     private let toolBarHeight: CGFloat = 54
+    
+    var isEnabled: Bool = true {
+        didSet {
+            cancelButton.isEnabled = isEnabled
+            rotateLeftButton.isEnabled = isEnabled
+            resetButton.isEnabled = isEnabled
+            rotateRightButton.isEnabled = isEnabled
+            doneButton.isEnabled = isEnabled
+        }
+    }
     
     let toolBarContentView = UIStackView()
     let cancelButton = UIButton()
@@ -88,7 +90,7 @@ class PhotoEditCropToolBar: UIView {
         
         doneButton.setTitle("确定", for: .normal)
         doneButton.setTitleColor(#colorLiteral(red: 0.9805411696, green: 0.7804852724, blue: 0.001862275065, alpha: 1), for: .normal)
-        doneButton.addTarget(self, action: #selector(rotateRightButtonClick), for: .touchUpInside)
+        doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)
         toolBarContentView.addArrangedSubview(doneButton)
     }
     

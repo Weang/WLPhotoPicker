@@ -27,6 +27,10 @@ class PhotoEditCropRectangleCorner: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        UIGraphicsBeginImageContext(bounds.size)
+        defer {
+            UIGraphicsEndImageContext()
+        }
         let lineWidth: CGFloat = 2
         
         let path = UIBezierPath()

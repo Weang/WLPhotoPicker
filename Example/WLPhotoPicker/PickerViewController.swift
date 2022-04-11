@@ -16,7 +16,10 @@ class PickerViewController: FormViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        config.photoEditConfig.photoEditPasters = (1...18).map{ "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) }
+        config.pickerConfig.showRecentlyDeletedAlbum = true
+        
         self.navigationItem.title = "Picker"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Picker", style: .done, target: self, action: #selector(openPicker))
         

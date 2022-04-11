@@ -13,6 +13,11 @@ public class WLPhotoUIConfig {
     
     public static let `default` = WLPhotoUIConfig()
     
-    public var color: UIColorConfig = .default
+    public var color: WLColorConfig = .default
     
+    public var userInterfaceStyle: UserInterfaceStyle = .auto {
+        didSet {
+            color.userInterfaceStyle = userInterfaceStyle
+        }
+    }
 }

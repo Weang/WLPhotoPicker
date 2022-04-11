@@ -25,7 +25,6 @@ class AssetPreviewViewController: UIViewController {
     
     let topToolBar: AssetPreviewNavigationBar
     let bottomToolBar: AssetPreviewToolBar
-    let animateImageView = UIImageView()
     let collectionViewLayout = UICollectionViewFlowLayout()
     var collectionView: UICollectionView!
     
@@ -66,7 +65,7 @@ class AssetPreviewViewController: UIViewController {
     }
     
     private func setupView() {
-        view.backgroundColor = .clear
+        view.backgroundColor = WLPhotoUIConfig.default.color.previewBackground
         
         collectionViewLayout.itemSize = UIScreen.size
         collectionViewLayout.scrollDirection = .horizontal
@@ -90,10 +89,6 @@ class AssetPreviewViewController: UIViewController {
             make.left.top.bottom.equalToSuperview()
             make.right.equalTo(collectionViewLayout.minimumLineSpacing)
         }
-        
-        animateImageView.contentMode = .scaleAspectFill
-        animateImageView.clipsToBounds = true
-        view.addSubview(animateImageView)
         
         topToolBar.delegate = self
         view.addSubview(topToolBar)

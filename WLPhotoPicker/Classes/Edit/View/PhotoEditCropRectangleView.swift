@@ -8,6 +8,7 @@
 import UIKit
 
 protocol PhotoEditCropRectangleViewDelegate: AnyObject {
+    func cropViewDidBeginDrag(_ cropView: PhotoEditCropRectangleView)
     func cropView(_ cropView: PhotoEditCropRectangleView, willCropToRect cropRect: CGRect)
     func cropView(_ cropView: PhotoEditCropRectangleView, didCropToRect cropRect: CGRect)
 }
@@ -97,6 +98,7 @@ class PhotoEditCropRectangleView: UIView {
         case .began:
             startCropRect = self.cropRect
             hideCover()
+            delegate?.cropViewDidBeginDrag(self)
         case .changed:
             let translation = gesture.translation(in: self)
             var cropRect = startCropRect
@@ -179,6 +181,10 @@ class PhotoEditCropRectangleView: UIView {
     }
     
     func updateLayers(animate: Bool) {
+        UIGraphicsBeginImageContext(bounds.size)
+        defer {
+            UIGraphicsEndImageContext()
+        }
         let maskLayerPath = UIBezierPath(roundedRect: bounds, cornerRadius: 0)
         let hollowOutPath = UIBezierPath(roundedRect: cropRect, cornerRadius: 0)
         maskLayerPath.append(hollowOutPath)

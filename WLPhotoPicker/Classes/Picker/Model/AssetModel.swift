@@ -14,16 +14,20 @@ public class AssetModel {
     var selectedIndex: Int = 0
     var isEnabled: Bool = true
     
-    var editMosaicPath = PhotoEditMosaicPath()
-    var editMosaicColorIndex: Int = 0
     var editGraffitiPath = PhotoEditGraffitiPath()
+    var editMosaicPath = PhotoEditMosaicPath()
+    var cropRect: PhotoEditCropRect = .identity
+    var cropRotation: UIImage.Orientation = .up
     var maskLayers: [PhotoEditMaskLayer] = []
     var filter: PhotoEditFilterProvider?
     var filterIndex: Int = 0
     var adjustValue: [PhotoEditAdjustMode: Double] = [:]
+    
     var hasEdit: Bool {
         return editMosaicPath.pathLines.count > 0 ||
         editGraffitiPath.pathLines.count > 0 ||
+        cropRect != .identity ||
+        cropRotation != .up ||
         maskLayers.count > 0 ||
         filter != nil ||
         adjustValue.filter{ $0.value != 0 }.count > 0
