@@ -30,6 +30,7 @@ extension AssetFetchTool {
             return AssetFetchRequest(requestId: 0)
         }
         
+        // 有时候requestOptions的progressHandler不会走回调，所以判断如果本地不存在，手动回调progress
         if !asset.isVideoLocallyAvailable {
             DispatchQueue.main.async {
                 options.progressHandler?(0)

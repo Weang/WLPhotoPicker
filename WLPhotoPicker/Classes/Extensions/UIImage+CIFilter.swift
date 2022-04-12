@@ -47,7 +47,7 @@ extension UIImage {
     }
     
     func adjustImageFrom(_ adjustInfo: [PhotoEditAdjustMode: Double]) -> UIImage {
-        if adjustInfo.map{ $0.value }.filter({ $0 != 0 }).count == 0 {
+        if adjustInfo.map({ $0.value }).filter({ $0 != 0 }).count == 0 {
             return self
         }
         guard var ciImage = toCIImage() else {

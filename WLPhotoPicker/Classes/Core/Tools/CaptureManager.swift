@@ -38,14 +38,14 @@ public class CaptureManager: NSObject {
     private var videoDeviceInput: AVCaptureDeviceInput?
     private var audioDeviceInput: AVCaptureDeviceInput?
     
-    private let movieFileOutput = AVCaptureMovieFileOutput()
     private let photoOutput = AVCapturePhotoOutput()
+    private let movieFileOutput = AVCaptureMovieFileOutput()
     
     private var isFocusing: Bool = false
     private var videoCurrentZoom: Double = 1.0
     
-    private var currentOrientation: AVCaptureVideoOrientation = .portrait
-    private let deviceOrientation = DeviceOrientation()
+    private var currentOrientation: CaptureOrientation = .up
+    private let orientationManager = CaptureOrientationManager()
     
     private let pickerConfig: WLPhotoConfig
     
@@ -57,7 +57,7 @@ public class CaptureManager: NSObject {
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .videoRecording, options: .mixWithOthers)
         try? AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         
-        deviceOrientation.delegate = self
+        orientationManager.delegate = self
         
         sessionQueue.async { [weak self] in
             self?.setupCapture()
@@ -137,6 +137,12 @@ public class CaptureManager: NSObject {
             }
         }
         
+        if let connection = photoOutput.connection(with: .video) {
+            if connection.isVideoMirroringSupported {
+                connection.isVideoMirrored = position == .front
+            }
+        }
+        
         videoDevice.unlockForConfiguration()
     }
     
@@ -156,13 +162,14 @@ public class CaptureManager: NSObject {
     
     public func setupPreviewLayer(to superView: UIView) {
         let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.videoGravity = .resizeAspect
         previewLayer.frame = superView.layer.bounds
         superView.layer.addSublayer(previewLayer)
         self.previewLayer = previewLayer
     }
     
     public func starRunning() {
-        deviceOrientation.startUpdates()
+        orientationManager.startUpdates()
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
             if !self.captureSession.isRunning {
@@ -172,7 +179,7 @@ public class CaptureManager: NSObject {
     }
     
     public func stopRunning() {
-        deviceOrientation.stopUpdates()
+        orientationManager.stopUpdates()
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
             if self.captureSession.isRunning {
@@ -200,7 +207,7 @@ public extension CaptureManager {
         let videoPath = FileHelper.createCaptureVideoPath(fileType: pickerConfig.captureConfig.captureFileType)
         let fileUrl = URL(fileURLWithPath: videoPath)
         let connection = movieFileOutput.connection(with: .video)
-        connection?.videoOrientation = currentOrientation
+        connection?.videoOrientation = currentOrientation.captureVideoOrientation
         movieFileOutput.startRecording(to: fileUrl, recordingDelegate: self)
     }
     
@@ -287,8 +294,7 @@ extension CaptureManager: AVCapturePhotoCaptureDelegate {
     
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard let photoData = photo.fileDataRepresentation(),
-              let photo = OrientationHelper.rotateImage(photoData: photoData,
-                                                        orientation: currentOrientation) else {
+              let photo = ImageGenerator.createImage(photoData)?.rotate(orientation: currentOrientation.imageOrientation) else {
                   return
               }
         delegate?.captureManager(self, finishTakingPhoto: photo)
@@ -309,9 +315,9 @@ extension CaptureManager: AVCaptureFileOutputRecordingDelegate {
     
 }
 
-extension CaptureManager: DeviceOrientationDelegate {
+extension CaptureManager: CaptureOrientationManagerDelegate {
     
-    func deviceOrientation(_ deviceOrientation: DeviceOrientation, didUpdate orientation: AVCaptureVideoOrientation) {
+    func captureOrientation(_ deviceOrientation: CaptureOrientationManager, didUpdate orientation: CaptureOrientation) {
         currentOrientation = orientation
     }
     

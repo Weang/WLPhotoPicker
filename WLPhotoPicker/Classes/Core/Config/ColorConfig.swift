@@ -7,11 +7,11 @@
 
 import UIKit
 
-public class WLColorConfig {
+public class ColorConfig {
 
     private init() { }
     
-    static public let `default` = WLColorConfig()
+    static public let `default` = ColorConfig()
     
     var userInterfaceStyle: UserInterfaceStyle = .auto
     
@@ -51,7 +51,7 @@ public class WLColorConfig {
     }
     
     // 按钮背景颜色、选中按钮颜色、预览底部缩略图边框颜色
-    public var primaryColorLight = #colorLiteral(red: 0.1021535918, green: 0.676630497, blue: 0.1012429371, alpha: 1)
+    public var primaryColorLight = #colorLiteral(red: 0.1019607843, green: 0.6784313725, blue: 0.1019607843, alpha: 1)
     public var primaryColorDark = #colorLiteral(red: 0.06274509804, green: 0.6392156863, blue: 0.06274509804, alpha: 1)
     var primaryColor: UIColor {
         UIColor.color(light: primaryColorLight, dark: primaryColorDark, style: userInterfaceStyle)
@@ -78,7 +78,7 @@ public class WLColorConfig {
         UIColor.color(light: previewBackgroundLight, dark: previewBackgroundDark, style: userInterfaceStyle)
     }
     
-    // Livephoto, icloud加载背景颜色
+    // Livephoto, iCloud加载背景颜色
     public var previewTipBackgroundLight = #colorLiteral(red: 0.968627451, green: 0.968627451, blue: 0.968627451, alpha: 1)
     public var previewTipBackgroundDark = #colorLiteral(red: 0.1568627451, green: 0.1568627451, blue: 0.1568627451, alpha: 1)
     var previewTipBackground: UIColor {

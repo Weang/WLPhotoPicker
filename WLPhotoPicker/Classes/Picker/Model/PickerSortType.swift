@@ -9,8 +9,8 @@ import UIKit
 
 // 排序
 public enum PickerSortType {
-    // 升序
+    // 升序，最新的在下面
     case asc
-    // 降序
+    // 降序，最新的在上面
     case desc
 }

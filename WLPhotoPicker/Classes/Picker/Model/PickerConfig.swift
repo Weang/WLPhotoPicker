@@ -39,8 +39,8 @@ public class PickerConfig {
     // 选择个数限制
     public var selectCountLimit: Int = 9
     
-    // 可选择的最长视频时长, 0不做限制
-    public var pickerMaximumVideoDuration: TimeInterval = 120
+    // 可选择的最长视频时长，单位为秒, 0不做限制
+    public var pickerMaximumVideoDuration: TimeInterval = 0
     
     // 是否可选择多个照片
     // 如果为false, 任何时候都不会选中照片，并且cell和预览页面不会显示选中按钮，selectCountLimit会失效
@@ -79,7 +79,7 @@ public class PickerConfig {
     // 预览尺寸、非原图尺寸
     public var maximumPreviewSize: CGFloat = 900
     
-    // jpg压缩质量
+    // 导出图片保存到本地时的jpg压缩参数
     public var jpgCompressionQuality: Double = 0.8
     
     // 选取照片时是否同时存储到本地
@@ -97,14 +97,14 @@ public class PickerConfig {
     
     // 导出视频尺寸
     // 如果videoCanSaveOriginal为true并且勾选原图，那么这个参数将被忽略
-    public var videoExportCompressSize: AssetVideoCompressSize = ._960x540
+    public var videoExportCompressSize: PickerVideoCompressSize = ._960x540
     
     // 导出视频帧率
     // 如果videoCanSaveOriginal为true并且勾选原图，那么这个参数将被忽略
     public var videoExportFrameDuration: Float = 30
     
     // 视频导出格式
-    public var videoExportFileType: AssetVideoExportFileType = .mp4
+    public var videoExportFileType: PickerVideoExportFileType = .mp4
     
     // 点击确定是否自动关闭
     public var dismissPickerAfterDone: Bool = true

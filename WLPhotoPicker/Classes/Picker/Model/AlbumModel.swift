@@ -47,14 +47,12 @@ public class AlbumModel {
         self.pickerConfig = pickerConfig
         
         let objects = result.objects
-        for obj in objects {
-            if let assetModel = shouldAppendAsset(asset: obj) {
-                assets.append(assetModel)
-            }
+        assets = objects.compactMap {
+            createAssetModel($0)
         }
     }
     
-    func shouldAppendAsset(asset: PHAsset) -> AssetModel? {
+    func createAssetModel(_ asset: PHAsset) -> AssetModel? {
         let asset = AssetModel(asset: asset, pickerConfig: pickerConfig)
         switch asset.mediaType {
         case .photo where pickerConfig.selectableType.contains(.photo):

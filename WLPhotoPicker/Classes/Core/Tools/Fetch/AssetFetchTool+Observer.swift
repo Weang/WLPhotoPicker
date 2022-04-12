@@ -43,6 +43,7 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
         
         // 被修改的indexs
         var removedItems = IndexSet()
+        var removedAssetItems: [AssetModel] = []
         var insertedItems = IndexSet()
         var changedItems = IndexSet()
         
@@ -52,6 +53,7 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
             album.assets.removeAll(where: {
                 $0.localIdentifier == asset.localIdentifier
             })
+            removedAssetItems.append(asset)
             removedItems.insert(index)
         }
         
@@ -71,12 +73,11 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
             }
             // limited权限选中照片默认选中
             if !detail.hasIncrementalChanges &&
-                PermissionProvider.statusFor(.photoLibrary) == .limited &&
-                pickerConfig.autoSelectAssetFromLimitedLibraryPicker {
-                if !isUptoLimit {
-                    selectedAsset(asset: asset, delegateEvent: false)
-                } else {
+                PermissionProvider.statusFor(.photoLibrary) == .limited {
+                if isUptoLimit {
                     asset.isEnabled = false
+                } else if pickerConfig.autoSelectAssetFromLimitedLibraryPicker {
+                    selectedAsset(asset: asset, delegateEvent: false)
                 }
             }
         }
@@ -96,12 +97,27 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
         
         album.fetchResult = detail.fetchResultAfterChanges
         
+        // 更新当前相册
         if let index = albumsList.firstIndex(where: { $0.localIdentifier == album.localIdentifier }) {
             albumsList[index] = album
         }
         
         if removedItems.count == 0 && insertedItems.count == 0 && changedItems.count == 0 {
             return
+        }
+        
+        // 删除所有相册中包含的已删除的项
+        if removedItems.count > 0 {
+            for album in albumsList {
+                album.assets.removeAll(where: { asset -> Bool in
+                    removedAssetItems.contains(where: {
+                        $0.localIdentifier == asset.localIdentifier
+                    })
+                })
+            }
+            albumsList.removeAll(where: {
+                $0.count == 0
+            })
         }
         
         DispatchQueue.main.async { [weak self] in

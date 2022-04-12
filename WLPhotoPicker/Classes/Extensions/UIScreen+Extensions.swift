@@ -9,16 +9,16 @@ import UIKit
 
 extension UIScreen {
     
+    static var size: CGSize {
+        UIScreen.main.bounds.size
+    }
+    
     static var width: CGFloat {
-        UIScreen.main.bounds.width
+        size.width
     }
     
     static var height: CGFloat {
-        UIScreen.main.bounds.height
-    }
-    
-    static var size: CGSize {
-        UIScreen.main.bounds.size
+        size.height
     }
     
 }

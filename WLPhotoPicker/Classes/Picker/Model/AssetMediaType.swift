@@ -14,15 +14,3 @@ public enum AssetMediaType: Equatable {
     case GIF
     case livePhoto
 }
-
-extension AssetMediaType {
-    
-    var isPhoto: Bool {
-        !isVideo
-    }
-    
-    var isVideo: Bool {
-        self == .video
-    }
-    
-}

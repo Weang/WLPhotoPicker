@@ -11,15 +11,15 @@ import MobileCoreServices
 public class CaptureConfig {
 
     public init() { }
-    
-    // 是否使用系统UIImagePickerController拍摄
-    public var useSystemImagePickerController: Bool = false
-    
     // 是否允许拍摄照片
     public var captureAllowTakingPhoto: Bool = true
     
     // 是否允许拍摄视频
     public var captureAllowTakingVideo: Bool = true
+    
+    // 是否使用系统UIImagePickerController拍摄
+    // 如果使用系统相机进行拍摄，下面的参数将会失效
+    public var useSystemImagePickerController: Bool = false
     
     // 拍摄闪光灯开关
     public var captureFlashMode: CaptureFlashMode = .off
@@ -42,6 +42,10 @@ public class CaptureConfig {
 }
 
 extension CaptureConfig {
+    
+    var showsCameraItem: Bool {
+        captureAllowTakingPhoto || captureAllowTakingVideo
+    }
     
     var imagePickerControllerMediaTypes: [String] {
         var mediaTypes: [String] = []

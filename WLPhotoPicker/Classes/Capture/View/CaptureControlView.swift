@@ -88,7 +88,7 @@ class CaptureControlView: UIView {
         }
         if pickerConfig.captureConfig.captureAllowTakingVideo{
             if text.count > 0 {
-                text.append("，")
+                text.append(",")
             }
             text.append("按住摄像")
         }

@@ -145,7 +145,7 @@ class PickerViewController: FormViewController {
             row.options = ["_640x480", "_960x540", "_1280x720", "_1920x1080", "_3840x2160"]
             row.value = "_960x540"
         }.onChange({ row in
-            let value: AssetVideoCompressSize
+            let value: PickerVideoCompressSize
             switch (row.value ?? "_960x540") {
             case "_640x480": value = ._640x480
             case "_960x540": value = ._960x540

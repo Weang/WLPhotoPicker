@@ -119,8 +119,8 @@ class AssetPreviewCell: UICollectionViewCell {
         contentScrollView.setZoomScale(1, animated: false)
         assetImageView.image = image
         if let image = image {
-            assetImageView.frame = AssetSizeHelper.imageViewRectFrom(imageSize: image.size, mediaType: model?.mediaType ?? .photo)
-            contentScrollView.maximumZoomScale = AssetSizeHelper.imageViewMaxZoomScaleFrom(imageSize: image.size)
+            assetImageView.frame = AssetDisplayHelper.imageViewRectFrom(imageSize: image.size, mediaType: model?.mediaType ?? .photo)
+            contentScrollView.maximumZoomScale = AssetDisplayHelper.imageViewMaxZoomScaleFrom(imageSize: image.size)
             contentScrollView.contentSize = assetImageView.frame.size
         } else {
             contentScrollView.maximumZoomScale = 1
@@ -174,10 +174,10 @@ class AssetPreviewCell: UICollectionViewCell {
     }
     
     func changedPanGesture(translation: CGPoint) {
-        let transForm = min(1 - translation.y / UIScreen.height, 1)
-        contentScrollView.transform = CGAffineTransform(scaleX: transForm, y: transForm)
-            .translatedBy(x: translation.x, y: translation.y)
-        let scale = min(1 - translation.y / UIScreen.height * 2, 1)
+        let transForm = min(1 - translation.y / UIScreen.main.bounds.height, 1)
+        contentScrollView.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
+            .scaledBy(x: transForm, y: transForm)
+        let scale = min(1 - translation.y / UIScreen.main.bounds.height * 2, 1)
         delegate?.previewCellSingleTap(self, didPanScale: scale)
     }
     
@@ -219,7 +219,7 @@ extension AssetPreviewCell: UIScrollViewDelegate {
     }
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        assetImageView.center = AssetSizeHelper.imageViewCenterWhenZoom(scrollView)
+        assetImageView.center = scrollView.zoomSubviewCenter
     }
     
 }

@@ -9,13 +9,11 @@ import UIKit
 
 extension UIScrollView {
     
-    var isAtTop: Bool {
-        return contentOffset.y == -(contentInset.top + safeAreaInsets.top)
-    }
-    
-    var isAtBottom: Bool {
-        let bottomOffset = contentSize.height - bounds.size.height + contentInset.bottom + safeAreaInsets.bottom
-        return contentOffset.y == bottomOffset
+    var zoomSubviewCenter: CGPoint {
+        let deltaWidth = max((width - contentSize.width - contentInset.left - contentInset.right) * 0.5, 0)
+        let deltaHeight = max((height - contentSize.height - contentInset.top - contentInset.bottom) * 0.5, 0)
+        return CGPoint(x: contentSize.width * 0.5 + deltaWidth,
+                       y: contentSize.height * 0.5 + deltaHeight)
     }
     
 }

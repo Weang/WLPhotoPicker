@@ -227,11 +227,11 @@ public class PhotoEditViewController: UIViewController {
         contentImageView.image = assetModel?.editedImage ?? assetModel?.previewImage ?? photo
         
         guard let photo = self.photo else { return }
-        imageContainerView.frame = AssetSizeHelper.imageViewRectFrom(imageSize: photo.size, mediaType: .photo)
+        imageContainerView.frame = AssetDisplayHelper.imageViewRectFrom(imageSize: photo.size, mediaType: .photo)
         contentImageView.frame = imageContainerView.bounds
         
         contentScrollView.contentSize = imageContainerView.size
-        contentScrollView.maximumZoomScale = AssetSizeHelper.imageViewMaxZoomScaleFrom(imageSize: photo.size)
+        contentScrollView.maximumZoomScale = AssetDisplayHelper.imageViewMaxZoomScaleFrom(imageSize: photo.size)
         
         graffitiDrawPath.imageSize = photo.size
         graffitiDrawPath.shapeSize = imageContainerView.size
@@ -547,7 +547,7 @@ extension PhotoEditViewController {
         
         let photoSize = cropRotation.isPortrait ? photo.size : photo.size.turn
         let cropedImageRect = cropRect.convertSizeToRect(photoSize)
-        let toDisplayFrame = AssetSizeHelper.imageViewRectFrom(imageSize: cropedImageRect.size, mediaType: .photo)
+        let toDisplayFrame = AssetDisplayHelper.imageViewRectFrom(imageSize: cropedImageRect.size, mediaType: .photo)
       
         let rotationAngle = cropRotation.rotationAngle
         let ratio = cropedImageRect.width / toDisplayFrame.width
@@ -620,7 +620,7 @@ extension PhotoEditViewController: UIScrollViewDelegate {
     }
     
     public func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        imageContainerView.center = AssetSizeHelper.imageViewCenterWhenZoom(scrollView)
+        imageContainerView.center = scrollView.zoomSubviewCenter
     }
 }
 

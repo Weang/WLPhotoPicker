@@ -1,5 +1,5 @@
 //
-//  AssetSizeHelper.swift
+//  AssetDisplayHelper.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2021/12/14.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AssetSizeHelper {
+class AssetDisplayHelper {
     
     static func imageViewRectFrom(imageSize: CGSize, mediaType: AssetMediaType) -> CGRect {
         let viewWidth = UIScreen.width
@@ -46,15 +46,6 @@ class AssetSizeHelper {
         } else {
             return 3
         }
-    }
-    
-    static func imageViewCenterWhenZoom(_ scrollView: UIScrollView) -> CGPoint {
-        let contentSize = scrollView.contentSize
-        let contentInset = scrollView.contentInset
-        let deltaWidth = max((scrollView.width - contentSize.width - contentInset.left - contentInset.right) * 0.5, 0)
-        let deltaHeight = max((scrollView.height - contentSize.height - contentInset.top - contentInset.bottom) * 0.5, 0)
-        return CGPoint(x: contentSize.width * 0.5 + deltaWidth,
-                       y: contentSize.height * 0.5 + deltaHeight)
     }
     
 }

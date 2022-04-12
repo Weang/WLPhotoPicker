@@ -221,13 +221,13 @@ extension AssetFetchOperation {
             let filePath = FileHelper.createFilePathFrom(asset: assetModel)
             fileURL = URL(fileURLWithPath: filePath)
             do {
-                try FileHelper.writeImage(imageData: data, to: filePath)
+                try data?.write(to: URL.init(fileURLWithPath: filePath))
             } catch {
                 completion?(.failure(.fileHelper(.underlying(error))))
             }
         }
         if config.pickerConfig.saveEditedPhotoToAlbum, assetModel.hasEdit {
-            AssetFetchTool.savePhoto(image: image) { _ in }
+            AssetSaveManager.savePhoto(image: image)
         }
         completion?(.success(AssetPickerResult(asset: assetModel, image: image, fileURL: fileURL)))
         if !_isFinished {

@@ -46,7 +46,7 @@ class EditManager {
         guard let photo = photo else {
             return nil
         }
-        let contextRect = AssetSizeHelper.imageViewRectFrom(imageSize: photo.size, mediaType: .photo)
+        let contextRect = AssetDisplayHelper.imageViewRectFrom(imageSize: photo.size, mediaType: .photo)
         let scale = photo.size.width / contextRect.size.width
         let rect = CGRect(origin: .zero, size: photo.size)
         UIGraphicsBeginImageContextWithOptions(photo.size, false, 1)

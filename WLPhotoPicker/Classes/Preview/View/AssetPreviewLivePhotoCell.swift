@@ -44,6 +44,14 @@ class AssetPreviewLivePhotoCell: AssetPreviewCell {
         contentScrollView.addGestureRecognizer(longPressGesture)
     }
     
+    override func setAsset(_ model: AssetModel, thumbnail: UIImage?, pickerConfig: PickerConfig) {
+        self.model = model
+        
+        cancelCurrentRequest()
+        layoutImage(thumbnail)
+        requestImage(model, pickerConfig: pickerConfig)
+    }
+    
     override func requestImage(_ model: AssetModel, pickerConfig: PickerConfig) {
         let options = AssetFetchOptions()
         options.sizeOption = .specify(pickerConfig.maximumPreviewSize)

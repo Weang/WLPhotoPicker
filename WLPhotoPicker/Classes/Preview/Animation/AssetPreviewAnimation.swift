@@ -90,7 +90,7 @@ extension AssetPreviewViewController {
             view.addSubview(animateImageView)
             
             let mediaType = assetFetchTool.albumModel?.assets[currentIndex].mediaType ?? .photo
-            let animateImageViewToFrame = AssetSizeHelper.imageViewRectFrom(imageSize: image.size, mediaType: mediaType)
+            let animateImageViewToFrame = AssetDisplayHelper.imageViewRectFrom(imageSize: image.size, mediaType: mediaType)
             animator.addAnimations {
                 animateImageView.frame = animateImageViewToFrame
             }

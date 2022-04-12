@@ -61,7 +61,7 @@ private class PhotoEditPasterDismissTransitioning: NSObject, UIViewControllerAni
 extension PhotoEditPasterViewController {
     
     fileprivate func showAnimation(duration: Double, completion: @escaping (Bool) -> ()) {
-        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
             self.backgroundView.snp.updateConstraints { make in
                 make.bottom.equalTo(0)
             }

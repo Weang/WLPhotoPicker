@@ -14,7 +14,7 @@ public enum PhotoEditItemType: Equatable {
     case paster
     // 添加文字
     case text
-//    // 裁剪
+    // 裁剪
     case crop
     // 马赛克
     case mosaic

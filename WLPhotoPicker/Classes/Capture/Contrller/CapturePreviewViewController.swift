@@ -13,6 +13,7 @@ protocol CapturePreviewViewControllerDelegate: AnyObject {
     func previewViewController(_ controller: CapturePreviewViewController, didClickDoneButtonWithVideoUrl url: URL)
 }
 
+// 在使用自定义相机拍摄的时候，如果不允许编辑，则会跳转到当前页面
 class CapturePreviewViewController: UIViewController {
     
     weak var delegate: CapturePreviewViewControllerDelegate?

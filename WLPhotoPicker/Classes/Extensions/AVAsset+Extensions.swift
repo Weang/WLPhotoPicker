@@ -25,4 +25,16 @@ public extension AVAsset {
         }
     }
     
+    func thumbnailImage() -> UIImage? {
+        let generator = AVAssetImageGenerator(asset: self)
+        generator.appliesPreferredTrackTransform = true
+        generator.requestedTimeToleranceAfter = .zero
+        generator.requestedTimeToleranceBefore = .zero
+        let time = CMTime(seconds: 0, preferredTimescale: 1000)
+        if let image = try? generator.copyCGImage(at: time, actualTime: nil) {
+            return UIImage(cgImage: image)
+        }
+        return nil
+    }
+    
 }

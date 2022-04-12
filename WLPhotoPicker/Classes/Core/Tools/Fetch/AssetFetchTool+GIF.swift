@@ -27,7 +27,7 @@ extension AssetFetchTool {
             switch result {
             case .success(let response):
                 GIFGeneratorQueue.async {
-                    if let image = GIFGenerator.animatedImageWith(data: response.data) {
+                    if let image = GIFGenerator.createGIFWith(response.data) {
                         handleResult(.success(GIFFetchResponse(image: image, imageData: response.data)), requestId: requestId)
                     } else {
                         handleResult(.failure(.failedToLoadImage), requestId: requestId)

@@ -57,6 +57,7 @@ public extension UIImage {
         defer {
             UIGraphicsEndImageContext()
         }
+        
         guard let context = UIGraphicsGetCurrentContext() else { return self  }
         switch orientation {
         case .left, .leftMirrored, .right, .rightMirrored:

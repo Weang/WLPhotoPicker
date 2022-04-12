@@ -53,7 +53,7 @@ extension PHAsset {
             }.count > 0
     }
     
-    // 13以下的系统没有isCurrent
+    // iOS 13 以下的系统没有isCurrent
     @available(iOS 13, *)
     var locallyVideoFileURL: URL? {
         return PHAssetResource.assetResources(for: self)

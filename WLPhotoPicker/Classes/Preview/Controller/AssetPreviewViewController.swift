@@ -135,7 +135,7 @@ class AssetPreviewViewController: UIViewController {
             return
         }
         let offsetX = CGFloat(currentIndex) * (UIScreen.width + itemSpacing)
-        collectionView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
+        collectionView.bounds.origin.x = offsetX
         updateToolBarsAt(currentIndex, animated: false)
         self.currentIndex = nil
     }

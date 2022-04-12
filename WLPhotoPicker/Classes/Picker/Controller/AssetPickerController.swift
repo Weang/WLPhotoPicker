@@ -30,7 +30,7 @@ class AssetPickerController: UIViewController {
     
     // 是否显示相机
     private var showsCameraItem: Bool {
-        config.showCameraItem && (assetFetchTool.albumModel?.isCameraRollAlbum ?? false)
+        config.captureConfig.showsCameraItem && (assetFetchTool.albumModel?.isCameraRollAlbum ?? false)
     }
     
     // 相机的indexPath
@@ -158,6 +158,8 @@ class AssetPickerController: UIViewController {
                 self.assetFetchTool.fetchAllAlbums()
             default:
                 self.deniedPermissionView.isHidden = false
+                self.collectionView.isHidden = true
+                self.bottomToolBar.isHidden = true
             }
         }
     }
@@ -482,7 +484,7 @@ extension AssetPickerController: AssetPreviewViewControllerAnimateDataSource, As
 extension AssetPickerController: CaptureViewControllerDelegate {
     
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingPhoto photo: UIImage) {
-        AssetFetchTool.savePhoto(image: photo) { [weak self] result in
+        AssetSaveManager.savePhoto(image: photo) { [weak self] result in
             guard let self = self,
                   case .success(let asset) = result else {
                       return
@@ -492,7 +494,7 @@ extension AssetPickerController: CaptureViewControllerDelegate {
     }
     
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingVideo videoUrl: URL) {
-        AssetFetchTool.saveVideo(url: videoUrl) { [weak self] result in
+        AssetSaveManager.saveVideo(url: videoUrl) { [weak self] result in
             guard let self = self,
                   case .success(let asset) = result else {
                       return
@@ -513,7 +515,7 @@ extension AssetPickerController: UIImagePickerControllerDelegate, UINavigationCo
         }
         
         if mediaType == kUTTypeImage as String, let originalImage = info[.originalImage] as? UIImage {
-            AssetFetchTool.savePhoto(image: originalImage) { [weak self] result in
+            AssetSaveManager.savePhoto(image: originalImage) { [weak self] result in
                 guard case .success(let asset) = result else {
                     return
                 }
@@ -522,7 +524,7 @@ extension AssetPickerController: UIImagePickerControllerDelegate, UINavigationCo
         }
         
         if mediaType == kUTTypeMovie as String, let mediaURL = info[.mediaURL] as? URL {
-            AssetFetchTool.saveVideo(url: mediaURL) { [weak self] result in
+            AssetSaveManager.saveVideo(url: mediaURL) { [weak self] result in
                 guard case .success(let asset) = result else {
                     return
                 }

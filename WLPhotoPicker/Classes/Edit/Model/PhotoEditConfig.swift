@@ -21,7 +21,6 @@ public class PhotoEditConfig {
     public var photoEditGraffitiLineWidth: CGFloat = 5
     
     // 照片贴图
-    // 如果为空，则不显示贴图按钮
     public var photoEditPasters: [PhotoEditPasterProvider] = []
     
     // 照片编辑文字颜色

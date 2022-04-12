@@ -1,5 +1,5 @@
 //
-//  AssetVideoCompressSize.swift
+//  PickerVideoCompressSize.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2022/1/5.
@@ -9,7 +9,7 @@ import AVFoundation
 import VideoToolbox
 
 // 视频压缩尺寸
-public enum AssetVideoCompressSize {
+public enum PickerVideoCompressSize {
     case _640x480
     case _960x540
     case _1280x720
@@ -17,7 +17,7 @@ public enum AssetVideoCompressSize {
     case _3840x2160
 }
 
-extension AssetVideoCompressSize {
+extension PickerVideoCompressSize {
     
     var size: CGSize {
         switch self {

@@ -1,5 +1,5 @@
 //
-//  AssetFetchTool+SaveVideo.swift
+//  AssetSaveManager+SaveVideo.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2022/1/4.
@@ -8,15 +8,13 @@
 import UIKit
 import Photos
 
-typealias SaveVideoCompletion = (Result<PHAsset, AssetSaveError>) -> Void
-
-extension AssetFetchTool {
+extension AssetSaveManager {
     
-    static func saveVideo(url: URL, completion: @escaping SaveVideoCompletion) {
+    static func saveVideo(url: URL, completion: AssetSaveCompletion? = nil) {
         var localIdentifier: String = ""
         let changes = {
             guard let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url) else {
-                completion(.failure(.invalidVideoURL))
+                completion?(.failure(.invalidVideoURL))
                 return
             }
             localIdentifier = request.placeholderForCreatedAsset?.localIdentifier ?? ""
@@ -24,9 +22,9 @@ extension AssetFetchTool {
         PHPhotoLibrary.shared().performChanges(changes) { _, _ in
             DispatchQueue.main.async {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-                    completion(.success(asset))
+                    completion?(.success(asset))
                 } else {
-                    completion(.failure(.saveVideoFailed))
+                    completion?(.failure(.saveVideoFailed))
                 }
             }
         }

@@ -1,5 +1,5 @@
 //
-//  AssetFetchTool+SaveLivePhoto.swift
+//  AssetSaveManager+SaveLivePhoto.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2022/4/11.
@@ -8,31 +8,28 @@
 import UIKit
 import Photos
 
-typealias SaveLivePhotoCompletion = (Result<PHAsset, AssetSaveError>) -> Void
-
-extension AssetFetchTool {
+public extension AssetSaveManager {
     
-    static func saveLivePhoto(livePhoto: PHLivePhoto, completion: @escaping SaveLivePhotoCompletion) {
+    static func saveLivePhoto(livePhoto: PHLivePhoto, completion: AssetSaveCompletion? = nil) {
         let results = PHAssetResource.assetResources(for: livePhoto)
         guard let photoResource = results.first(where: { $0.type == .photo }),
               let pairedVideoResource = results.first(where: { $0.type == .pairedVideo }) else {
-            completion(.failure(.saveLivePhotoFailed))
+            completion?(.failure(.saveLivePhotoFailed))
             return
         }
-        let filePath = FileHelper.createLivePhotoPath()
-        let photoURL = URL(fileURLWithPath: filePath.imagePath)
-        let videoURL = URL(fileURLWithPath: filePath.videoPath)
+        
+        let photoURL = URL(fileURLWithPath: FileHelper.createLivePhotoPhotoPath())
+        let videoURL = URL(fileURLWithPath: FileHelper.createLivePhotoVideoPath())
         
         let manager = PHAssetResourceManager.default()
         manager.writeData(for: photoResource, toFile: photoURL, options: nil) { photoWriteError in
-            
             if photoWriteError != nil {
-                completion(.failure(.saveLivePhotoFailed))
+                completion?(.failure(.saveLivePhotoFailed))
                 return
             }
             manager.writeData(for: pairedVideoResource, toFile: videoURL, options: nil) { videoWriteError in
                 if videoWriteError != nil {
-                    completion(.failure(.saveLivePhotoFailed))
+                    completion?(.failure(.saveLivePhotoFailed))
                     return
                 } else {
                     saveLivePhoto(photoURL: photoURL, videoURL: videoURL, completion: completion)
@@ -41,7 +38,7 @@ extension AssetFetchTool {
         }
     }
     
-    static func saveLivePhoto(photoURL: URL, videoURL: URL, completion: @escaping SaveLivePhotoCompletion) {
+    static func saveLivePhoto(photoURL: URL, videoURL: URL, completion: AssetSaveCompletion? = nil) {
         var localIdentifier: String = ""
         let changes = {
             let request = PHAssetCreationRequest.forAsset()
@@ -52,9 +49,9 @@ extension AssetFetchTool {
         PHPhotoLibrary.shared().performChanges(changes) { _, _ in
             DispatchQueue.main.async {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-                    completion(.success(asset))
+                    completion?(.success(asset))
                 } else {
-                    completion(.failure(.saveLivePhotoFailed))
+                    completion?(.failure(.saveLivePhotoFailed))
                 }
             }
         }

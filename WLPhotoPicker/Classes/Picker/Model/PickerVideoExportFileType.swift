@@ -1,5 +1,5 @@
 //
-//  AssetVideoExportFileType.swift
+//  PickerVideoExportFileType.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2022/1/17.
@@ -9,12 +9,12 @@ import UIKit
 import AVFoundation
 
 // 视频导出格式
-public enum AssetVideoExportFileType {
+public enum PickerVideoExportFileType {
     case mp4
     case mov
 }
 
-extension AssetVideoExportFileType {
+extension PickerVideoExportFileType {
     
     var avFileType: AVFileType {
         switch self {

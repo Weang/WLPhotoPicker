@@ -8,15 +8,15 @@
 import UIKit
 
 public class GIFGenerator {
-
-    static public func animatedImageWith(data: Data) -> UIImage? {
+    
+    static public func createGIFWith(_ data: Data) -> UIImage? {
         let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let imageSource = CGImageSourceCreateWithData(data as CFData, imageSourceOptions) else {
             return nil
         }
         let count = CGImageSourceGetCount(imageSource)
         if count <= 1 {
-            return UIImage(data: data)
+            return ImageGenerator.createImage(data)
         }
         var images: [UIImage] = []
         var duration: Double = 0
@@ -36,7 +36,7 @@ public class GIFGenerator {
     
     static private func frameDurationAt(index: Int, source: CGImageSource) -> Double {
         guard let properties = CGImageSourceCopyPropertiesAtIndex(source, index, nil) as? [CFString: Any],
-        let gifProperties = properties[kCGImagePropertyGIFDictionary] as? [CFString: Any] else {
+              let gifProperties = properties[kCGImagePropertyGIFDictionary] as? [CFString: Any] else {
             return 0
         }
         var frameDuration: Double = 0
@@ -50,5 +50,5 @@ public class GIFGenerator {
         }
         return frameDuration
     }
-
+    
 }

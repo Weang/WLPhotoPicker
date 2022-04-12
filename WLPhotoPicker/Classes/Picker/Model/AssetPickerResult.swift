@@ -9,6 +9,7 @@ import UIKit
 import AVFoundation
 
 public struct AssetPickerResult {
+    
     // 资源模型
     public let asset: AssetModel
     

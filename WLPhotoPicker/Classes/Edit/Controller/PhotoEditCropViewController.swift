@@ -339,7 +339,7 @@ extension PhotoEditCropViewController: UIScrollViewDelegate {
     }
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        contentImageView.center = AssetSizeHelper.imageViewCenterWhenZoom(scrollView)
+        contentImageView.center = scrollView.zoomSubviewCenter
         fitMaximumCropRect()
     }
     
