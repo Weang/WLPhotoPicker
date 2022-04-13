@@ -233,6 +233,7 @@ extension AssetPreviewViewController: AssetFetchToolDelegate {
     }
 }
 
+// MARK: AssetPreviewCellDelegate
 extension AssetPreviewViewController: AssetPreviewCellDelegate {
     
     func previewCellSingleTap(_ previewCell: AssetPreviewCell) {
@@ -278,6 +279,7 @@ extension AssetPreviewViewController: AssetPreviewCellDelegate {
     
 }
 
+// MARK: AssetPreviewNavigationBarDelegate
 extension AssetPreviewViewController: AssetPreviewNavigationBarDelegate {
     
     func navigationBarDidClickCancelButton(_ navigationBar: AssetPreviewNavigationBar) {
@@ -300,6 +302,7 @@ extension AssetPreviewViewController: AssetPreviewNavigationBarDelegate {
     
 }
 
+// MARK: AssetPreviewToolBarDelegate
 extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
     
     func toolBar(_ toolBar: AssetPreviewToolBar, didSelectAsset asset: AssetModel) {
@@ -363,6 +366,7 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
     
 }
 
+// MARK: PhotoEditViewControllerDelegate
 extension AssetPreviewViewController: PhotoEditViewControllerDelegate {
     
     func editController(_ editController: PhotoEditViewController, didDidFinishEditAsset asset: AssetModel) {

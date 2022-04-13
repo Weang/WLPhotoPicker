@@ -64,10 +64,7 @@ extension WLPhotoPickerController: AssetPickerControllerDelegate {
     
     func pickerControllerDidCancel(_ pickerController: AssetPickerController) {
         pickerDelegate?.pickerControllerDidCancel(self)
-        
-        if config.pickerConfig.dismissPickerAfterDone {
-            dismiss(animated: true, completion: nil)
-        }
+        dismiss(animated: true, completion: nil)
     }
     
     func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [AssetPickerResult]) {

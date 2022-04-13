@@ -16,20 +16,20 @@ public typealias LivePhotoGeneratorCompletion = (PHLivePhoto?, URL, URL) -> Void
 // 通过视频生成实况照片
 public class LivePhotoGenerator {
     
-    static public func createLivePhotoFrom(_ videoURL: URL, completion: @escaping LivePhotoGeneratorCompletion) {
+    static public func createLivePhotoFrom(_ videoURL: URL, progress: @escaping (Double) -> Void, completion: @escaping LivePhotoGeneratorCompletion) {
         let videoAsset = AVAsset(url: videoURL)
         guard let videoThumbImage = videoAsset.thumbnailImage() else {
             return
         }
-        createLivePhotoFrom(videoURL, placeholderImage: videoThumbImage, completion: completion)
+        createLivePhotoFrom(videoURL, placeholderImage: videoThumbImage, progress: progress, completion: completion)
     }
     
-    static public func createLivePhotoFrom(_ videoURL: URL, placeholderImage: UIImage, completion: @escaping LivePhotoGeneratorCompletion) {
+    static public func createLivePhotoFrom(_ videoURL: URL, placeholderImage: UIImage, progress: @escaping (Double) -> Void, completion: @escaping LivePhotoGeneratorCompletion) {
         let videoAsset = AVAsset(url: videoURL)
         let assetIdentifier = UUID().uuidString
         
         let imageURL = createImageURL(placeholderImage, assetIdentifier: assetIdentifier)
-        createVideoURL(videoAsset, assetIdentifier: assetIdentifier, completion: { videoURL in
+        createVideoURL(videoAsset, assetIdentifier: assetIdentifier, progress: progress, completion: { videoURL in
             PHLivePhoto.request(withResourceFileURLs: [imageURL, videoURL],
                                 placeholderImage: placeholderImage,
                                 targetSize: placeholderImage.size,
@@ -59,7 +59,7 @@ public class LivePhotoGenerator {
     }
     
     // MARK: Video
-    static private func createVideoURL(_ asset: AVAsset, assetIdentifier: String, completion: @escaping (URL) -> Void) {
+    static private func createVideoURL(_ asset: AVAsset, assetIdentifier: String, progress: @escaping (Double) -> Void, completion: @escaping (URL) -> Void) {
         let videoPath = FileHelper.createLivePhotoVideoPath()
         let videoURL = URL.init(fileURLWithPath: videoPath)
         
@@ -146,6 +146,8 @@ public class LivePhotoGenerator {
         let audioQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.LivePhotoGenerator.Audio")
         let videoQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.LivePhotoGenerator.Video")
         
+        let totalSeconds = asset.duration.seconds
+        
         dispatchGroup.enter()
         assetWriterVideoInput.requestMediaDataWhenReady(on: videoQueue) {
             while assetWriterVideoInput.isReadyForMoreMediaData {
@@ -154,6 +156,8 @@ public class LivePhotoGenerator {
                     dispatchGroup.leave()
                     break
                 }
+                let timeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+                progress(timeStamp.seconds / totalSeconds)
                 assetWriterVideoInput.append(sampleBuffer)
             }
         }

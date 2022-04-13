@@ -780,9 +780,9 @@
 		153AFA2B72C0A6358500718F8DFEAABA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				102F9FE31A799F146354FFEAB2D6EDA9 /* AlbumListViewController.swift */,
-				5A47F666820B1EED16CF087A0380B2D8 /* AssetPickerController.swift */,
 				898FEA679CA736912AB88C3394A8222D /* WLPhotoPickerController.swift */,
+				5A47F666820B1EED16CF087A0380B2D8 /* AssetPickerController.swift */,
+				102F9FE31A799F146354FFEAB2D6EDA9 /* AlbumListViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";

@@ -11,7 +11,7 @@ import WLPhotoPicker
 import SVProgressHUD
 
 class LivePhotoToVideoViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -39,7 +39,7 @@ class LivePhotoToVideoViewController: UIViewController {
         vc.pickerDelegate = self
         self.present(vc, animated: true, completion: nil)
     }
-
+    
 }
 
 extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
@@ -47,11 +47,13 @@ extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
     func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult]) {
         guard let result = results.first,
               case .video(let videoResult) = result.result,
-        let videoURL = videoResult.videoURL else {
+              let videoURL = videoResult.videoURL else {
             return
         }
-        SVProgressHUD.show()
-        LivePhotoGenerator.createLivePhotoFrom(videoURL) { livePhoto, imageURL, videoURL in
+        
+        LivePhotoGenerator.createLivePhotoFrom(videoURL) { progress in
+            SVProgressHUD.showProgress(Float(progress))
+        } completion: { livePhoto, imageURL, videoURL in
             guard let livePhoto = livePhoto else {
                 return
             }

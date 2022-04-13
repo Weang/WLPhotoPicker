@@ -10,10 +10,12 @@ import UIKit
 import SnapKit
 import WLPhotoPicker
 import AVFoundation
+import PhotosUI
 
 class PickerResultTableViewCell: UITableViewCell {
 
     let assetImageView = UIImageView()
+    let livePhotoView = PHLivePhotoView()
     let describeLabel = UILabel()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -21,10 +23,17 @@ class PickerResultTableViewCell: UITableViewCell {
         
         assetImageView.contentMode = .scaleAspectFit
         assetImageView.clipsToBounds = true
+        assetImageView.isUserInteractionEnabled = true
         contentView.addSubview(assetImageView)
         assetImageView.snp.makeConstraints { make in
             make.left.top.bottom.equalToSuperview()
             make.width.equalTo(assetImageView.snp.height).multipliedBy(1)
+        }
+        
+        livePhotoView.isHidden = true
+        assetImageView.addSubview(livePhotoView)
+        livePhotoView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
         describeLabel.numberOfLines = 0
@@ -38,7 +47,7 @@ class PickerResultTableViewCell: UITableViewCell {
     
     func bind(_ model: AssetPickerResult) {
         assetImageView.image = model.photo
-
+        livePhotoView.isHidden = true
         if let image = model.photo {
             assetImageView.snp.remakeConstraints { make in
                 make.left.top.bottom.equalToSuperview()
@@ -59,9 +68,16 @@ class PickerResultTableViewCell: UITableViewCell {
                 let fileSize = Double(attr.fileSize())
                 text += "\n导出文件大小： \(formateSize(size: fileSize))"
             }
+            text += "\n点击播放"
             describeLabel.text = text
         } else {
-            describeLabel.text = "宽高： \(model.photo?.size ?? .zero)"
+            var text = "宽高： \(model.photo?.size ?? .zero)"
+            if case .livePhoto(let result) = model.result {
+                text += "\n实况(长按播放)"
+                livePhotoView.isHidden = false
+                livePhotoView.livePhoto = result.livePhoto
+            }
+            describeLabel.text = text
         }
     }
     

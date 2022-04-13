@@ -10,34 +10,6 @@ import Photos
 
 public extension AssetSaveManager {
     
-    static func saveLivePhoto(livePhoto: PHLivePhoto, completion: AssetSaveCompletion? = nil) {
-        let results = PHAssetResource.assetResources(for: livePhoto)
-        guard let photoResource = results.first(where: { $0.type == .photo }),
-              let pairedVideoResource = results.first(where: { $0.type == .pairedVideo }) else {
-            completion?(.failure(.saveLivePhotoFailed))
-            return
-        }
-        
-        let photoURL = URL(fileURLWithPath: FileHelper.createLivePhotoPhotoPath())
-        let videoURL = URL(fileURLWithPath: FileHelper.createLivePhotoVideoPath())
-        
-        let manager = PHAssetResourceManager.default()
-        manager.writeData(for: photoResource, toFile: photoURL, options: nil) { photoWriteError in
-            if photoWriteError != nil {
-                completion?(.failure(.saveLivePhotoFailed))
-                return
-            }
-            manager.writeData(for: pairedVideoResource, toFile: videoURL, options: nil) { videoWriteError in
-                if videoWriteError != nil {
-                    completion?(.failure(.saveLivePhotoFailed))
-                    return
-                } else {
-                    saveLivePhoto(photoURL: photoURL, videoURL: videoURL, completion: completion)
-                }
-            }
-        }
-    }
-    
     static func saveLivePhoto(photoURL: URL, videoURL: URL, completion: AssetSaveCompletion? = nil) {
         var localIdentifier: String = ""
         let changes = {

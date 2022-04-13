@@ -235,10 +235,6 @@ extension PickerViewController: WLPhotoPickerControllerDelegate {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController) {
-        pickerController.dismiss(animated: true, completion: nil)
-    }
-    
     func pickerController(_ pickerController: WLPhotoPickerController, didOccurredError error: WLPhotoError) {
         let alert = UIAlertController.init(title: "错误", message: error.localizedDescription, preferredStyle: .alert)
         alert.addAction(.init(title: "确定", style: .cancel, handler: { _ in
