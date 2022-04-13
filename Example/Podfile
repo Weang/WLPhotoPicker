@@ -5,4 +5,5 @@ platform :ios, '11.0'
 target 'WLPhotoPicker_Example' do
   pod 'WLPhotoPicker', :path => '../'
   pod 'Eureka', :git => 'https://github.com/xmartlabs/Eureka.git'
+  pod 'SVProgressHUD'
 end

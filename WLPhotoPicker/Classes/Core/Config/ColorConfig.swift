@@ -85,5 +85,4 @@ public class ColorConfig {
         UIColor.color(light: previewTipBackgroundLight, dark: previewTipBackgroundDark, style: userInterfaceStyle)
     }
     
-
 }

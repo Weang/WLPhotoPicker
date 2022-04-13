@@ -15,6 +15,8 @@
 		C20970C62797DDCB00C67662 /* PickerResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20970C52797DDCB00C67662 /* PickerResultViewController.swift */; };
 		C20970C82797DE5E00C67662 /* PickerResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20970C72797DE5E00C67662 /* PickerResultTableViewCell.swift */; };
 		C239052027A29AB700445761 /* PickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C239051F27A29AB700445761 /* PickerViewController.swift */; };
+		C2E9C7CF28065A0B006CEBBD /* LivePhotoToVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E9C7CE28065A0B006CEBBD /* LivePhotoToVideoViewController.swift */; };
+		C2E9C7D128065CDC006CEBBD /* LivePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E9C7D028065CDC006CEBBD /* LivePhotoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		C20970C52797DDCB00C67662 /* PickerResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerResultViewController.swift; sourceTree = "<group>"; };
 		C20970C72797DE5E00C67662 /* PickerResultTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerResultTableViewCell.swift; sourceTree = "<group>"; };
 		C239051F27A29AB700445761 /* PickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerViewController.swift; sourceTree = "<group>"; };
+		C2E9C7CE28065A0B006CEBBD /* LivePhotoToVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePhotoToVideoViewController.swift; sourceTree = "<group>"; };
+		C2E9C7D028065CDC006CEBBD /* LivePhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePhotoViewController.swift; sourceTree = "<group>"; };
 		CFC0F2CB80E09A2099BAEBBF /* Pods-WLPhotoPicker_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLPhotoPicker_Example.release.xcconfig"; path = "Target Support Files/Pods-WLPhotoPicker_Example/Pods-WLPhotoPicker_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +87,8 @@
 				C239051F27A29AB700445761 /* PickerViewController.swift */,
 				C20970C52797DDCB00C67662 /* PickerResultViewController.swift */,
 				C20970C72797DE5E00C67662 /* PickerResultTableViewCell.swift */,
+				C2E9C7CE28065A0B006CEBBD /* LivePhotoToVideoViewController.swift */,
+				C2E9C7D028065CDC006CEBBD /* LivePhotoViewController.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
@@ -217,12 +223,14 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-WLPhotoPicker_Example/Pods-WLPhotoPicker_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Eureka/Eureka.framework",
+				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/WLPhotoPicker/WLPhotoPicker.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Eureka.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WLPhotoPicker.framework",
 			);
@@ -240,6 +248,8 @@
 			files = (
 				C239052027A29AB700445761 /* PickerViewController.swift in Sources */,
 				C20970C62797DDCB00C67662 /* PickerResultViewController.swift in Sources */,
+				C2E9C7D128065CDC006CEBBD /* LivePhotoViewController.swift in Sources */,
+				C2E9C7CF28065A0B006CEBBD /* LivePhotoToVideoViewController.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				C20970C82797DE5E00C67662 /* PickerResultTableViewCell.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,

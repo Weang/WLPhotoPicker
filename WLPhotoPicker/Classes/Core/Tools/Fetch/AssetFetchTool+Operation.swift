@@ -217,7 +217,7 @@ extension AssetFetchOperation {
     
     func finishRequestPhoto(_ image: UIImage, data: Data?) {
         var fileURL: URL?
-        if config.pickerConfig.saveImageToLocalWhenPick {
+        if config.pickerConfig.exportImageURLWhenPick {
             let filePath = FileHelper.createFilePathFrom(asset: assetModel)
             fileURL = URL(fileURLWithPath: filePath)
             do {
@@ -254,23 +254,28 @@ extension AssetFetchOperation {
     }
     
     func finishRequestVideo(_ response: VideoFetchResponse, options: AssetFetchOptions) {
-        if config.pickerConfig.saveVideoToLocalWhenPick {
-            let videoOutputPath = FileHelper.createVideoPathFrom(asset: assetModel, videoFileType: config.pickerConfig.videoExportFileType)
-            let manager = VideoCompressManager(avAsset: response.avasset, outputPath: videoOutputPath)
-            manager.compressVideo = !(isOriginal && config.pickerConfig.videoCanSaveOriginal)
-            manager.compressSize = config.pickerConfig.videoExportCompressSize
-            manager.frameDuration = config.pickerConfig.videoExportFrameDuration
-            manager.videoExportFileType = config.pickerConfig.videoExportFileType
-            manager.exportVideo { progress in
-                options.progressHandler?(progress)
-            } completion: { [weak self] fileURL in
-                guard let self = self else { return }
-                if let error = manager.error {
-                    self.completion?(.failure(.videoCompressError(error)))
-                    self.finishAssetRequest()
-                } else {
-                    let result = AssetPickerResult(asset: self.assetModel, playerItem: response.playerItem, fileURL: fileURL)
-                    self.recudeVideoResult(result)
+        if config.pickerConfig.exportVideoURLWhenPick {
+            if isOriginal, #available(iOS 13, *), let fileURL = assetModel.asset.locallyVideoFileURL {
+                let result = AssetPickerResult(asset: assetModel, playerItem: response.playerItem, fileURL: fileURL)
+                self.recudeVideoResult(result)
+            } else {
+                let videoOutputPath = FileHelper.createVideoPathFrom(asset: assetModel, videoFileType: config.pickerConfig.videoExportFileType)
+                let manager = VideoCompressManager(avAsset: response.avasset, outputPath: videoOutputPath)
+                manager.compressVideo = !(isOriginal && config.pickerConfig.allowVideoSelectOriginal)
+                manager.compressSize = config.pickerConfig.videoExportCompressSize
+                manager.frameDuration = config.pickerConfig.videoExportFrameDuration
+                manager.videoExportFileType = config.pickerConfig.videoExportFileType
+                manager.exportVideo { progress in
+                    options.progressHandler?(progress)
+                } completion: { [weak self] fileURL in
+                    guard let self = self else { return }
+                    if let error = manager.error {
+                        self.completion?(.failure(.videoCompressError(error)))
+                        self.finishAssetRequest()
+                    } else {
+                        let result = AssetPickerResult(asset: self.assetModel, playerItem: response.playerItem, fileURL: fileURL)
+                        self.recudeVideoResult(result)
+                    }
                 }
             }
         } else {

@@ -162,7 +162,7 @@ class AssetPreviewToolBar: UIView {
         }
         if let asset = asset {
             editButton.alpha = asset.mediaType == .photo ? 1 : 0
-            originButton.alpha = asset.mediaType == .photo || (asset.mediaType == .video && pickerConfig.videoCanSaveOriginal) || asset.mediaType == .livePhoto ? 1 : 0
+            originButton.alpha = asset.mediaType == .photo || (asset.mediaType == .video && pickerConfig.allowVideoSelectOriginal) || asset.mediaType == .livePhoto ? 1 : 0
         }
     }
     

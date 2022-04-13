@@ -13,6 +13,7 @@ import Photos
 // LivePhoto, imageURL, videoURL
 public typealias LivePhotoGeneratorCompletion = (PHLivePhoto?, URL, URL) -> Void
 
+// 通过视频生成实况照片
 public class LivePhotoGenerator {
     
     static public func createLivePhotoFrom(_ videoURL: URL, completion: @escaping LivePhotoGeneratorCompletion) {
@@ -29,8 +30,7 @@ public class LivePhotoGenerator {
         
         let imageURL = createImageURL(placeholderImage, assetIdentifier: assetIdentifier)
         createVideoURL(videoAsset, assetIdentifier: assetIdentifier, completion: { videoURL in
-            let urls = [imageURL, videoURL]
-            PHLivePhoto.request(withResourceFileURLs: urls,
+            PHLivePhoto.request(withResourceFileURLs: [imageURL, videoURL],
                                 placeholderImage: placeholderImage,
                                 targetSize: placeholderImage.size,
                                 contentMode: .aspectFill) { livePhoto, info in
@@ -76,7 +76,7 @@ public class LivePhotoGenerator {
         assetWriterMetadata.dataType = "com.apple.metadata.datatype.UTF-8"
         assetWriter.metadata = [assetWriterMetadata]
         
-        let readSetting = [kCVPixelBufferPixelFormatTypeKey:  kCVPixelFormatType_32BGRA] as [String: Any]
+        let readSetting = [kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA] as [String: Any]
         let readerVideoOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: readSetting)
         readerVideoOutput.alwaysCopiesSampleData = false
         if assetReader.canAdd(readerVideoOutput) {
@@ -121,9 +121,7 @@ public class LivePhotoGenerator {
                                                                     metadataType: kCMMetadataFormatType_Boxed,
                                                                     metadataSpecifications: specifications,
                                                                     formatDescriptionOut: &descriptionOut)
-        let metadataiInput = AVAssetWriterInput(mediaType: .metadata,
-                                                outputSettings: nil,
-                                                sourceFormatHint: descriptionOut)
+        let metadataiInput = AVAssetWriterInput(mediaType: .metadata, outputSettings: nil, sourceFormatHint: descriptionOut)
         
         let metadataAdaptor = AVAssetWriterInputMetadataAdaptor(assetWriterInput: metadataiInput)
         assetWriter.add(metadataAdaptor.assetWriterInput)
@@ -137,10 +135,11 @@ public class LivePhotoGenerator {
         adapterMetadata.keySpace = AVMetadataKeySpace.quickTimeMetadata
         adapterMetadata.value = 0 as (NSCopying & NSObjectProtocol)?
         adapterMetadata.dataType = kCMMetadataBaseDataType_SInt8 as String
-        let dummyTimeRange = CMTimeRangeMake(start: CMTimeMake(value: 0, timescale: 1000),
-                                             duration: CMTimeMake(value: 200, timescale: 3000))
-        metadataAdaptor.append(AVTimedMetadataGroup(items: [adapterMetadata],
-                                                    timeRange: dummyTimeRange))
+        
+        let rangeStart = CMTimeMake(value: 0, timescale: 1000)
+        let rangeDuration = CMTimeMake(value: 200, timescale: 3000)
+        let dummyTimeRange = CMTimeRangeMake(start: rangeStart, duration: rangeDuration)
+        metadataAdaptor.append(AVTimedMetadataGroup(items: [adapterMetadata], timeRange: dummyTimeRange))
         
         let dispatchGroup = DispatchGroup()
         let audioQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.LivePhotoGenerator.Audio")

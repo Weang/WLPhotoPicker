@@ -27,10 +27,18 @@ class ViewController: FormViewController {
             self.navigationController?.pushViewController(PickerViewController(), animated: true)
         }
         
+//        <<< LabelRow() { row in
+//            row.title = "视频压缩"
+//        }.cellSetup { cell, row in
+//            cell.accessoryType = .disclosureIndicator
+//        }
+        
         <<< LabelRow() { row in
-            row.title = "视频压缩"
+            row.title = "视频转实况"
         }.cellSetup { cell, row in
             cell.accessoryType = .disclosureIndicator
+        }.onCellSelection { _, _ in
+            self.navigationController?.pushViewController(LivePhotoToVideoViewController(), animated: true)
         }
         
     }

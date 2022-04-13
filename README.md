@@ -48,7 +48,7 @@ class ViewController: UIViewController {
 
 extension ViewController: WLPhotoPickerControllerDelegate {
 
-    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult result: [AssetPickerResult]) {
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult]) {
         
     }
     

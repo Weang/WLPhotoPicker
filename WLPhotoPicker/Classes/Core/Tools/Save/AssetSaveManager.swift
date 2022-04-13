@@ -10,6 +10,4 @@ import Photos
 
 public typealias AssetSaveCompletion = (Result<PHAsset, AssetSaveError>) -> Void
 
-public class AssetSaveManager {
-    
-}
+public class AssetSaveManager { }

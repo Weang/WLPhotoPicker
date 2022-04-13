@@ -120,24 +120,24 @@ class PickerViewController: FormViewController {
         }
         
         <<< SwitchRow() { row in
-            row.title = "选取照片时是否存储到本地"
-            row.value = self.config.pickerConfig.saveImageToLocalWhenPick
+            row.title = "选取照片时是否导出照片地址"
+            row.value = self.config.pickerConfig.exportImageURLWhenPick
         }.onChange { row in
-            self.config.pickerConfig.saveImageToLocalWhenPick = (row.value ?? false)
+            self.config.pickerConfig.exportImageURLWhenPick = (row.value ?? false)
         }
         
         <<< SwitchRow() { row in
-            row.title = "选取视频时是否存储到本地"
-            row.value = self.config.pickerConfig.saveVideoToLocalWhenPick
+            row.title = "选取视频时是否导出视频地址"
+            row.value = self.config.pickerConfig.exportVideoURLWhenPick
         }.onChange { row in
-            self.config.pickerConfig.saveVideoToLocalWhenPick = (row.value ?? false)
+            self.config.pickerConfig.exportVideoURLWhenPick = (row.value ?? false)
         }
         
         <<< SwitchRow() { row in
             row.title = "勾选原图时是否导出原视频"
-            row.value = self.config.pickerConfig.videoCanSaveOriginal
+            row.value = self.config.pickerConfig.allowVideoSelectOriginal
         }.onChange { row in
-            self.config.pickerConfig.videoCanSaveOriginal = (row.value ?? false)
+            self.config.pickerConfig.allowVideoSelectOriginal = (row.value ?? false)
         }
         
         <<< PickerInputRow<String>() { row in
@@ -229,9 +229,9 @@ class PickerViewController: FormViewController {
 
 extension PickerViewController: WLPhotoPickerControllerDelegate {
     
-    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult result: [AssetPickerResult]) {
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult]) {
         let vc = PickerResultViewController()
-        vc.result = result
+        vc.result = results
         navigationController?.pushViewController(vc, animated: true)
     }
     

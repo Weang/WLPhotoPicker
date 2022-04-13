@@ -15,7 +15,7 @@ public protocol WLPhotoPickerControllerDelegate: AnyObject {
     func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController)
     
     // 点击完成按钮
-    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult result: [AssetPickerResult])
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult])
     
     // 发生错误
     func pickerController(_ pickerController: WLPhotoPickerController, didOccurredError error: WLPhotoError)
@@ -23,7 +23,7 @@ public protocol WLPhotoPickerControllerDelegate: AnyObject {
 
 public extension WLPhotoPickerControllerDelegate {
     func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController) { }
-    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult result: [AssetPickerResult]) { }
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult]) { }
     func pickerController(_ pickerController: WLPhotoPickerController, didOccurredError error: WLPhotoError) { }
 }
 
@@ -70,8 +70,8 @@ extension WLPhotoPickerController: AssetPickerControllerDelegate {
         }
     }
     
-    func pickerController(_ pickerController: AssetPickerController, didSelectResult result: [AssetPickerResult]) {
-        pickerDelegate?.pickerController(self, didSelectResult: result)
+    func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [AssetPickerResult]) {
+        pickerDelegate?.pickerController(self, didSelectResult: results)
         
         if config.pickerConfig.dismissPickerAfterDone {
             let previewController = presentedViewController as? AssetPreviewViewController

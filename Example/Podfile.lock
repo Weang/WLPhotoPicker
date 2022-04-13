@@ -1,16 +1,19 @@
 PODS:
   - Eureka (5.3.4)
   - SnapKit (5.0.1)
+  - SVProgressHUD (2.2.5)
   - WLPhotoPicker (0.1.0):
     - SnapKit (~> 5.0.0)
 
 DEPENDENCIES:
   - Eureka (from `https://github.com/xmartlabs/Eureka.git`)
+  - SVProgressHUD
   - WLPhotoPicker (from `../`)
 
 SPEC REPOS:
   trunk:
     - SnapKit
+    - SVProgressHUD
 
 EXTERNAL SOURCES:
   Eureka:
@@ -26,8 +29,9 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Eureka: 60cf058f86a8fb3ed26165ba5292b9850361b0a6
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   WLPhotoPicker: 17b16e24716c70ae963d52dc8f15423daa1c919f
 
-PODFILE CHECKSUM: e258ce97e45d26eb81d6ccfac9dc27f513cf7a9d
+PODFILE CHECKSUM: 1bec862c65c1c4554d84c412e03a570273c26356
 
 COCOAPODS: 1.11.2

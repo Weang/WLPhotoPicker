@@ -11,7 +11,7 @@ import MobileCoreServices
 
 protocol AssetPickerControllerDelegate: AnyObject {
     func pickerControllerDidCancel(_ pickerController: AssetPickerController)
-    func pickerController(_ pickerController: AssetPickerController, didSelectResult result: [AssetPickerResult])
+    func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [AssetPickerResult])
     func pickerController(_ pickerController: AssetPickerController, didOccurredError error: WLPhotoError)
 }
 

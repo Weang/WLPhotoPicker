@@ -50,6 +50,10 @@ public class PickerConfig {
     // 如果为false, 勾选原图按钮会隐藏
     public var allowSelectOriginal: Bool = true
     
+    // 如果为false，不管是否勾选原图，导出的视频都是压缩后的视频
+    // 如果为true，勾选原图后导出的视频是无压缩的视视频
+    public var allowVideoSelectOriginal: Bool = false
+    
     // 是否显示picker底部完成按钮
     public var showPickerDoneButton: Bool = true
     
@@ -84,23 +88,19 @@ public class PickerConfig {
     
     // 选取照片时是否同时存储到本地
     // 如果为true，选择照片代理中AssetPickerResult的filePath会返回存储的路径
-    public var saveImageToLocalWhenPick: Bool = false
+    public var exportImageURLWhenPick: Bool = false
     
-    // 选取视频时是否导出到本地
-    // 如果为true，选择照片代理中AssetPickerResult的filePath会返回存储的路径
-    // 导出视频会使用视频压缩参数
-    public var saveVideoToLocalWhenPick: Bool = false
-    
-    // 如果为false，不管是否勾选原图，导出的视频都是压缩后的视频
-    // 如果为true，勾选原图后导出的视频是无压缩的视视频
-    public var videoCanSaveOriginal: Bool = false
+    // 选取视频时是否返回视频路径，如果为true，选择照片代理中AssetPickerResult的filePath会返回存储的路径
+    // 如果不导出视频地址，视频压缩参数则会失效
+    // 如果为true，选择的是原视频并且视频在本地相册中存在原视频的地址，则会返回原视频的地址，不会额外保存到沙盒中
+    public var exportVideoURLWhenPick: Bool = false
     
     // 导出视频尺寸
-    // 如果videoCanSaveOriginal为true并且勾选原图，那么这个参数将被忽略
+    // 如果allowVideoSelectOriginal为true并且勾选原图，那么这个参数将被忽略
     public var videoExportCompressSize: PickerVideoCompressSize = ._960x540
     
     // 导出视频帧率
-    // 如果videoCanSaveOriginal为true并且勾选原图，那么这个参数将被忽略
+    // 如果allowVideoSelectOriginal为true并且勾选原图，那么这个参数将被忽略
     public var videoExportFrameDuration: Float = 30
     
     // 视频导出格式
