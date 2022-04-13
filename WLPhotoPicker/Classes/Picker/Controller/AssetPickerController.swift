@@ -508,7 +508,7 @@ extension AssetPickerController: CaptureViewControllerDelegate {
 // MARK: UIImagePickerControllerDelegate & UINavigationControllerDelegate
 extension AssetPickerController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         picker.dismiss(animated: true, completion: nil)
         guard let mediaType = info[.mediaType] as? String else {
             return

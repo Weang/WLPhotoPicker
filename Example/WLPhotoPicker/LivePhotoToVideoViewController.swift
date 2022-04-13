@@ -45,8 +45,9 @@ class LivePhotoToVideoViewController: UIViewController {
 extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
     
     func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult]) {
-        guard let video = results.first,
-        let videoURL = video.fileURL else {
+        guard let result = results.first,
+              case .video(let videoResult) = result.result,
+        let videoURL = videoResult.videoURL else {
             return
         }
         SVProgressHUD.show()

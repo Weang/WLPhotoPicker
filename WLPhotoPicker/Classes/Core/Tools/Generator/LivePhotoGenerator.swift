@@ -66,6 +66,7 @@ public class LivePhotoGenerator {
         guard let assetReader = try? AVAssetReader(asset: asset),
               let assetWriter = try? AVAssetWriter(outputURL: videoURL, fileType: .mov),
               let videoTrack = asset.tracks(withMediaType: .video).first else {
+            completion(videoURL)
             return
         }
         
@@ -83,7 +84,7 @@ public class LivePhotoGenerator {
             assetReader.add(readerVideoOutput)
         }
         
-        let videooutputSettings: [String : Any] = [AVVideoCodecKey: AVVideoCodecType.h264,
+        let videooutputSettings: [String: Any] = [AVVideoCodecKey: AVVideoCodecType.h264,
                                                    AVVideoWidthKey: videoTrack.naturalSize.width,
                                                   AVVideoHeightKey: videoTrack.naturalSize.height]
         let assetWriterVideoInput = AVAssetWriterInput(mediaType: .video,

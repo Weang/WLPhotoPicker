@@ -1131,15 +1131,16 @@
 		A9857D15F48A9A1DC353FD8EBDA7DDE3 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				761592CA1EF581C73DBA2C6D6BC9DB7A /* AlbumModel.swift */,
-				DAE2A8C527B709EB10B31FF427200954 /* AssetMediaType.swift */,
-				357F1350015EE5C46C8D731E17028FDD /* AssetModel.swift */,
-				884B87E483DDE6C510359120F2CA4D9C /* AssetPickerResult.swift */,
 				EC87BEFA6DE7E3B504D97B5CCD133481 /* PickerConfig.swift */,
-				D6E3A5AE292F4EC434B0DA5CFBFD7F39 /* PickerSelectionType.swift */,
 				92B67098A2FA9B62A2009B97C5AA0CF1 /* PickerSortType.swift */,
+				D6E3A5AE292F4EC434B0DA5CFBFD7F39 /* PickerSelectionType.swift */,
 				2B77EB16F4F551461039F0FF01DD0912 /* PickerVideoCompressSize.swift */,
 				37F5365B4C9471B5A506FF20BFB41A2C /* PickerVideoExportFileType.swift */,
+				FA93CCC1C4CFE3E36AA056DA99326FE3 /* VideoCompressManager.swift */,
+				DAE2A8C527B709EB10B31FF427200954 /* AssetMediaType.swift */,
+				761592CA1EF581C73DBA2C6D6BC9DB7A /* AlbumModel.swift */,
+				357F1350015EE5C46C8D731E17028FDD /* AssetModel.swift */,
+				884B87E483DDE6C510359120F2CA4D9C /* AssetPickerResult.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1201,8 +1202,8 @@
 			children = (
 				E8E7FDA74A6C1159B9A1CB2CC08C0CCC /* Animation */,
 				2FED54CB2C3745A97057D02AA90E00D3 /* Controller */,
-				F2487402BFC64D7651D94765F7DA5043 /* Model */,
 				8AAB308E9D2E2D6F45E15A76268BAFF5 /* View */,
+				F2487402BFC64D7651D94765F7DA5043 /* Model */,
 			);
 			name = Edit;
 			path = WLPhotoPicker/Classes/Edit;
@@ -1233,6 +1234,7 @@
 				C609395668B62EBCDD7D421B7DCC16D4 /* CaptureSessionPreset.swift */,
 				4182F39B2DC76532FF305E4960E7DAB0 /* CaptureVideoFileType.swift */,
 				F0DF4901BF3E9C2168BAE004042AE71A /* CaptureVideoStabilizationMode.swift */,
+				91CA1DFA06D9937F82380352054312E0 /* CaptureManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1266,9 +1268,6 @@
 				A9F7B645227F5E487F57394319F94995 /* Fetch */,
 				F562D7341C82E170FB5C3518C0B4650F /* Generator */,
 				E60DC67DCF54AC24DBD293DC97C0029F /* Save */,
-				91CA1DFA06D9937F82380352054312E0 /* CaptureManager.swift */,
-				8D6B77060CA83DEF545635D8BB3D381C /* EditManager.swift */,
-				FA93CCC1C4CFE3E36AA056DA99326FE3 /* VideoCompressManager.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1340,6 +1339,7 @@
 		F2487402BFC64D7651D94765F7DA5043 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				8D6B77060CA83DEF545635D8BB3D381C /* EditManager.swift */,
 				8558421704D47A3221B1B8781E44197C /* PhotoEditAdjustMode.swift */,
 				9555FF8A8070350B4E27827DD1AFB1AB /* PhotoEditConfig.swift */,
 				73F02DA150BA8E4387E214D2BE5638D4 /* PhotoEditCropOrientation.swift */,

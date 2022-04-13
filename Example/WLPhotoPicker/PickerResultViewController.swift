@@ -57,8 +57,9 @@ extension PickerResultViewController: UITableViewDataSource, UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = result[indexPath.section]
-        guard model.asset.mediaType == .video else { return }
-        if let fileURL = model.fileURL {
+        guard case .video(let video) = model.result else { return }
+        
+        if let fileURL = video.videoURL {
             let player = AVPlayer(url: fileURL)
             let controller = AVPlayerViewController()
             controller.player = player
@@ -66,7 +67,7 @@ extension PickerResultViewController: UITableViewDataSource, UITableViewDelegate
             present(controller, animated: true) {
                 player.play()
             }
-        } else if let playerItem = model.playerItem?.copy() as? AVPlayerItem {
+        } else if let playerItem = video.playerItem.copy() as? AVPlayerItem {
             let player = AVPlayer(playerItem: playerItem)
             let controller = AVPlayerViewController()
             controller.player = player

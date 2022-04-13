@@ -15,6 +15,9 @@ public enum AssetFetchError: Error {
     // image
     case failedToLoadImage
     
+    // live photo
+    case failedToLoadLivePhoto
+    
     // video
     case failedToLoadVideo
     
@@ -31,6 +34,8 @@ extension AssetFetchError: LocalizedError {
         case .canceled:
             return "下载已取消"
         case .failedToLoadImage:
+            return "无法加载图片"
+        case .failedToLoadLivePhoto:
             return "无法加载图片"
         case .failedToLoadVideo:
             return "无法加载视频"

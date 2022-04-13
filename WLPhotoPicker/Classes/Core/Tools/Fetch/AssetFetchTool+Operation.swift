@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 import CoreMedia
+import Photos
 
 typealias AssetFetchOperationProgress = (Double) -> Void
 typealias AssetFetchOperationResult = (Result<AssetPickerResult, WLPhotoError>) -> Void
@@ -126,12 +127,14 @@ fileprivate class AssetFetchOperation: Operation {
         }
         
         switch assetModel.mediaType {
-        case .photo, .livePhoto:
-            requestPhoto(options: options)
+        case .photo:
+            requestPhoto(options)
+        case .livePhoto:
+            requestLivePhoto(options)
         case .GIF:
-            requestGIF(options: options)
+            requestGIF(options)
         case .video:
-            requestVideo(options: options)
+            requestVideo(options)
         }
     }
     
@@ -156,7 +159,7 @@ fileprivate class AssetFetchOperation: Operation {
 // MARK: Request photo
 extension AssetFetchOperation {
     
-    func requestPhoto(options: AssetFetchOptions) {
+    func requestPhoto(_ options: AssetFetchOptions) {
         var currentPhoto: UIImage?
         switch (isOriginal, assetModel.hasEdit) {
         case (false, false):
@@ -197,7 +200,7 @@ extension AssetFetchOperation {
         }
     }
     
-    func requestGIF(options: AssetFetchOptions) {
+    func requestGIF(_ options: AssetFetchOptions) {
         assetRequest = AssetFetchTool.requestGIF(for: assetModel.asset, options: options) { [weak self] result, _ in
             guard let self = self else { return }
             switch result {
@@ -205,8 +208,8 @@ extension AssetFetchOperation {
                 self.finishRequestPhoto(response.image, data: response.imageData)
             case .failure(let error):
                 self.completion?(.failure(.fetchError(error)))
+                self.finishAssetRequest()
             }
-            self.finishAssetRequest()
         }
     }
     
@@ -215,7 +218,7 @@ extension AssetFetchOperation {
         finishRequestPhoto(photo, data: data)
     }
     
-    func finishRequestPhoto(_ image: UIImage, data: Data?) {
+    func finishRequestPhoto(_ photo: UIImage, data: Data?) {
         var fileURL: URL?
         if config.pickerConfig.exportImageURLWhenPick {
             let filePath = FileHelper.createFilePathFrom(asset: assetModel)
@@ -227,11 +230,59 @@ extension AssetFetchOperation {
             }
         }
         if config.pickerConfig.saveEditedPhotoToAlbum, assetModel.hasEdit {
-            AssetSaveManager.savePhoto(image: image)
+            AssetSaveManager.savePhoto(image: photo)
         }
-        completion?(.success(AssetPickerResult(asset: assetModel, image: image, fileURL: fileURL)))
-        if !_isFinished {
-            finishAssetRequest()
+        let photoResult = AssetPickerPhotoResult(photo: photo, photoURL: fileURL)
+        completion?(.success(AssetPickerResult(asset: assetModel, result: .photo(photoResult))))
+        finishAssetRequest()
+    }
+    
+}
+
+// MARK: Request livePhoto
+extension AssetFetchOperation {
+    
+    func requestLivePhoto(_ options: AssetFetchOptions) {
+        assetRequest = AssetFetchTool.requestLivePhoto(for: assetModel.asset, options: options) { [weak self] result, _ in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                self.analysisLivePhoto(response.livePhoto, options: options)
+            case .failure(let error):
+                self.completion?(.failure(.fetchError(error)))
+                self.finishAssetRequest()
+            }
+        }
+    }
+    
+    func analysisLivePhoto(_ livePhoto: PHLivePhoto, options: AssetFetchOptions) {
+        let results = PHAssetResource.assetResources(for: livePhoto)
+        guard let pairedVideo = results.first(where: { $0.type == .pairedVideo }) else {
+            finishRequestLivePhoto(livePhoto, videoURL: nil, options: options)
+            return
+        }
+        
+        let videoURL = URL(fileURLWithPath: FileHelper.createLivePhotoVideoPath())
+        PHAssetResourceManager.default().writeData(for: pairedVideo, toFile: videoURL, options: nil) { [weak self] error in
+            if error == nil {
+                self?.finishRequestLivePhoto(livePhoto, videoURL: videoURL, options: options)
+            } else {
+                self?.finishRequestLivePhoto(livePhoto, videoURL: nil, options: options)
+            }
+        }
+    }
+    
+    func finishRequestLivePhoto(_ livePhoto: PHLivePhoto, videoURL: URL?, options: AssetFetchOptions) {
+        assetRequest = AssetFetchTool.requestPhoto(for: assetModel.asset, options: options) { [weak self] result, _ in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                let photoResult = AssetPickerLivePhotoResult(livePhoto: livePhoto, photo: response.image)
+                self.completion?(.success(AssetPickerResult(asset: self.assetModel, result: .livePhoto(photoResult))))
+            case .failure(let error):
+                self.completion?(.failure(.fetchError(error)))
+            }
+            self.finishAssetRequest()
         }
     }
     
@@ -240,7 +291,7 @@ extension AssetFetchOperation {
 // MARK: Request video
 extension AssetFetchOperation {
     
-    func requestVideo(options: AssetFetchOptions) {
+    func requestVideo(_ options: AssetFetchOptions) {
         assetRequest = AssetFetchTool.requestAVAsset(for: self.assetModel.asset, options: options, completion: { [weak self] result, _ in
             guard let self = self else { return }
             switch result {
@@ -256,39 +307,44 @@ extension AssetFetchOperation {
     func finishRequestVideo(_ response: VideoFetchResponse, options: AssetFetchOptions) {
         if config.pickerConfig.exportVideoURLWhenPick {
             if isOriginal, #available(iOS 13, *), let fileURL = assetModel.asset.locallyVideoFileURL {
-                let result = AssetPickerResult(asset: assetModel, playerItem: response.playerItem, fileURL: fileURL)
-                self.recudeVideoResult(result)
+                let result = AssetPickerVideoResult(playerItem: response.playerItem, videoURL: fileURL)
+                recudeVideoResult(result)
             } else {
-                let videoOutputPath = FileHelper.createVideoPathFrom(asset: assetModel, videoFileType: config.pickerConfig.videoExportFileType)
-                let manager = VideoCompressManager(avAsset: response.avasset, outputPath: videoOutputPath)
-                manager.compressVideo = !(isOriginal && config.pickerConfig.allowVideoSelectOriginal)
-                manager.compressSize = config.pickerConfig.videoExportCompressSize
-                manager.frameDuration = config.pickerConfig.videoExportFrameDuration
-                manager.videoExportFileType = config.pickerConfig.videoExportFileType
-                manager.exportVideo { progress in
-                    options.progressHandler?(progress)
-                } completion: { [weak self] fileURL in
-                    guard let self = self else { return }
-                    if let error = manager.error {
-                        self.completion?(.failure(.videoCompressError(error)))
-                        self.finishAssetRequest()
-                    } else {
-                        let result = AssetPickerResult(asset: self.assetModel, playerItem: response.playerItem, fileURL: fileURL)
-                        self.recudeVideoResult(result)
-                    }
-                }
+                compressExportVideo(response, options: options)
             }
         } else {
-            let result = AssetPickerResult(asset: assetModel, playerItem: response.playerItem)
+            let result = AssetPickerVideoResult(playerItem: response.playerItem)
             recudeVideoResult(result)
         }
     }
     
-    func recudeVideoResult(_ result: AssetPickerResult) {
+    func compressExportVideo(_ response: VideoFetchResponse, options: AssetFetchOptions) {
+        let videoOutputPath = FileHelper.createVideoPathFrom(asset: assetModel, videoFileType: config.pickerConfig.videoExportFileType)
+        let manager = VideoCompressManager(avAsset: response.avasset, outputPath: videoOutputPath)
+        manager.compressVideo = !(isOriginal && config.pickerConfig.allowVideoSelectOriginal)
+        manager.compressSize = config.pickerConfig.videoExportCompressSize
+        manager.frameDuration = config.pickerConfig.videoExportFrameDuration
+        manager.videoExportFileType = config.pickerConfig.videoExportFileType
+        manager.exportVideo { progress in
+            options.progressHandler?(progress)
+        } completion: { [weak self] fileURL in
+            guard let self = self else { return }
+            if let error = manager.error {
+                self.completion?(.failure(.videoCompressError(error)))
+                self.finishAssetRequest()
+            } else {
+                let result = AssetPickerVideoResult(playerItem: response.playerItem, videoURL: fileURL)
+                self.recudeVideoResult(result)
+            }
+        }
+    }
+    
+    func recudeVideoResult(_ result: AssetPickerVideoResult) {
+        let assetModel = self.assetModel
         var result = result
-        result.playerItem?.asset.getVideoThumbnailImage(completion: { [weak self] image in
-            result.image = image
-            self?.completion?(.success(result))
+        result.playerItem.asset.getVideoThumbnailImage(completion: { [weak self] image in
+            result.thumbnail = image
+            self?.completion?(.success(AssetPickerResult(asset: assetModel, result: .video(result))))
             self?.finishAssetRequest()
         })
     }

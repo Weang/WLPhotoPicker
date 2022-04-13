@@ -7,19 +7,65 @@
 
 import UIKit
 import AVFoundation
+import Photos
 
 public struct AssetPickerResult {
     
     // 资源模型
     public let asset: AssetModel
     
-    // 如果选择的是图片，image参数是选择的图片或者编辑后的图片，选择原图时则是原图
-    // 如果选择的是视频，image参数是视频的截图
-    public var image: UIImage? = nil
+    // 导出资源
+    public let result: AssetPickerResultType
     
-    // 相册中未经过压缩的原视频
-    public var playerItem: AVPlayerItem? = nil
+    public var photo: UIImage? {
+        switch result {
+        case .photo(let result):
+            return result.photo
+        case .video(let result):
+            return result.thumbnail
+        case .livePhoto(let result):
+            return result.photo
+        }
+    }
+}
+
+// 选中的资源结果类型
+public enum AssetPickerResultType {
+    case photo(AssetPickerPhotoResult)
+    case video(AssetPickerVideoResult)
+    case livePhoto(AssetPickerLivePhotoResult)
+}
+
+public struct AssetPickerPhotoResult {
     
-    // 导出地址，需要设置PickerConfig的saveVideoToLocalWhenPick和saveImageToLocalWhenPick参数为true
-    public var fileURL: URL? = nil
+    // 选择的图片或者编辑后的图片
+    public var photo: UIImage
+    
+    // 图片保存地址，exportImageURLWhenPick为true时不为空
+    public var photoURL: URL? = nil
+}
+
+public struct AssetPickerVideoResult {
+    
+    // 相册中未经过压缩的原视频，用于预览
+    public var playerItem: AVPlayerItem
+    
+    // 视频缩略图
+    public var thumbnail: UIImage? = nil
+    
+    // 视频保存地址，exportVideoURLWhenPick为true时不为空
+    public var videoURL: URL? = nil
+}
+
+public struct AssetPickerLivePhotoResult {
+    
+    // 实况照片
+    public var livePhoto: PHLivePhoto
+    
+    // 实况封面图
+    public var photo: UIImage
+    
+    // 实况照片导出的视频地址
+    // 视频导出不受exportImageURLWhenPick控制，只要选择实况照片就会导出视频
+     public var videoURL: URL?
 }

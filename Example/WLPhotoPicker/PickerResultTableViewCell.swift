@@ -37,37 +37,31 @@ class PickerResultTableViewCell: UITableViewCell {
     }
     
     func bind(_ model: AssetPickerResult) {
-        assetImageView.image = model.image
-        
-        if let image = model.image {
+        assetImageView.image = model.photo
+
+        if let image = model.photo {
             assetImageView.snp.remakeConstraints { make in
                 make.left.top.bottom.equalToSuperview()
                 make.width.equalTo(assetImageView.snp.height).multipliedBy(image.size.width / image.size.height)
             }
         }
-        
-        if model.asset.mediaType == .video {
-            var playerItem: AVPlayerItem? = model.playerItem
-            if let fileURL = model.fileURL {
+
+        if case .video(let result) = model.result {
+            var playerItem: AVPlayerItem = result.playerItem
+            if let fileURL = result.videoURL {
                 playerItem = AVPlayerItem(asset: AVAsset(url: fileURL))
             }
-            var text = String(format: "时长：%.0fs", playerItem?.asset.duration.seconds ?? 0)
-            text += "\n宽高： \(playerItem?.asset.tracks(withMediaType: .video).first?.naturalSize ?? .zero)"
-            text += String(format: "\n帧率：%.0f", playerItem?.asset.tracks(withMediaType: .video).first?.nominalFrameRate ?? 0)
-            if let path = model.fileURL?.relativePath,
+            var text = String(format: "时长：%.0fs", playerItem.asset.duration.seconds)
+            text += "\n宽高： \(playerItem.asset.tracks(withMediaType: .video).first?.naturalSize ?? .zero)"
+            text += String(format: "\n帧率：%.0f", playerItem.asset.tracks(withMediaType: .video).first?.nominalFrameRate ?? 0)
+            if let path = result.videoURL?.relativePath,
                let attr = try? FileManager.default.attributesOfItem(atPath: path) as NSDictionary {
                 let fileSize = Double(attr.fileSize())
                 text += "\n导出文件大小： \(formateSize(size: fileSize))"
             }
             describeLabel.text = text
         } else {
-            var text = "宽高： \(model.image?.size ?? .zero)"
-            if let path = model.fileURL?.relativePath,
-               let attr = try? FileManager.default.attributesOfItem(atPath: path) as NSDictionary {
-                let fileSize = Double(attr.fileSize())
-                text += "\n导出文件大小： \(formateSize(size: fileSize))"
-            }
-            describeLabel.text = text
+            describeLabel.text = "宽高： \(model.photo?.size ?? .zero)"
         }
     }
     
