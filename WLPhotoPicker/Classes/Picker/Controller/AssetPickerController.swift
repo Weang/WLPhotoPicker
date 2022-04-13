@@ -234,7 +234,7 @@ class AssetPickerController: UIViewController {
             case .success(let assets):
                 self.delegate?.pickerController(self, didSelectResult: assets)
             case .failure(let error):
-                self.delegate?.pickerController(self, didOccurredError: error)
+                self.delegate?.pickerController(self, didOccurredError: .fetchError(error))
             }
         }
     }
@@ -272,6 +272,16 @@ class AssetPickerController: UIViewController {
             vc.delegate = self
             present(vc, animated: true, completion: nil)
         }
+    }
+    
+    private func showErrorAlert(_ message: String) {
+        let alert = UIAlertController.init(title: "提示", message: message, preferredStyle: .alert)
+        alert.addAction(.init(title: "确定", style: .cancel, handler: nil))
+        var vc: UIViewController = self
+        if let presentedViewController = self.presentedViewController {
+            vc = presentedViewController
+        }
+        vc.present(alert, animated: true, completion: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -410,6 +420,10 @@ extension AssetPickerController: AssetFetchToolDelegate {
         bottomToolBar.isEnabled = assetFetchTool.selectedAssets.count > 0
     }
     
+    func assetFetchToolSelectUpToLimited(_ fetchTool: AssetFetchTool) {
+        showErrorAlert("你最多只能选择\(config.pickerConfig.selectCountLimit)张照片")
+    }
+    
 }
 
 // MARK: AssetPickerToolBarDelegate
@@ -484,22 +498,14 @@ extension AssetPickerController: AssetPreviewViewControllerAnimateDataSource, As
 extension AssetPickerController: CaptureViewControllerDelegate {
     
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingPhoto photo: UIImage) {
-        AssetSaveManager.savePhoto(image: photo) { [weak self] result in
-            guard let self = self,
-                  case .success(let asset) = result else {
-                      return
-                  }
-            self.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
+        AssetSaveManager.savePhoto(photo: photo) { [weak self] asset in
+            self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
         }
     }
     
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingVideo videoUrl: URL) {
-        AssetSaveManager.saveVideo(url: videoUrl) { [weak self] result in
-            guard let self = self,
-                  case .success(let asset) = result else {
-                      return
-                  }
-            self.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
+        AssetSaveManager.saveVideo(videoURL: videoUrl) { [weak self] asset in
+            self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
         }
     }
     
@@ -515,19 +521,13 @@ extension AssetPickerController: UIImagePickerControllerDelegate, UINavigationCo
         }
         
         if mediaType == kUTTypeImage as String, let originalImage = info[.originalImage] as? UIImage {
-            AssetSaveManager.savePhoto(image: originalImage) { [weak self] result in
-                guard case .success(let asset) = result else {
-                    return
-                }
+            AssetSaveManager.savePhoto(photo: originalImage) { [weak self] asset in
                 self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
             }
         }
         
         if mediaType == kUTTypeMovie as String, let mediaURL = info[.mediaURL] as? URL {
-            AssetSaveManager.saveVideo(url: mediaURL) { [weak self] result in
-                guard case .success(let asset) = result else {
-                    return
-                }
+            AssetSaveManager.saveVideo(videoURL: mediaURL) { [weak self] asset in
                 self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
             }
         }

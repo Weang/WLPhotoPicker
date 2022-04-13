@@ -53,12 +53,12 @@ extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
         
         LivePhotoGenerator.createLivePhotoFrom(videoURL) { progress in
             SVProgressHUD.showProgress(Float(progress))
-        } completion: { livePhoto, imageURL, videoURL in
-            guard let livePhoto = livePhoto else {
+        } completion: { result in
+            guard let result = result else {
                 return
             }
             SVProgressHUD.dismiss()
-            let vc = LivePhotoViewController(livePhoto: livePhoto, imageURL: imageURL, videoURL: videoURL)
+            let vc = LivePhotoViewController(result: result)
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }

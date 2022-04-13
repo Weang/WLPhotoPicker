@@ -61,7 +61,7 @@ class AssetPreviewLivePhotoCell: AssetPreviewCell {
         
         assetRequest = AssetFetchTool.requestPhoto(for: model.asset, options: options) { [weak self] result, _ in
             if case .success(let response) = result {
-                self?.assetImageView.image = response.image
+                self?.assetImageView.image = response.photo
             }
             self?.requestLivePhoto(model, pickerConfig: pickerConfig)
         }

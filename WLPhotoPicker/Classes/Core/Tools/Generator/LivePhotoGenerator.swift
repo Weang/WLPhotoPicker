@@ -10,8 +10,13 @@ import AVFoundation
 import MobileCoreServices
 import Photos
 
-// LivePhoto, imageURL, videoURL
-public typealias LivePhotoGeneratorCompletion = (PHLivePhoto?, URL, URL) -> Void
+public struct LivePhotoGeneratorRsult {
+    public var livePhoto: PHLivePhoto
+    public var imageURL: URL
+    public var videoURL: URL
+}
+
+public typealias LivePhotoGeneratorCompletion = (LivePhotoGeneratorRsult?) -> Void
 
 // 通过视频生成实况照片
 public class LivePhotoGenerator {
@@ -19,54 +24,67 @@ public class LivePhotoGenerator {
     static public func createLivePhotoFrom(_ videoURL: URL, progress: @escaping (Double) -> Void, completion: @escaping LivePhotoGeneratorCompletion) {
         let videoAsset = AVAsset(url: videoURL)
         guard let videoThumbImage = videoAsset.thumbnailImage() else {
+            completion(nil)
             return
         }
         createLivePhotoFrom(videoURL, placeholderImage: videoThumbImage, progress: progress, completion: completion)
     }
     
     static public func createLivePhotoFrom(_ videoURL: URL, placeholderImage: UIImage, progress: @escaping (Double) -> Void, completion: @escaping LivePhotoGeneratorCompletion) {
-        let videoAsset = AVAsset(url: videoURL)
         let assetIdentifier = UUID().uuidString
         
-        let imageURL = createImageURL(placeholderImage, assetIdentifier: assetIdentifier)
+        guard let imageURL = createImageURL(placeholderImage, assetIdentifier: assetIdentifier) else {
+            completion(nil)
+            return
+        }
+        
+        let videoAsset = AVAsset(url: videoURL)
+        
         createVideoURL(videoAsset, assetIdentifier: assetIdentifier, progress: progress, completion: { videoURL in
+            guard let videoURL = videoURL else {
+                completion(nil)
+                return
+            }
             PHLivePhoto.request(withResourceFileURLs: [imageURL, videoURL],
                                 placeholderImage: placeholderImage,
                                 targetSize: placeholderImage.size,
                                 contentMode: .aspectFill) { livePhoto, info in
                 let isDegraded = info[PHLivePhotoInfoIsDegradedKey] as? Bool ?? false
-                if !isDegraded {
-                    completion(livePhoto, imageURL, videoURL)
+                if !isDegraded, let livePhoto = livePhoto {
+                    completion(LivePhotoGeneratorRsult(livePhoto: livePhoto, imageURL: imageURL, videoURL: videoURL))
+                } else {
+                    completion(nil)
                 }
             }
         })
     }
     
     // MARK: Image
-    static private func createImageURL(_ image: UIImage, assetIdentifier: String) -> URL {
+    static private func createImageURL(_ image: UIImage, assetIdentifier: String) -> URL? {
         let imagePath = FileHelper.createLivePhotoPhotoPath()
         let imageURL = URL.init(fileURLWithPath: imagePath)
         
-        let imageMetadata = [kCGImagePropertyMakerAppleDictionary: ["17": assetIdentifier]] as CFDictionary
-        
-        if let cgImage = image.cgImage,
-           let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypeJPEG, 1, nil) {
-            CGImageDestinationAddImage(destination, cgImage, imageMetadata)
-            CGImageDestinationFinalize(destination)
+        guard let cgImage = image.cgImage,
+              let destination = CGImageDestinationCreateWithURL(imageURL as CFURL, kUTTypeJPEG, 1, nil) else {
+            return nil
         }
+        
+        let imageMetadata = [kCGImagePropertyMakerAppleDictionary: ["17": assetIdentifier]] as CFDictionary
+        CGImageDestinationAddImage(destination, cgImage, imageMetadata)
+        CGImageDestinationFinalize(destination)
         
         return imageURL
     }
     
     // MARK: Video
-    static private func createVideoURL(_ asset: AVAsset, assetIdentifier: String, progress: @escaping (Double) -> Void, completion: @escaping (URL) -> Void) {
+    static private func createVideoURL(_ asset: AVAsset, assetIdentifier: String, progress: @escaping (Double) -> Void, completion: @escaping (URL?) -> Void) {
         let videoPath = FileHelper.createLivePhotoVideoPath()
         let videoURL = URL.init(fileURLWithPath: videoPath)
         
         guard let assetReader = try? AVAssetReader(asset: asset),
               let assetWriter = try? AVAssetWriter(outputURL: videoURL, fileType: .mov),
               let videoTrack = asset.tracks(withMediaType: .video).first else {
-            completion(videoURL)
+            completion(nil)
             return
         }
         

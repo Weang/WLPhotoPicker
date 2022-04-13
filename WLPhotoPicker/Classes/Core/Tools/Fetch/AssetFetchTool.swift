@@ -20,6 +20,9 @@ protocol AssetFetchToolDelegate: NSObjectProtocol {
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateSelectedStatus assetModel: AssetModel)
     func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetchSelectedAsset assetModel: AssetModel)
     
+    // 选择超过数量限制
+    func assetFetchToolSelectUpToLimited(_ fetchTool: AssetFetchTool)
+    
     // 相册更新
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateAlbum albumModel: AlbumModel,
                         insertedItems: IndexSet,
@@ -33,6 +36,7 @@ extension AssetFetchToolDelegate {
     func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetch allAlbums: [AlbumModel]) { }
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateSelectedStatus assetModel: AssetModel) { }
     func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetchSelectedAsset assetModel: AssetModel) { }
+    func assetFetchToolSelectUpToLimited(_ fetchTool: AssetFetchTool) { }
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateAlbum albumModel: AlbumModel, insertedItems: IndexSet, removedItems: IndexSet, changedItems: IndexSet) { }
 }
 
@@ -92,7 +96,7 @@ class AssetFetchTool: NSObject {
 
 extension AssetFetchTool {
     
-    static func handleInfo(_ info: [AnyHashable: Any]?) -> AssetFetchError? {
+    static func catchInfoError(_ info: [AnyHashable: Any]?) -> AssetFetchError? {
         guard let info = info else {
             return AssetFetchError.invalidInfo
         }

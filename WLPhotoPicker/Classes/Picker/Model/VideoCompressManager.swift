@@ -54,16 +54,16 @@ public class VideoCompressManager {
     private func setupTracks() {
         guard let assetVideoTrack = avAsset.tracks(withMediaType: .video).first,
               let assetAudioTrack = avAsset.tracks(withMediaType: .audio).first else {
-                  error = .failedToLoadAssetTrack
-                  return
-              }
+            error = .failedToLoadAssetTrack
+            return
+        }
         
         let id = kCMPersistentTrackID_Invalid
         guard let videoCompositionTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: id),
               let audioCompositionTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: id) else {
-                  error = .failedToCreateCompositionTrack
-                  return
-              }
+            error = .failedToCreateCompositionTrack
+            return
+        }
         
         let assetDuration = avAsset.duration
         let timeRange = CMTimeRange(start: .zero, duration: assetDuration)

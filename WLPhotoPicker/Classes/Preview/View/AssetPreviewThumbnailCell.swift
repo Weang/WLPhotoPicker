@@ -62,7 +62,7 @@ class AssetPreviewThumbnailCell: UICollectionViewCell {
             switch result {
             case let .success(respose):
                 if self?.assetRequest?.requestIdIs(requestId) ?? false {
-                    self?.assetImageView.image = respose.image
+                    self?.assetImageView.image = respose.photo
                 }
             case .failure: break
             }

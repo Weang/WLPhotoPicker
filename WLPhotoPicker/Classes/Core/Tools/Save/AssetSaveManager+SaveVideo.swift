@@ -10,11 +10,11 @@ import Photos
 
 extension AssetSaveManager {
     
-    static func saveVideo(url: URL, completion: AssetSaveCompletion? = nil) {
+    static func saveVideo(videoURL: URL, success: AssetSaveSuccess? = nil, failure: AssetSaveFailure? = nil) {
         var localIdentifier: String = ""
         let changes = {
-            guard let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url) else {
-                completion?(.failure(.invalidVideoURL))
+            guard let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: videoURL) else {
+                failure?()
                 return
             }
             localIdentifier = request.placeholderForCreatedAsset?.localIdentifier ?? ""
@@ -22,9 +22,9 @@ extension AssetSaveManager {
         PHPhotoLibrary.shared().performChanges(changes) { _, _ in
             DispatchQueue.main.async {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-                    completion?(.success(asset))
+                    success?(asset)
                 } else {
-                    completion?(.failure(.saveVideoFailed))
+                    failure?()
                 }
             }
         }

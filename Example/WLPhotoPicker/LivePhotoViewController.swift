@@ -14,15 +14,12 @@ import SVProgressHUD
 
 class LivePhotoViewController: UIViewController {
 
-    let livePhoto: PHLivePhoto
-    let imageURL: URL
-    let videoURL: URL
+    let result: LivePhotoGeneratorRsult
+    
     private let livePhotoView = PHLivePhotoView()
     
-    init(livePhoto: PHLivePhoto, imageURL: URL, videoURL: URL) {
-        self.livePhoto = livePhoto
-        self.imageURL = imageURL
-        self.videoURL = videoURL
+    init(result: LivePhotoGeneratorRsult) {
+        self.result = result
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,7 +31,7 @@ class LivePhotoViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-        livePhotoView.livePhoto = livePhoto
+        livePhotoView.livePhoto = result.livePhoto
         livePhotoView.contentMode = .scaleAspectFit
         view.addSubview(livePhotoView)
         livePhotoView.snp.makeConstraints { make in
@@ -45,13 +42,10 @@ class LivePhotoViewController: UIViewController {
     }
     
     @objc func saveLivePhoto() {
-        AssetSaveManager.saveLivePhoto(photoURL: imageURL, videoURL: videoURL) { result in
-            switch result {
-            case .success:
-                SVProgressHUD.showSuccess(withStatus: "保存成功")
-            case .failure:
-                SVProgressHUD.showError(withStatus: "保存失败")
-            }
+        AssetSaveManager.saveLivePhoto(photoURL: result.imageURL, videoURL: result.videoURL) { _ in
+            SVProgressHUD.showSuccess(withStatus: "保存成功")
+        } failure: {
+            SVProgressHUD.showError(withStatus: "保存失败")
         }
     }
 

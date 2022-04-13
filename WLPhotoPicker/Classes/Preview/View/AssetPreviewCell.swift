@@ -110,7 +110,7 @@ class AssetPreviewCell: UICollectionViewCell {
         assetRequest = AssetFetchTool.requestPhoto(for: model.asset, options: options) { [weak self] result, _ in
             self?.activityIndicator.stopAnimating()
             if case .success(let response) = result {
-                self?.layoutImage(response.image)
+                self?.layoutImage(response.photo)
             }
         }
     }

@@ -11,8 +11,8 @@ import CoreMedia
 import Photos
 
 typealias AssetFetchOperationProgress = (Double) -> Void
-typealias AssetFetchOperationResult = (Result<AssetPickerResult, WLPhotoError>) -> Void
-typealias AssetFetchAssetsResult = (Result<[AssetPickerResult], WLPhotoError>) -> Void
+typealias AssetFetchOperationResult = (Result<AssetPickerResult, AssetFetchError>) -> Void
+typealias AssetFetchAssetsResult = (Result<[AssetPickerResult], AssetFetchError>) -> Void
 
 extension AssetFetchTool {
     
@@ -182,19 +182,19 @@ extension AssetFetchOperation {
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                self.assetModel.originalImage = response.image
+                self.assetModel.originalImage = response.photo
                 if self.assetModel.hasEdit {
-                    EditManager.drawEditOriginalImageFrom(asset: self.assetModel, photoEditConfig: self.config.photoEditConfig) { [weak self] image in
+                    EditManager.drawEditOriginalImageFrom(asset: self.assetModel, photoEditConfig: self.config.photoEditConfig) { [weak self] photo in
                         guard let self = self else { return }
-                        if let image = image?.rotate(orientation: self.assetModel.cropRotation).cropToRect(self.assetModel.cropRect) {
-                            self.finishRequestPhoto(image)
+                        if let photo = photo?.rotate(orientation: self.assetModel.cropRotation).cropToRect(self.assetModel.cropRect) {
+                            self.finishRequestPhoto(photo)
                         }
                     }
                 } else {
-                    self.finishRequestPhoto(response.image)
+                    self.finishRequestPhoto(response.photo)
                 }
             case .failure(let error):
-                self.completion?(.failure(.fetchError(error)))
+                self.completion?(.failure(error))
                 self.finishAssetRequest()
             }
         }
@@ -207,7 +207,7 @@ extension AssetFetchOperation {
             case .success(let response):
                 self.finishRequestPhoto(response.image, data: response.imageData)
             case .failure(let error):
-                self.completion?(.failure(.fetchError(error)))
+                self.completion?(.failure(error))
                 self.finishAssetRequest()
             }
         }
@@ -220,17 +220,17 @@ extension AssetFetchOperation {
     
     func finishRequestPhoto(_ photo: UIImage, data: Data?) {
         var fileURL: URL?
-        if config.pickerConfig.exportImageURLWhenPick {
+        if config.pickerConfig.exportImageURLWhenPick, let data = data {
             let filePath = FileHelper.createFilePathFrom(asset: assetModel)
             fileURL = URL(fileURLWithPath: filePath)
             do {
-                try data?.write(to: URL.init(fileURLWithPath: filePath))
+                try data.write(to: URL.init(fileURLWithPath: filePath))
             } catch {
-                completion?(.failure(.fileHelper(.underlying(error))))
+                completion?(.failure(.failedToExportPhoto))
             }
         }
         if config.pickerConfig.saveEditedPhotoToAlbum, assetModel.hasEdit {
-            AssetSaveManager.savePhoto(image: photo)
+            AssetSaveManager.savePhoto(photo: photo)
         }
         let photoResult = AssetPickerPhotoResult(photo: photo, photoURL: fileURL)
         completion?(.success(AssetPickerResult(asset: assetModel, result: .photo(photoResult))))
@@ -249,7 +249,7 @@ extension AssetFetchOperation {
             case .success(let response):
                 self.analysisLivePhoto(response.livePhoto, options: options)
             case .failure(let error):
-                self.completion?(.failure(.fetchError(error)))
+                self.completion?(.failure(error))
                 self.finishAssetRequest()
             }
         }
@@ -258,31 +258,33 @@ extension AssetFetchOperation {
     func analysisLivePhoto(_ livePhoto: PHLivePhoto, options: AssetFetchOptions) {
         let results = PHAssetResource.assetResources(for: livePhoto)
         guard let pairedVideo = results.first(where: { $0.type == .pairedVideo }) else {
-            finishRequestLivePhoto(livePhoto, videoURL: nil, options: options)
+            finishAnalysisLivePhoto(livePhoto, videoURL: nil, options: options)
             return
         }
         
         let videoURL = URL(fileURLWithPath: FileHelper.createLivePhotoVideoPath())
+        // 由于实况照片中的photoData可为空，所以不使用writeData方法获取封面图
         PHAssetResourceManager.default().writeData(for: pairedVideo, toFile: videoURL, options: nil) { [weak self] error in
             if error == nil {
-                self?.finishRequestLivePhoto(livePhoto, videoURL: videoURL, options: options)
+                self?.finishAnalysisLivePhoto(livePhoto, videoURL: videoURL, options: options)
             } else {
-                self?.finishRequestLivePhoto(livePhoto, videoURL: nil, options: options)
+                self?.finishAnalysisLivePhoto(livePhoto, videoURL: nil, options: options)
             }
         }
     }
     
-    func finishRequestLivePhoto(_ livePhoto: PHLivePhoto, videoURL: URL?, options: AssetFetchOptions) {
+    func finishAnalysisLivePhoto(_ livePhoto: PHLivePhoto, videoURL: URL?, options: AssetFetchOptions) {
         assetRequest = AssetFetchTool.requestPhoto(for: assetModel.asset, options: options) { [weak self] result, _ in
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                let photoResult = AssetPickerLivePhotoResult(livePhoto: livePhoto, photo: response.image)
+                let photoResult = AssetPickerLivePhotoResult(livePhoto: livePhoto, photo: response.photo)
                 self.completion?(.success(AssetPickerResult(asset: self.assetModel, result: .livePhoto(photoResult))))
+                self.finishAssetRequest()
             case .failure(let error):
-                self.completion?(.failure(.fetchError(error)))
+                self.completion?(.failure(error))
+                self.finishAssetRequest()
             }
-            self.finishAssetRequest()
         }
     }
     
@@ -298,7 +300,7 @@ extension AssetFetchOperation {
             case .success(let response):
                 self.finishRequestVideo(response, options: options)
             case .failure(let error):
-                self.completion?(.failure(.fetchError(error)))
+                self.completion?(.failure(error))
                 self.finishAssetRequest()
             }
         })
@@ -308,18 +310,19 @@ extension AssetFetchOperation {
         if config.pickerConfig.exportVideoURLWhenPick {
             if isOriginal, #available(iOS 13, *), let fileURL = assetModel.asset.locallyVideoFileURL {
                 let result = AssetPickerVideoResult(playerItem: response.playerItem, videoURL: fileURL)
-                recudeVideoResult(result)
+                recudeVideoResult(result, options: options)
             } else {
                 compressExportVideo(response, options: options)
             }
         } else {
             let result = AssetPickerVideoResult(playerItem: response.playerItem)
-            recudeVideoResult(result)
+            recudeVideoResult(result, options: options)
         }
     }
     
     func compressExportVideo(_ response: VideoFetchResponse, options: AssetFetchOptions) {
         let videoOutputPath = FileHelper.createVideoPathFrom(asset: assetModel, videoFileType: config.pickerConfig.videoExportFileType)
+        
         let manager = VideoCompressManager(avAsset: response.avasset, outputPath: videoOutputPath)
         manager.compressVideo = !(isOriginal && config.pickerConfig.allowVideoSelectOriginal)
         manager.compressSize = config.pickerConfig.videoExportCompressSize
@@ -329,24 +332,30 @@ extension AssetFetchOperation {
             options.progressHandler?(progress)
         } completion: { [weak self] fileURL in
             guard let self = self else { return }
-            if let error = manager.error {
-                self.completion?(.failure(.videoCompressError(error)))
+            if manager.error != nil {
+                self.completion?(.failure(.failedToExportVideo))
                 self.finishAssetRequest()
             } else {
                 let result = AssetPickerVideoResult(playerItem: response.playerItem, videoURL: fileURL)
-                self.recudeVideoResult(result)
+                self.recudeVideoResult(result, options: options)
             }
         }
     }
     
-    func recudeVideoResult(_ result: AssetPickerVideoResult) {
-        let assetModel = self.assetModel
-        var result = result
-        result.playerItem.asset.getVideoThumbnailImage(completion: { [weak self] image in
-            result.thumbnail = image
-            self?.completion?(.success(AssetPickerResult(asset: assetModel, result: .video(result))))
-            self?.finishAssetRequest()
-        })
+    func recudeVideoResult(_ result: AssetPickerVideoResult, options: AssetFetchOptions) {
+        var videoResult = result
+        assetRequest = AssetFetchTool.requestPhoto(for: assetModel.asset, options: options) { [weak self] result, _ in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                videoResult.thumbnail = response.photo
+                self.completion?(.success(AssetPickerResult(asset: self.assetModel, result: .video(videoResult))))
+                self.finishAssetRequest()
+            case .failure(let error):
+                self.completion?(.failure(error))
+                self.finishAssetRequest()
+            }
+        }
     }
     
 }

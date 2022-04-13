@@ -10,18 +10,18 @@ import Photos
 
 extension AssetSaveManager {
     
-    static func savePhoto(image: UIImage, completion: AssetSaveCompletion? = nil) {
+    static func savePhoto(photo: UIImage, success: AssetSaveSuccess? = nil, failure: AssetSaveFailure? = nil) {
         var localIdentifier: String = ""
         let changes = {
-            let request = PHAssetChangeRequest.creationRequestForAsset(from: image)
+            let request = PHAssetChangeRequest.creationRequestForAsset(from: photo)
             localIdentifier = request.placeholderForCreatedAsset?.localIdentifier ?? ""
         }
         PHPhotoLibrary.shared().performChanges(changes) { _, _ in
             DispatchQueue.main.async {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-                    completion?(.success(asset))
+                    success?(asset)
                 } else {
-                    completion?(.failure(.savePhotoFailed))
+                    failure?()
                 }
             }
         }

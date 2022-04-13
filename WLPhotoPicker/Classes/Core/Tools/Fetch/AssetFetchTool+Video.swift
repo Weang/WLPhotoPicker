@@ -41,13 +41,13 @@ extension AssetFetchTool {
             DispatchQueue.main.async {
                 let requestID = info?[PHImageResultRequestIDKey] as? PHImageRequestID ?? 0
                 
-                if let error = handleInfo(info) {
+                if let error = catchInfoError(info) {
                     completion(.failure(error), requestID)
                     return
                 }
                 
                 guard let avAsset = avAsset else {
-                    completion(.failure(.failedToLoadVideo), requestID)
+                    completion(.failure(.failedToFetchVideo), requestID)
                     return
                 }
                 

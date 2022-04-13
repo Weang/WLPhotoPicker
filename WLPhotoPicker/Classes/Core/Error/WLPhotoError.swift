@@ -15,9 +15,6 @@ public enum WLPhotoError: Error {
     // 视频导出错误
     case videoCompressError(VideoCompressError)
     
-    // 文件写入错误
-    case fileHelper(FileError)
-    
     // 相机拍摄错误
     case captureError(CaptureError)
     
@@ -30,8 +27,6 @@ extension WLPhotoError: LocalizedError {
         case .fetchError(let error):
             return error.localizedDescription
         case .captureError(let error):
-            return error.localizedDescription
-        case .fileHelper(let error):
             return error.localizedDescription
         case .videoCompressError:
             return "视频导出错误"

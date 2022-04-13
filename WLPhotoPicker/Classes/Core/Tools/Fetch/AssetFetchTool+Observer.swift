@@ -116,7 +116,7 @@ extension AssetFetchTool: PHPhotoLibraryChangeObserver {
                 })
             }
             albumsList.removeAll(where: {
-                $0.count == 0
+                $0.count == 0 && !$0.isCameraRollAlbum
             })
         }
         

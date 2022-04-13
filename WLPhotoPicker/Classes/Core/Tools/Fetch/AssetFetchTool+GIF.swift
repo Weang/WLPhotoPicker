@@ -30,7 +30,7 @@ extension AssetFetchTool {
                     if let image = GIFGenerator.createGIFWith(response.data) {
                         handleResult(.success(GIFFetchResponse(image: image, imageData: response.data)), requestId: requestId)
                     } else {
-                        handleResult(.failure(.failedToLoadImage), requestId: requestId)
+                        handleResult(.failure(.failedToFetchGIF), requestId: requestId)
                     }
                 }
             case .failure(let error):

@@ -79,7 +79,7 @@ class AssetCollectionViewCell: UICollectionViewCell {
             assetRequest = AssetFetchTool.requestPhoto(for: model.asset, options: options, completion: { [weak self] result, requestId in
                 if case .success(let respose) = result {
                     if respose.isDegraded || (self?.assetRequest?.requestIdIs(requestId) ?? false) {
-                        self?.assetImageView.image = respose.image
+                        self?.assetImageView.image = respose.photo
                     }
                 }
             })

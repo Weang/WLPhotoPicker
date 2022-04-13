@@ -10,7 +10,7 @@ import Photos
 
 public extension AssetSaveManager {
     
-    static func saveLivePhoto(photoURL: URL, videoURL: URL, completion: AssetSaveCompletion? = nil) {
+    static func saveLivePhoto(photoURL: URL, videoURL: URL, success: AssetSaveSuccess? = nil, failure: AssetSaveFailure? = nil) {
         var localIdentifier: String = ""
         let changes = {
             let request = PHAssetCreationRequest.forAsset()
@@ -21,9 +21,9 @@ public extension AssetSaveManager {
         PHPhotoLibrary.shared().performChanges(changes) { _, _ in
             DispatchQueue.main.async {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
-                    completion?(.success(asset))
+                    success?(asset)
                 } else {
-                    completion?(.failure(.saveLivePhotoFailed))
+                    failure?()
                 }
             }
         }

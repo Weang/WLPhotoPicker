@@ -39,13 +39,13 @@ extension AssetFetchTool {
         DispatchQueue.main.async {
             let requestID = (info?[PHImageResultRequestIDKey] as? PHImageRequestID) ?? 0
             
-            if let error = handleInfo(info) {
+            if let error = catchInfoError(info) {
                 completion(.failure(error), requestID)
                 return
             }
             
             guard let dataUTI = dataUTI, let data = data else {
-                completion(.failure(.failedToLoadImage), requestID)
+                completion(.failure(.failedToFetchPhoto), requestID)
                 return
             }
             

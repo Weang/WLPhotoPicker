@@ -11,7 +11,7 @@ import AVKit
 
 // 图片请求结果
 struct PhotoFetchResponse {
-    public let image: UIImage
+    public let photo: UIImage
     public let isDegraded: Bool
 }
 

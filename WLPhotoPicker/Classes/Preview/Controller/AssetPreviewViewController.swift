@@ -329,7 +329,7 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
             
             AssetFetchTool.requestPhoto(for: assetModel.asset, options: options) { [weak self] result, _ in
                 guard case .success(let response) = result else { return }
-                assetModel.previewImage = response.image
+                assetModel.previewImage = response.photo
                 self?.openEditViewController(assetModel)
                 LoadingHUD.shared.hideLoading()
             }

@@ -26,22 +26,22 @@ extension AssetFetchTool {
         
         let targetSize = options.targetSizeWith(assetSize: asset.pixelSize)
         
-        let requestId = PHImageManager.default().requestImage(for: asset, targetSize: targetSize, contentMode: .default, options: requestOptions) { image, info in
+        let requestId = PHImageManager.default().requestImage(for: asset, targetSize: targetSize, contentMode: .default, options: requestOptions) { photo, info in
             DispatchQueue.main.async {
                 let requestID = info?[PHImageResultRequestIDKey] as? PHImageRequestID ?? 0
                 
-                if let error = handleInfo(info) {
+                if let error = catchInfoError(info) {
                     completion(.failure(error), requestID)
                     return
                 }
                 
-                guard let image = image else {
-                    completion(.failure(.failedToLoadImage), requestID)
+                guard let photo = photo else {
+                    completion(.failure(.failedToFetchPhoto), requestID)
                     return
                 }
                 
                 let isDegraded = info?[PHImageResultIsDegradedKey] as? Bool ?? false
-                let response = PhotoFetchResponse(image: image, isDegraded: isDegraded)
+                let response = PhotoFetchResponse(photo: photo, isDegraded: isDegraded)
                 completion(.success(response), requestID)
             }
         }

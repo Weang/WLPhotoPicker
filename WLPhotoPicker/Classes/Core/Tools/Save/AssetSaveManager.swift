@@ -8,6 +8,7 @@
 import UIKit
 import Photos
 
-public typealias AssetSaveCompletion = (Result<PHAsset, AssetSaveError>) -> Void
+public typealias AssetSaveSuccess = (PHAsset) -> Void
+public typealias AssetSaveFailure = () -> Void
 
 public class AssetSaveManager { }

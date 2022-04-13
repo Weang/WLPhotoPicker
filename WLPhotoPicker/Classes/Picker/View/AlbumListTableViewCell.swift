@@ -73,7 +73,7 @@ class AlbumListTableViewCell: UITableViewCell {
             request = AssetFetchTool.requestPhoto(for: coverAsset.asset, options: options) { [weak self] result, _ in
                 switch result {
                 case .success(let response):
-                    self?.albumCover.image = response.image
+                    self?.albumCover.image = response.photo
                 case .failure:
                     self?.albumCover.image = nil
                 }

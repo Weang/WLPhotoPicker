@@ -20,6 +20,14 @@ extension AssetFetchTool {
             return
         }
         if !asset.isSelected && isUptoLimit {
+            if delegateEvent {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.delegates.forEach {
+                        $0.value?.assetFetchToolSelectUpToLimited(self)
+                    }
+                }
+            }
             return
         }
         if !asset.isSelected {
@@ -82,7 +90,7 @@ extension AssetFetchTool {
             guard case .success(let response) = result else {
                 return
             }
-            asset.previewImage = response.image
+            asset.previewImage = response.photo
             guard let self = self, delegateEvent else {
                 return
             }
