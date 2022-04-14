@@ -18,7 +18,6 @@ protocol AssetFetchToolDelegate: NSObjectProtocol {
     
     // 选中状态变化
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateSelectedStatus assetModel: AssetModel)
-    func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetchSelectedAsset assetModel: AssetModel)
     
     // 选择超过数量限制
     func assetFetchToolSelectUpToLimited(_ fetchTool: AssetFetchTool)
@@ -35,7 +34,6 @@ extension AssetFetchToolDelegate {
     func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetchCameraAlbum albumModel: AlbumModel) { }
     func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetch allAlbums: [AlbumModel]) { }
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateSelectedStatus assetModel: AssetModel) { }
-    func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetchSelectedAsset assetModel: AssetModel) { }
     func assetFetchToolSelectUpToLimited(_ fetchTool: AssetFetchTool) { }
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateAlbum albumModel: AlbumModel, insertedItems: IndexSet, removedItems: IndexSet, changedItems: IndexSet) { }
 }

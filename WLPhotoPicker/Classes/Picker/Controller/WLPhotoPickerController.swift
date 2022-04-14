@@ -16,15 +16,11 @@ public protocol WLPhotoPickerControllerDelegate: AnyObject {
     
     // 点击完成按钮
     func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult])
-    
-    // 发生错误
-    func pickerController(_ pickerController: WLPhotoPickerController, didOccurredError error: WLPhotoError)
 }
 
 public extension WLPhotoPickerControllerDelegate {
     func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController) { }
     func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult]) { }
-    func pickerController(_ pickerController: WLPhotoPickerController, didOccurredError error: WLPhotoError) { }
 }
 
 public class WLPhotoPickerController: UINavigationController {
@@ -64,7 +60,9 @@ extension WLPhotoPickerController: AssetPickerControllerDelegate {
     
     func pickerControllerDidCancel(_ pickerController: AssetPickerController) {
         pickerDelegate?.pickerControllerDidCancel(self)
-        dismiss(animated: true, completion: nil)
+        if config.pickerConfig.dismissPickerAfterDone {
+            dismiss(animated: true, completion: nil)
+        }
     }
     
     func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [AssetPickerResult]) {
@@ -76,10 +74,6 @@ extension WLPhotoPickerController: AssetPickerControllerDelegate {
             previewController?.modalPresentationStyle = .fullScreen
             presentingViewController?.dismiss(animated: true, completion: nil)
         }
-    }
-    
-    func pickerController(_ pickerController: AssetPickerController, didOccurredError error: WLPhotoError) {
-        pickerDelegate?.pickerController(self, didOccurredError: error)
     }
     
 }

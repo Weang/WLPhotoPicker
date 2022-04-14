@@ -12,7 +12,6 @@ import MobileCoreServices
 protocol AssetPickerControllerDelegate: AnyObject {
     func pickerControllerDidCancel(_ pickerController: AssetPickerController)
     func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [AssetPickerResult])
-    func pickerController(_ pickerController: AssetPickerController, didOccurredError error: WLPhotoError)
 }
 
 class AssetPickerController: UIViewController {
@@ -30,7 +29,7 @@ class AssetPickerController: UIViewController {
     
     // 是否显示相机
     private var showsCameraItem: Bool {
-        config.captureConfig.showsCameraItem && (assetFetchTool.albumModel?.isCameraRollAlbum ?? false)
+        config.pickerConfig.showsCameraItem && (assetFetchTool.albumModel?.isCameraRollAlbum ?? false)
     }
     
     // 相机的indexPath
@@ -225,16 +224,14 @@ class AssetPickerController: UIViewController {
     
     private func requestSelectedAssets(assets: [AssetModel]) {
         LoadingHUD.shared.showLoading()
-        assetFetchTool.requestAssets(assets: assets) { progress in
-            // TODO: progress hud
-        } completionHandle: { [weak self] result in
+        assetFetchTool.requestAssets(assets: assets) { [weak self] result in
             guard let self = self else { return }
             LoadingHUD.shared.hideLoading()
             switch result {
             case .success(let assets):
                 self.delegate?.pickerController(self, didSelectResult: assets)
             case .failure(let error):
-                self.delegate?.pickerController(self, didOccurredError: .fetchError(error))
+                self.showErrorAlert(error.localizedDescription)
             }
         }
     }
@@ -256,19 +253,28 @@ class AssetPickerController: UIViewController {
     }
     
     private func openCaptureController() {
-        if config.captureConfig.useSystemImagePickerController {
-            if !UIImagePickerController.isSourceTypeAvailable(.camera) {
-                return
-            }
+        var captureMaximumVideoDuration = config.captureConfig.captureMaximumVideoDuration
+        if config.pickerConfig.pickerMaximumVideoDuration > 0,
+           captureMaximumVideoDuration > config.pickerConfig.pickerMaximumVideoDuration {
+            captureMaximumVideoDuration = config.pickerConfig.pickerMaximumVideoDuration
+        }
+        
+        if config.pickerConfig.useSystemImagePickerController {
+            if !UIImagePickerController.isSourceTypeAvailable(.camera) { return }
             let vc = UIImagePickerController()
             vc.delegate = self
             vc.sourceType = .camera
-            vc.videoMaximumDuration = config.captureConfig.captureMaximumVideoDuration
-            vc.mediaTypes = config.captureConfig.imagePickerControllerMediaTypes
+            vc.videoMaximumDuration = captureMaximumVideoDuration
+            vc.mediaTypes = config.pickerConfig.imagePickerControllerMediaTypes
             vc.cameraFlashMode = config.captureConfig.captureFlashMode.cameraFlashMode
+            vc.videoQuality = .typeHigh
             present(vc, animated: true, completion: nil)
         } else {
-            let vc = CaptureViewController(config: config)
+            config.captureConfig.captureMaximumVideoDuration = captureMaximumVideoDuration
+            config.captureConfig.allowTakingPhoto = config.pickerConfig.allowTakingPhoto
+            config.captureConfig.allowTakingVideo = config.pickerConfig.allowTakingVideo
+            let vc = CaptureViewController(captureConfig: config.captureConfig,
+                                           photoEditConfig: config.pickerConfig.allowEditPhoto ? config.photoEditConfig : nil)
             vc.delegate = self
             present(vc, animated: true, completion: nil)
         }

@@ -8,9 +8,8 @@
 import UIKit
 
 public enum CaptureError {
-    case simulator
     case failedToInitializeCameraDevice
-    case failedToInitializeAudioDevice
+    case failedToInitializeMicrophoneDevice
     case underlying(Error)
 }
 
@@ -18,12 +17,10 @@ extension CaptureError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {
-        case .simulator:
-            return "模拟器不支持拍摄"
         case .failedToInitializeCameraDevice:
-            return "设备初始化失败"
-        case .failedToInitializeAudioDevice:
-            return "设备初始化失败"
+            return "相机初始化失败"
+        case .failedToInitializeMicrophoneDevice:
+            return "麦克风初始化失败"
         case .underlying(let error):
             return error.localizedDescription
         }

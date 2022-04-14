@@ -40,17 +40,11 @@ class CaptureControlView: UIView {
     
     private var videoTimer: Timer?
     private var videoRecordTime: Double = 0
-    private var maximumVideoDuration: TimeInterval {
-        if pickerConfig.pickerConfig.pickerMaximumVideoDuration == 0 {
-            return pickerConfig.captureConfig.captureMaximumVideoDuration
-        }
-        return min(pickerConfig.pickerConfig.pickerMaximumVideoDuration, pickerConfig.captureConfig.captureMaximumVideoDuration)
-    }
     
-    private let pickerConfig: WLPhotoConfig
+    private let captureConfig: CaptureConfig
     
-    public init(pickerConfig: WLPhotoConfig) {
-        self.pickerConfig = pickerConfig
+    public init(captureConfig: CaptureConfig) {
+        self.captureConfig = captureConfig
         super.init(frame: .zero)
         
         setupView()
@@ -68,11 +62,11 @@ class CaptureControlView: UIView {
         }
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapGesture))
-        tapGesture.isEnabled = pickerConfig.captureConfig.captureAllowTakingPhoto
+        tapGesture.isEnabled = captureConfig.allowTakingPhoto
         cameraButton.addGestureRecognizer(tapGesture)
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(longPressGesture(_:)))
-        longPressGesture.isEnabled = pickerConfig.captureConfig.captureAllowTakingVideo
+        longPressGesture.isEnabled = captureConfig.allowTakingVideo
         longPressGesture.minimumPressDuration = 0.2
         cameraButton.addGestureRecognizer(longPressGesture)
         addSubview(cameraButton)
@@ -83,10 +77,10 @@ class CaptureControlView: UIView {
         
         tipLabel.isHidden = true
         var text = ""
-        if pickerConfig.captureConfig.captureAllowTakingPhoto {
+        if captureConfig.allowTakingPhoto {
             text.append("轻触拍照")
         }
-        if pickerConfig.captureConfig.captureAllowTakingVideo{
+        if captureConfig.allowTakingVideo{
             if text.count > 0 {
                 text.append(",")
             }
@@ -233,7 +227,7 @@ class CaptureControlView: UIView {
     
     @objc private func timeRecord() {
         videoRecordTime += 0.1
-        let progress = videoRecordTime / maximumVideoDuration
+        let progress = videoRecordTime / captureConfig.captureMaximumVideoDuration
         if progress > 1 {
             longPressEnd()
         } else {

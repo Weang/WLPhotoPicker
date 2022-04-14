@@ -27,4 +27,23 @@ extension AssetSaveManager {
         }
     }
     
+    static func savePhoto(photoURL: URL, success: AssetSaveSuccess? = nil, failure: AssetSaveFailure? = nil) {
+        var localIdentifier: String = ""
+        let changes = {
+            guard let request = PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: photoURL) else {
+                failure?()
+                return
+            }
+            localIdentifier = request.placeholderForCreatedAsset?.localIdentifier ?? ""
+        }
+        PHPhotoLibrary.shared().performChanges(changes) { _, _ in
+            DispatchQueue.main.async {
+                if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
+                    success?(asset)
+                } else {
+                    failure?()
+                }
+            }
+        }
+    }
 }

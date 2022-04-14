@@ -13,21 +13,28 @@ public protocol CaptureViewControllerDelegate: AnyObject {
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingVideo videoUrl: URL)
 }
 
+public extension CaptureViewControllerDelegate {
+    func captureViewController(_ viewController: CaptureViewController, didFinishTakingPhoto photo: UIImage) { }
+    func captureViewController(_ viewController: CaptureViewController, didFinishTakingVideo videoUrl: URL) { }
+}
+
 public class CaptureViewController: UIViewController {
     
     private var captureManager: CaptureManager!
     private let controlView: CaptureControlView
-    private let config: WLPhotoConfig
+    private let captureConfig: CaptureConfig
+    private let photoEditConfig: PhotoEditConfig?
     
-    weak var delegate: CaptureViewControllerDelegate?
+    public weak var delegate: CaptureViewControllerDelegate?
     
-    public init(config: WLPhotoConfig) {
-        self.config = config
-        self.controlView = CaptureControlView(pickerConfig: config)
+    public init(captureConfig: CaptureConfig, photoEditConfig: PhotoEditConfig? = nil) {
+        self.captureConfig = captureConfig
+        self.photoEditConfig = photoEditConfig
+        self.controlView = CaptureControlView(captureConfig: captureConfig)
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
         modalPresentationCapturesStatusBarAppearance = true
-        captureManager = CaptureManager(pickerConfig: config, delegate: self)
+        captureManager = CaptureManager(captureConfig: captureConfig, delegate: self)
     }
     
     required init?(coder: NSCoder) {
@@ -100,8 +107,8 @@ extension CaptureViewController: CaptureManagerDelegate {
     }
     
     public func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage?) {
-        if config.pickerConfig.allowEditPhoto {
-            let editVC = PhotoEditViewController(photo: photo, photoEditConfig: config.photoEditConfig)
+        if let photoEditConfig = self.photoEditConfig {
+            let editVC = PhotoEditViewController(photo: photo, photoEditConfig: photoEditConfig)
             editVC.delegate = self
             present(editVC, animated: false, completion: nil)
         } else {

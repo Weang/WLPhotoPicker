@@ -41,7 +41,7 @@ extension AssetFetchTool {
                     $0.isEnabled = false
                 }
             }
-            fetchSelectedAsset(asset: asset, delegateEvent: delegateEvent)
+            fetchSelectedAsset(asset: asset)
         }
         if delegateEvent {
             delegateEventsWith(asset: asset)
@@ -81,22 +81,16 @@ extension AssetFetchTool {
         }
     }
     
-    func fetchSelectedAsset(asset: AssetModel, delegateEvent: Bool) {
+    func fetchSelectedAsset(asset: AssetModel) {
         let options = AssetFetchOptions()
         options.imageDeliveryMode = .highQualityFormat
         options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
         
-        let request = AssetFetchTool.requestPhoto(for: asset.asset, options: options) { [weak self] result, _ in
+        let request = AssetFetchTool.requestPhoto(for: asset.asset, options: options) { result, _ in
             guard case .success(let response) = result else {
                 return
             }
             asset.previewImage = response.photo
-            guard let self = self, delegateEvent else {
-                return
-            }
-            self.delegates.forEach {
-                $0.value?.assetFetchTool(self, finishFetchSelectedAsset: asset)
-            }
         }
         selectedAssetRequest[asset.localIdentifier] = request
     }

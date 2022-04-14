@@ -30,10 +30,10 @@ public extension WLPhotoConfig {
     // 检测配置项
     func checkCongfig() -> WLPhotoConfig {
         if !pickerConfig.selectableType.contains(.photo) {
-            captureConfig.captureAllowTakingPhoto = false
+            pickerConfig.allowTakingPhoto = false
         }
         if !pickerConfig.selectableType.contains(.video) {
-            captureConfig.captureAllowTakingVideo = false
+            pickerConfig.allowTakingVideo = false
         }
         return self
     }

@@ -67,11 +67,4 @@ extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
         pickerController.dismiss(animated: true, completion: nil)
     }
     
-    func pickerController(_ pickerController: WLPhotoPickerController, didOccurredError error: WLPhotoError) {
-        let alert = UIAlertController.init(title: "错误", message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(.init(title: "确定", style: .cancel, handler: { _ in
-            
-        }))
-        pickerController.present(alert, animated: true, completion: nil)
-    }
 }

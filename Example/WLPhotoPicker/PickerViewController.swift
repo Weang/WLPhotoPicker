@@ -195,23 +195,23 @@ class PickerViewController: FormViewController {
         
         <<< SwitchRow() { row in
             row.title = "是否使用系统相机进行拍摄"
-            row.value = self.config.captureConfig.useSystemImagePickerController
+            row.value = self.config.pickerConfig.useSystemImagePickerController
         }.onChange { row in
-            self.config.captureConfig.useSystemImagePickerController = row.value ?? false
+            self.config.pickerConfig.useSystemImagePickerController = row.value ?? false
         }
         
         <<< SwitchRow() { row in
             row.title = "是否允许拍摄照片"
-            row.value = self.config.captureConfig.captureAllowTakingPhoto
+            row.value = self.config.pickerConfig.allowTakingPhoto
         }.onChange { row in
-            self.config.captureConfig.captureAllowTakingPhoto = row.value ?? false
+            self.config.pickerConfig.allowTakingPhoto = row.value ?? false
         }
         
         <<< SwitchRow() { row in
             row.title = "是否允许拍摄视频"
-            row.value = self.config.captureConfig.captureAllowTakingVideo
+            row.value = self.config.pickerConfig.allowTakingVideo
         }.onChange { row in
-            self.config.captureConfig.captureAllowTakingVideo = row.value ?? false
+            self.config.pickerConfig.allowTakingVideo = row.value ?? false
         }
         
     }
@@ -235,11 +235,4 @@ extension PickerViewController: WLPhotoPickerControllerDelegate {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    func pickerController(_ pickerController: WLPhotoPickerController, didOccurredError error: WLPhotoError) {
-        let alert = UIAlertController.init(title: "错误", message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(.init(title: "确定", style: .cancel, handler: { _ in
-            
-        }))
-        pickerController.present(alert, animated: true, completion: nil)
-    }
 }

@@ -9,6 +9,8 @@ import UIKit
 
 class AssetDisplayHelper {
     
+    // 返回适合于预览、编辑页面的imageView位置
+    // 宽度是屏幕宽度，如果超过屏幕长会上下滚动
     static func imageViewRectFrom(imageSize: CGSize, mediaType: AssetMediaType) -> CGRect {
         let viewWidth = UIScreen.width
         let viewHeight = UIScreen.height

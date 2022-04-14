@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MobileCoreServices
 
 // Config for picker.
 public class PickerConfig {
@@ -86,6 +87,12 @@ public class PickerConfig {
     // 导出图片保存到本地时的jpg压缩参数
     public var jpgCompressionQuality: Double = 0.8
     
+    // 点击确定是否自动关闭
+    public var dismissPickerAfterDone: Bool = true
+    
+    // 点击选择照片后是否保存编辑后的照片
+    public var saveEditedPhotoToAlbum: Bool = true
+    
     // 选取照片时是否同时存储到本地
     // 如果为true，选择照片代理中AssetPickerResult的filePath会返回存储的路径
     public var exportImageURLWhenPick: Bool = false
@@ -106,11 +113,16 @@ public class PickerConfig {
     // 视频导出格式
     public var videoExportFileType: PickerVideoExportFileType = .mp4
     
-    // 点击确定是否自动关闭
-    public var dismissPickerAfterDone: Bool = true
+    // 是否允许拍摄照片
+    public var allowTakingPhoto: Bool = true
     
-    // 点击选择照片后是否保存编辑后的照片
-    public var saveEditedPhotoToAlbum: Bool = true
+    // 是否允许拍摄视频
+    public var allowTakingVideo: Bool = true
+    
+    // 是否使用系统UIImagePickerController拍摄
+    // 如果使用系统相机进行拍摄，下面的参数将会失效
+    public var useSystemImagePickerController: Bool = false
+    
 }
 
 extension PickerConfig {
@@ -125,4 +137,18 @@ extension PickerConfig {
         return CGSize(width: itemWidth, height: itemWidth)
     }
     
+    var showsCameraItem: Bool {
+        allowTakingPhoto || allowTakingVideo
+    }
+    
+    var imagePickerControllerMediaTypes: [String] {
+        var mediaTypes: [String] = []
+        if allowTakingPhoto {
+            mediaTypes.append(kUTTypeImage as String)
+        }
+        if allowTakingVideo {
+            mediaTypes.append(kUTTypeMovie as String)
+        }
+        return mediaTypes
+    }
 }

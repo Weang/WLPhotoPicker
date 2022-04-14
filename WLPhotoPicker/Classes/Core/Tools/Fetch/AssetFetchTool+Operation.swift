@@ -322,7 +322,6 @@ extension AssetFetchOperation {
     
     func compressExportVideo(_ response: VideoFetchResponse, options: AssetFetchOptions) {
         let videoOutputPath = FileHelper.createVideoPathFrom(asset: assetModel, videoFileType: config.pickerConfig.videoExportFileType)
-        
         let manager = VideoCompressManager(avAsset: response.avasset, outputPath: videoOutputPath)
         manager.compressVideo = !(isOriginal && config.pickerConfig.allowVideoSelectOriginal)
         manager.compressSize = config.pickerConfig.videoExportCompressSize

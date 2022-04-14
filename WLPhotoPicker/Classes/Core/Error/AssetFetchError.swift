@@ -28,15 +28,24 @@ extension AssetFetchError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {
-        case .invalidInfo: return "无法加载资源文件"
-        case .canceled: return "已取消"
-        case .failedToFetchPhoto: return "无法加载图片资源"
-        case .failedToFetchGIF: return "无法加载图片资源"
-        case .failedToFetchLivePhoto: return "无法加载实况照片资源"
-        case .failedToFetchVideo: return "无法加载视频资源"
-        case .failedToExportPhoto: return "无法导出选择的照片"
-        case .failedToExportVideo: return "无法导出选择的视频"
-        case .underlying(let error): return error.localizedDescription
+        case .invalidInfo:
+            return "无法加载资源文件"
+        case .canceled:
+            return "已取消"
+        case .failedToFetchPhoto:
+            return "无法加载图片资源"
+        case .failedToFetchGIF:
+            return "无法加载图片资源"
+        case .failedToFetchLivePhoto:
+            return "无法加载实况照片资源"
+        case .failedToFetchVideo:
+            return "无法加载视频资源"
+        case .failedToExportPhoto:
+            return "无法导出选择的照片"
+        case .failedToExportVideo:
+            return "无法导出选择的视频"
+        case .underlying(let error):
+            return error.localizedDescription
         }
     }
     

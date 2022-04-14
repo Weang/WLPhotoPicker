@@ -17,8 +17,9 @@ class ViewController: FormViewController {
         
         self.navigationItem.title = "WLPhotoPicker"
         
-        form +++ Section()
+        form
         
+        +++ Section("Picker")
         <<< LabelRow() { row in
             row.title = "选择图片"
         }.cellSetup { cell, row in
@@ -27,12 +28,23 @@ class ViewController: FormViewController {
             self.navigationController?.pushViewController(PickerViewController(), animated: true)
         }
         
-//        <<< LabelRow() { row in
-//            row.title = "视频压缩"
-//        }.cellSetup { cell, row in
-//            cell.accessoryType = .disclosureIndicator
-//        }
+        <<< LabelRow() { row in
+            row.title = "视频压缩"
+        }.cellSetup { cell, row in
+            cell.accessoryType = .disclosureIndicator
+        }
         
+        
+        +++ Section("Capture")
+        <<< LabelRow() { row in
+            row.title = "自定义相机"
+        }.cellSetup { cell, row in
+            cell.accessoryType = .disclosureIndicator
+        }.onCellSelection { _, _ in
+            self.navigationController?.pushViewController(CaptureDemoViewController(), animated: true)
+        }
+        
+        +++ Section("Live Photo")
         <<< LabelRow() { row in
             row.title = "视频转实况"
         }.cellSetup { cell, row in

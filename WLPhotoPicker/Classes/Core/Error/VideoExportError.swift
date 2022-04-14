@@ -8,9 +8,22 @@
 import UIKit
 
 public enum VideoCompressError: Error {
-    case failedToLoadAssetTrack
-    case failedToCreateCompositionTrack
-    case failedToReadAsset
-    case failedToCreateAssetWriter
+    case failedToLoadAsset
+    case failedToWriteAsset
     case underlying(Error)
+}
+
+extension VideoCompressError: LocalizedError {
+    
+    public var errorDescription: String? {
+        switch self {
+        case .failedToLoadAsset:
+            return "读取视频文件失败"
+        case .failedToWriteAsset:
+            return "写入视频文件失败"
+        case .underlying(let error):
+            return error.localizedDescription
+        }
+    }
+    
 }

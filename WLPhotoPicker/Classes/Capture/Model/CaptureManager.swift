@@ -47,10 +47,10 @@ public class CaptureManager: NSObject {
     private var currentOrientation: CaptureOrientation = .up
     private let orientationManager = CaptureOrientationManager()
     
-    private let pickerConfig: WLPhotoConfig
+    private let captureConfig: CaptureConfig
     
-    public init(pickerConfig: WLPhotoConfig, delegate: CaptureManagerDelegate?) {
-        self.pickerConfig = pickerConfig
+    public init(captureConfig: CaptureConfig, delegate: CaptureManagerDelegate?) {
+        self.captureConfig = captureConfig
         self.delegate = delegate
         super.init()
         
@@ -66,13 +66,9 @@ public class CaptureManager: NSObject {
     }
     
     private func setupCapture() {
-        if TARGET_IPHONE_SIMULATOR == 1 && TARGET_OS_IPHONE == 1 {
-            delegate?.captureManager(self, didOccurredError: .simulator)
-            return
-        }
         captureSession.beginConfiguration()
         
-        let sessionPreset = pickerConfig.captureConfig.captureSessionPreset.avSessionPreset
+        let sessionPreset = captureConfig.captureSessionPreset.avSessionPreset
         if (captureSession.canSetSessionPreset(sessionPreset)) {
             captureSession.sessionPreset = sessionPreset
         } else {
@@ -81,7 +77,7 @@ public class CaptureManager: NSObject {
         
         setupDataOutput()
         setupCameraDevice(position: .back)
-        setupAudioDevice()
+        setupMicrophoneDevice()
         
         captureSession.commitConfiguration()
     }
@@ -106,9 +102,9 @@ public class CaptureManager: NSObject {
                                                                  mediaType: .video,
                                                                  position: position).devices.first,
               let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice) else {
-                  delegate?.captureManager(self, didOccurredError: .failedToInitializeCameraDevice)
-                  return
-              }
+            delegate?.captureManager(self, didOccurredError: .failedToInitializeCameraDevice)
+            return
+        }
         self.videoDeviceInput = videoDeviceInput
         
         if captureSession.canAddInput(videoDeviceInput) {
@@ -122,15 +118,15 @@ public class CaptureManager: NSObject {
             videoDevice.isSmoothAutoFocusEnabled = true
         }
         
-        if let availableActiveFormat = videoDevice.availableActiveFormat(for: pickerConfig) {
+        if let availableActiveFormat = videoDevice.availableActiveFormat(for: captureConfig) {
             videoDevice.activeFormat = availableActiveFormat
-            let frameDuration = CMTime(value: 1, timescale: CMTimeScale(pickerConfig.captureConfig.captureVideoFrameRate))
+            let frameDuration = CMTime(value: 1, timescale: CMTimeScale(captureConfig.captureVideoFrameRate))
             videoDevice.activeVideoMinFrameDuration = frameDuration
             videoDevice.activeVideoMaxFrameDuration = frameDuration
         }
         
         if let connection = movieFileOutput.connection(with: .video) {
-            let stabilizationMode = pickerConfig.captureConfig.captureVideoStabilizationMode.avPreferredVideoStabilizationMode
+            let stabilizationMode = captureConfig.captureVideoStabilizationMode.avPreferredVideoStabilizationMode
             connection.preferredVideoStabilizationMode = stabilizationMode
             if connection.isVideoMirroringSupported {
                 connection.isVideoMirrored = position == .front
@@ -146,14 +142,14 @@ public class CaptureManager: NSObject {
         videoDevice.unlockForConfiguration()
     }
     
-    private func setupAudioDevice() {
+    private func setupMicrophoneDevice() {
         guard let audioDevice = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInMicrophone],
                                                                  mediaType: .audio,
                                                                  position: .unspecified).devices.first,
               let audioDeviceInput = try? AVCaptureDeviceInput(device: audioDevice) else {
-                  delegate?.captureManager(self, didOccurredError: .failedToInitializeAudioDevice)
-                  return
-              }
+            delegate?.captureManager(self, didOccurredError: .failedToInitializeMicrophoneDevice)
+            return
+        }
         self.audioDeviceInput = audioDeviceInput
         if captureSession.canAddInput(audioDeviceInput) {
             captureSession.addInput(audioDeviceInput)
@@ -198,13 +194,13 @@ public extension CaptureManager {
     
     func capturePhoto() {
         let settings = AVCapturePhotoSettings()
-        settings.flashMode = pickerConfig.captureConfig.captureFlashMode.avFlashMode
+        settings.flashMode = captureConfig.captureFlashMode.avFlashMode
         settings.isAutoStillImageStabilizationEnabled = photoOutput.isStillImageStabilizationSupported
         photoOutput.capturePhoto(with: settings, delegate: self)
     }
     
     func startRecordingVideo() {
-        let videoPath = FileHelper.createCaptureVideoPath(fileType: pickerConfig.captureConfig.captureFileType)
+        let videoPath = FileHelper.createCaptureVideoPath(fileType: captureConfig.captureFileType)
         let fileUrl = URL(fileURLWithPath: videoPath)
         let connection = movieFileOutput.connection(with: .video)
         connection?.videoOrientation = currentOrientation.captureVideoOrientation
@@ -295,8 +291,8 @@ extension CaptureManager: AVCapturePhotoCaptureDelegate {
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard let photoData = photo.fileDataRepresentation(),
               let photo = ImageGenerator.createImage(photoData)?.rotate(orientation: currentOrientation.imageOrientation) else {
-                  return
-              }
+            return
+        }
         delegate?.captureManager(self, finishTakingPhoto: photo)
     }
     

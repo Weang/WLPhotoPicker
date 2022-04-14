@@ -17,7 +17,7 @@ public class VideoCompressManager {
     // 视频导出格式
     public var videoExportFileType: PickerVideoExportFileType = .mp4
     
-    // 视频压缩帧率
+    // 视频压缩帧率，如果原视频帧率比导出帧率低，会使用视频原帧率
     public var frameDuration: Float = 30 {
         didSet {
             updateComposition()
@@ -52,16 +52,13 @@ public class VideoCompressManager {
     }
     
     private func setupTracks() {
-        guard let assetVideoTrack = avAsset.tracks(withMediaType: .video).first,
-              let assetAudioTrack = avAsset.tracks(withMediaType: .audio).first else {
-            error = .failedToLoadAssetTrack
-            return
-        }
-        
         let id = kCMPersistentTrackID_Invalid
-        guard let videoCompositionTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: id),
+        
+        guard let assetVideoTrack = avAsset.tracks(withMediaType: .video).first,
+              let assetAudioTrack = avAsset.tracks(withMediaType: .audio).first,
+              let videoCompositionTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: id),
               let audioCompositionTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: id) else {
-            error = .failedToCreateCompositionTrack
+            error = .failedToLoadAsset
             return
         }
         
@@ -140,12 +137,12 @@ public class VideoCompressManager {
     
     public func exportVideo(progress: ((Double) -> Void)? = nil, completion: @escaping ((URL) -> Void)) {
         guard let assetReader = try? AVAssetReader(asset: composition) else {
-            error = .failedToReadAsset
+            error = .failedToLoadAsset
             return
         }
         
         guard let assetWriter = try? AVAssetWriter(outputURL: URL(fileURLWithPath: outputPath), fileType: videoExportFileType.avFileType) else {
-            error = .failedToCreateAssetWriter
+            error = .failedToWriteAsset
             return
         }
         
@@ -207,7 +204,7 @@ public class VideoCompressManager {
                 assetWriterAudioInput.append(sampleBuffer)
             }
         }
-        
+        let outputPath = self.outputPath
         dispatchGroup.notify(queue: DispatchQueue.main) { [weak self] in
             if let error = assetReader.error {
                 self?.error = .underlying(error)
@@ -217,11 +214,8 @@ public class VideoCompressManager {
             }
             assetReader.cancelReading()
             assetWriter.finishWriting {
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else {
-                        return
-                    }
-                    completion(URL(fileURLWithPath: self.outputPath))
+                DispatchQueue.main.async {
+                    completion(URL(fileURLWithPath: outputPath))
                 }
             }
         }
