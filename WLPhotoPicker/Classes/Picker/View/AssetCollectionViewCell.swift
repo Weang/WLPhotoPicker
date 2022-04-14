@@ -77,10 +77,9 @@ class AssetCollectionViewCell: UICollectionViewCell {
             let targetSize = pickerConfig.photoCollectionViewItemSize.width * UIScreen.main.scale
             options.sizeOption = .specify(targetSize)
             assetRequest = AssetFetchTool.requestPhoto(for: model.asset, options: options, completion: { [weak self] result, requestId in
-                if case .success(let respose) = result {
-                    if respose.isDegraded || (self?.assetRequest?.requestIdIs(requestId) ?? false) {
-                        self?.assetImageView.image = respose.photo
-                    }
+                guard case .success(let response) = result else { return }
+                if response.isDegraded || (self?.assetRequest?.requestIdIs(requestId) ?? false) {
+                    self?.assetImageView.image = response.photo
                 }
             })
         }

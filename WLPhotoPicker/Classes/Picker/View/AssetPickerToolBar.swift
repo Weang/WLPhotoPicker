@@ -87,7 +87,7 @@ class AssetPickerToolBar: UIView {
             originButton.tintColor = WLPhotoUIConfig.default.color.primaryColor
             originButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: -6)
             originButton.setTitleColor(WLPhotoUIConfig.default.color.textColor, for: .normal)
-            originButton.setTitle("原图", for: .normal)
+            originButton.setTitle(BundleHelper.localizedString(.OriginalImage), for: .normal)
             originButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
             originButton.addTarget(self, action: #selector(originButtonClick), for: .touchUpInside)
             contentView.addArrangedSubview(originButton)
@@ -100,7 +100,7 @@ class AssetPickerToolBar: UIView {
             doneButton.layer.cornerRadius = 4
             doneButton.layer.masksToBounds = true
             doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoUIConfig.default.color.primaryColor), for: .normal)
-            doneButton.setTitle("完成", for: .normal)
+            doneButton.setTitle(BundleHelper.localizedString(.Done), for: .normal)
             doneButton.setTitleColor(.white, for: .normal)
             doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
             doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)

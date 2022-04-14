@@ -78,7 +78,7 @@ class PhotoEditTextViewController: UIViewController {
         
         cancelButton.addTarget(self, action: #selector(cancelButtonClick), for: .touchUpInside)
         cancelButton.setTitleColor(.white, for: .normal)
-        cancelButton.setTitle("取消", for: .normal)
+        cancelButton.setTitle(BundleHelper.localizedString(.Cancel), for: .normal)
         view.addSubview(cancelButton)
         cancelButton.snp.makeConstraints { make in
             make.centerY.equalTo(keyWindowSafeAreaInsets.top + 30)
@@ -87,7 +87,7 @@ class PhotoEditTextViewController: UIViewController {
         
         doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)
         doneButton.setTitleColor(.white, for: .normal)
-        doneButton.setTitle("确定", for: .normal)
+        doneButton.setTitle(BundleHelper.localizedString(.Confirm), for: .normal)
         view.addSubview(doneButton)
         doneButton.snp.makeConstraints { make in
             make.centerY.equalTo(cancelButton.snp.centerY)

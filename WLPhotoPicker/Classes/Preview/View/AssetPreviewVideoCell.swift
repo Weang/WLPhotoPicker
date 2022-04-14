@@ -105,11 +105,10 @@ class AssetPreviewVideoCell: AssetPreviewCell {
         
         assetRequest = AssetFetchTool.requestAVAsset(for: model.asset, options: options) { [weak self] result, _ in
             self?.setICloudProgress(1)
-            if case .success(let response) = result {
-                self?.isVideoFinishLoading = true
-                self?.isVideoFetching = false
-                self?.setupPlayer(playerItem: response.playerItem)
-            }
+            guard case .success(let response) = result else { return }
+            self?.isVideoFinishLoading = true
+            self?.isVideoFetching = false
+            self?.setupPlayer(playerItem: response.playerItem)
         }
     }
     

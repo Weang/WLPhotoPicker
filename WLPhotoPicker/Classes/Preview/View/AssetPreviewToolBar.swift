@@ -92,7 +92,7 @@ class AssetPreviewToolBar: UIView {
         
         if pickerConfig.allowEditPhoto {
             editButton.setTitleColor(WLPhotoUIConfig.default.color.textColor, for: .normal)
-            editButton.setTitle("编辑", for: .normal)
+            editButton.setTitle(BundleHelper.localizedString(.Edit), for: .normal)
             editButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
             editButton.addTarget(self, action: #selector(editButtonClick), for: .touchUpInside)
             toolBarContentView.addArrangedSubview(editButton)
@@ -104,7 +104,7 @@ class AssetPreviewToolBar: UIView {
             originButton.setImage(BundleHelper.imageNamed("select_fill")?.withRenderingMode(.alwaysTemplate), for: .selected)
             originButton.tintColor = WLPhotoUIConfig.default.color.primaryColor
             originButton.setTitleColor(WLPhotoUIConfig.default.color.textColor, for: .normal)
-            originButton.setTitle("原图", for: .normal)
+            originButton.setTitle(BundleHelper.localizedString(.OriginalImage), for: .normal)
             originButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
             originButton.addTarget(self, action: #selector(originButtonClick), for: .touchUpInside)
             toolBarContentView.addArrangedSubview(originButton)
@@ -115,7 +115,7 @@ class AssetPreviewToolBar: UIView {
         doneButton.layer.cornerRadius = 4
         doneButton.layer.masksToBounds = true
         doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoUIConfig.default.color.primaryColor), for: .normal)
-        doneButton.setTitle("完成", for: .normal)
+        doneButton.setTitle(BundleHelper.localizedString(.Done), for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)

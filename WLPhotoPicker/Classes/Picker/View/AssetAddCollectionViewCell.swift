@@ -29,7 +29,7 @@ class AssetAddCollectionViewCell: UICollectionViewCell {
         tipLabel.numberOfLines = 0
         tipLabel.font = UIFont.systemFont(ofSize: 14)
         tipLabel.textColor = WLPhotoUIConfig.default.color.functionItemForegroundColor
-        tipLabel.text = "添加更多\n可访问照片"
+        tipLabel.text = BundleHelper.localizedString(.AddMore)
         contentView.addSubview(tipLabel)
         tipLabel.snp.makeConstraints { make in
             make.top.equalTo(addIconView.snp.bottom).offset(8)

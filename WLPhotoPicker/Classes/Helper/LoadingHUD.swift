@@ -82,7 +82,7 @@ fileprivate class LoadingHUDView: UIView {
             make.center.equalTo(progressView.snp.center)
         }
         
-        tipLabel.text = "正在处理中"
+        tipLabel.text = BundleHelper.localizedString(.Processing)
         tipLabel.textColor = .white
         tipLabel.font = UIFont.systemFont(ofSize: 16)
         contentView.contentView.addSubview(tipLabel)

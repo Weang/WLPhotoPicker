@@ -33,7 +33,6 @@ class PhotoEditAdjustCollectionViewCell: UICollectionViewCell {
         
         nameLabel.font = UIFont.systemFont(ofSize: 12)
         nameLabel.textColor = .white
-        nameLabel.text = "亮度"
         contentView.addSubview(nameLabel)
         nameLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

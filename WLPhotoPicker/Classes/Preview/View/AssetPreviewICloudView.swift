@@ -14,7 +14,7 @@ class AssetPreviewICloudView: UIView {
     
     var progress: Double = 0 {
         didSet {
-            var text = "iCloud同步中"
+            var text = BundleHelper.localizedString(.ICloudLoading)
             if progress > 0 {
                 text += String(format: "%d%%", Int(progress * 100))
             }

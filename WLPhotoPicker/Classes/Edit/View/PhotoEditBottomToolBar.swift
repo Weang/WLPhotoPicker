@@ -90,7 +90,7 @@ class PhotoEditBottomToolBar: UIView {
         doneButton.layer.masksToBounds = true
         doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)
         doneButton.setBackgroundImage(UIImage.imageWithColor(WLPhotoUIConfig.default.color.primaryColor), for: .normal)
-        doneButton.setTitle("确定", for: .normal)
+        doneButton.setTitle(BundleHelper.localizedString(.Confirm), for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         contentView.addSubview(doneButton)

@@ -1,0 +1,47 @@
+//
+//  Localizable.strings
+//  WLPhotoPicker
+//
+//  Created by Mr.Wang on 2022/4/14.
+//
+
+// Public
+"Cancel" = "Cancel";
+"Confirm" = "Confirm";
+"Done" = "Done";
+"Processing" = "Processing";
+"Alert" = "Alert";
+"OriginalImage" = "Original Image";
+"Edit" = "Edit";
+"ICloudLoading" = "iCloud syncing";
+"LivePhoto" = "Live";
+
+//Picker
+"CountLimitedTip" = "You can only select at most %d photos";
+"AddMore" = "Add More\nPhotos";
+"UnableToAccessAlbum" = "Unable to access photos in album";
+"AlbumPermissionDeniedAlert" = "You have disabled %@ photos access permission, it is recommended to allow access to \"all photos\"";
+"AlbumPermissionLimitedAlert" = "You have set %@ to only access some photos in the album, it is recommended to allow access to \"all photos\"";
+"GoSetting" = "Settings";
+
+// Edit
+"DragHereToDelete" = "DragHereToDelete";
+"RemoveToDelete" = "Remove finger to delete";
+
+// Capture
+"TapToTakePhoto" = "Tap to take photo";
+"HoldOnToTakeVideo" = "Hold OnToTakeVideo";
+
+// Error
+"InvalidInfo" = "Unable to load resource file";
+"Canceled" = "Canceled";
+"FailedToFetchPhoto" = "Failed to load image resource";
+"FailedToFetchGIF" = "Failed to load image resource";
+"FailedToFetchLivePhoto" = "Failed to load Live Photo asset";
+"FailedToFetchVideo" = "Failed to load video resource";
+"FailedToExportPhoto" = "Failed to export selected photo";
+"FailedToExportVideo" = "Failed to export selected video";
+"FailedToInitializeCameraDevice" = "Camera initialization failed";
+"FailedToInitializeMicrophoneDevice" = "Failed to initialize microphone";
+"FailedToLoadAsset" = "Failed to load video file";
+"FailedToWriteAsset" = "Failed to write video file";

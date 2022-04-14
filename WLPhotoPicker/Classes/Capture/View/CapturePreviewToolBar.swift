@@ -40,7 +40,7 @@ class CapturePreviewToolBar: UIView {
             make.bottom.equalTo(-keyWindowSafeAreaInsets.bottom)
         }
         
-        cancelButton.setTitle("取消", for: .normal)
+        cancelButton.setTitle(BundleHelper.localizedString(.Cancel), for: .normal)
         cancelButton.setTitleColor(.white, for: .normal)
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         cancelButton.addTarget(self, action: #selector(cancelButtonClick), for: .touchUpInside)
@@ -49,7 +49,7 @@ class CapturePreviewToolBar: UIView {
             make.width.equalTo(50)
         }
         
-        doneButton.setTitle("确定", for: .normal)
+        doneButton.setTitle(BundleHelper.localizedString(.Confirm), for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)

@@ -74,9 +74,8 @@ class AssetPreviewLivePhotoCell: AssetPreviewCell {
         
         assetRequest = AssetFetchTool.requestLivePhoto(for: model.asset, options: options, completion: { [weak self] result, _ in
             self?.activityIndicator.stopAnimating()
-            if case .success(let response) = result {
-                self?.livePhotoView.livePhoto = response.livePhoto
-            }
+            guard case .success(let response) = result else { return }
+            self?.livePhotoView.livePhoto = response.livePhoto
         })
     }
     

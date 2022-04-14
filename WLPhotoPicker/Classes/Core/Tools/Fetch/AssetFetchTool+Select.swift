@@ -87,9 +87,7 @@ extension AssetFetchTool {
         options.sizeOption = .specify(pickerConfig.maximumPreviewSize)
         
         let request = AssetFetchTool.requestPhoto(for: asset.asset, options: options) { result, _ in
-            guard case .success(let response) = result else {
-                return
-            }
+            guard case .success(let response) = result else { return }
             asset.previewImage = response.photo
         }
         selectedAssetRequest[asset.localIdentifier] = request

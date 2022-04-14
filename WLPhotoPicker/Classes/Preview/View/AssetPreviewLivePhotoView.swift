@@ -35,7 +35,7 @@ class AssetPreviewLivePhotoView: UIView {
         
         let tipLabel = UILabel()
         tipLabel.textColor = WLPhotoUIConfig.default.color.textColor
-        tipLabel.text = "实况"
+        tipLabel.text = BundleHelper.localizedString(.LivePhoto)
         tipLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 12, weight: .regular)
         addSubview(tipLabel)
         tipLabel.snp.makeConstraints { make in

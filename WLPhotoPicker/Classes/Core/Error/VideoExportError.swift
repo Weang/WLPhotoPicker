@@ -18,9 +18,9 @@ extension VideoCompressError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .failedToLoadAsset:
-            return "读取视频文件失败"
+            return BundleHelper.localizedString(.FailedToLoadAsset)
         case .failedToWriteAsset:
-            return "写入视频文件失败"
+            return BundleHelper.localizedString(.FailedToWriteAsset)
         case .underlying(let error):
             return error.localizedDescription
         }

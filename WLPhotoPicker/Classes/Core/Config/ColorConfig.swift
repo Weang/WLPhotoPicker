@@ -11,7 +11,7 @@ public class ColorConfig {
 
     private init() { }
     
-    static public let `default` = ColorConfig()
+    static let `default` = ColorConfig()
     
     var userInterfaceStyle: UserInterfaceStyle = .auto
     

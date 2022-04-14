@@ -96,7 +96,7 @@ class AssetPickerController: UIViewController {
     private func setupView() {
         let cancelButton = UIButton()
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        cancelButton.setTitle("取消", for: .normal)
+        cancelButton.setTitle(BundleHelper.localizedString(.Cancel), for: .normal)
         cancelButton.setTitleColor(WLPhotoUIConfig.default.color.textColor, for: .normal)
         cancelButton.addTarget(self, action: #selector(cancelButtonClick), for: .touchUpInside)
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: cancelButton)
@@ -281,8 +281,8 @@ class AssetPickerController: UIViewController {
     }
     
     private func showErrorAlert(_ message: String) {
-        let alert = UIAlertController.init(title: "提示", message: message, preferredStyle: .alert)
-        alert.addAction(.init(title: "确定", style: .cancel, handler: nil))
+        let alert = UIAlertController.init(title: BundleHelper.localizedString(.Alert), message: message, preferredStyle: .alert)
+        alert.addAction(.init(title: BundleHelper.localizedString(.Confirm), style: .cancel, handler: nil))
         var vc: UIViewController = self
         if let presentedViewController = self.presentedViewController {
             vc = presentedViewController
@@ -427,7 +427,7 @@ extension AssetPickerController: AssetFetchToolDelegate {
     }
     
     func assetFetchToolSelectUpToLimited(_ fetchTool: AssetFetchTool) {
-        showErrorAlert("你最多只能选择\(config.pickerConfig.selectCountLimit)张照片")
+        showErrorAlert(BundleHelper.localizedString(.CountLimitedTip, config.pickerConfig.selectCountLimit))
     }
     
 }

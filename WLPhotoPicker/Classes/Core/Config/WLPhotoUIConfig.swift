@@ -23,4 +23,11 @@ public class WLPhotoUIConfig {
             color.userInterfaceStyle = userInterfaceStyle
         }
     }
+    
+    // 语言
+    public var language: LanguageType = .automatic
+    
+    // 自定义显示文字
+    public var localizedText: [LocalizedKey: String] = [:]
+    
 }

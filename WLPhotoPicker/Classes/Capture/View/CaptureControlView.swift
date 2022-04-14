@@ -78,13 +78,13 @@ class CaptureControlView: UIView {
         tipLabel.isHidden = true
         var text = ""
         if captureConfig.allowTakingPhoto {
-            text.append("轻触拍照")
+            text.append(BundleHelper.localizedString(.TapToTakePhoto))
         }
         if captureConfig.allowTakingVideo{
             if text.count > 0 {
                 text.append(",")
             }
-            text.append("按住摄像")
+            text.append(BundleHelper.localizedString(.HoldOnToTakeVideo))
         }
         tipLabel.text = text
         tipLabel.font = UIFont.systemFont(ofSize: 13)

@@ -1,0 +1,47 @@
+//
+//  Localizable.strings
+//  WLPhotoPicker
+//
+//  Created by Mr.Wang on 2022/4/14.
+//
+
+// Public
+"Cancel" = "取消";
+"Confirm" = "確定";
+"Done" = "完成";
+"Processing" = "正在處理中";
+"Alert" = "提示";
+"OriginalImage" = "原圖";
+"Edit" = "編輯";
+"ICloudLoading" = "iCloud同步中";
+"LivePhoto" = "實況";
+
+//Picker
+"CountLimited" = "你最多只能選擇%d張照片";
+"AddMore" = "添加更多\n可訪問照片";
+"UnableToAccessAlbum" = "無法訪問相冊中照片";
+"AlbumPermissionDeniedAlert" = "您已關閉%@照片訪問權限，建議允許訪問「所有照片」";
+"GoSetting" = "前往系統設置";
+"AlbumPermissionLimitedAlert" = "你已設置%@只能訪問相冊部分照片，建議允許訪問「所有照片」";
+
+// Edit
+"DragHereToDelete" = "拖到這裏刪除";
+"RemoveToDelete" = "松開手指刪除";
+
+// Capture
+"TapToTakePhoto" = "輕觸拍照";
+"HoldOnToTakeVideo" = "按住攝像";
+
+// Error
+"InvalidInfo" = "無法加載資源文件";
+"Canceled" = "已取消";
+"FailedToFetchPhoto" = "無法加載圖片資源";
+"FailedToFetchGIF" = "無法加載圖片資源";
+"FailedToFetchLivePhoto" = "無法加載實況照片資源";
+"FailedToFetchVideo" = "無法加載視頻資源";
+"FailedToExportPhoto" = "無法導出選擇的照片";
+"FailedToExportVideo" = "無法導出選擇的視頻";
+"FailedToInitializeCameraDevice" = "相機初始化失敗";
+"FailedToInitializeMicrophoneDevice" = "麥克風初始化失敗";
+"FailedToLoadAsset" = "讀取視頻文件失敗";
+"FailedToWriteAsset" = "寫入視頻文件失敗";

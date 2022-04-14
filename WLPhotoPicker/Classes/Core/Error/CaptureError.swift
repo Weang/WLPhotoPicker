@@ -18,9 +18,9 @@ extension CaptureError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .failedToInitializeCameraDevice:
-            return "相机初始化失败"
+            return BundleHelper.localizedString(.FailedToInitializeCameraDevice)
         case .failedToInitializeMicrophoneDevice:
-            return "麦克风初始化失败"
+            return BundleHelper.localizedString(.FailedToInitializeMicrophoneDevice)
         case .underlying(let error):
             return error.localizedDescription
         }

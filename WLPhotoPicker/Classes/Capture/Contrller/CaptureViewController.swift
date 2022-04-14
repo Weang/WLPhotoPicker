@@ -100,7 +100,7 @@ extension CaptureViewController: CaptureManagerDelegate {
     
     public func captureManager(_ captureManager: CaptureManager, didOccurredError error: CaptureError) {
         let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "确定", style: .cancel, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: BundleHelper.localizedString(.Confirm), style: .cancel, handler: { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
         }))
         self.present(alert, animated: true, completion: nil)

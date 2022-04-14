@@ -17,7 +17,7 @@ class PhotoEditMaskTrashCanView: UIView {
         didSet {
             backgroundView.contentView.backgroundColor = isHighlighted ? #colorLiteral(red: 0.8771282434, green: 0.299628377, blue: 0.2993704677, alpha: 1) : #colorLiteral(red: 0.2, green: 0.2, blue: 0.2, alpha: 1).withAlphaComponent(0.9)
             iconView.isHighlighted = isHighlighted
-            tipLabel.text = isHighlighted ? "松开手指删除" : "拖到这里删除"
+            tipLabel.text = BundleHelper.localizedString(isHighlighted ? .RemoveToDelete : .DragHereToDelete)
         }
     }
     
@@ -45,7 +45,6 @@ class PhotoEditMaskTrashCanView: UIView {
             make.width.height.equalTo(24)
         }
         
-        tipLabel.text = "拖到这里删除"
         tipLabel.textColor = .white
         tipLabel.font = UIFont.systemFont(ofSize: 14)
         addSubview(tipLabel)

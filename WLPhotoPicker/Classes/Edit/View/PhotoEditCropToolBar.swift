@@ -54,7 +54,7 @@ class PhotoEditCropToolBar: UIView {
             make.bottom.equalTo(-keyWindowSafeAreaInsets.bottom)
         }
         
-        cancelButton.setTitle("取消", for: .normal)
+        cancelButton.setTitle(BundleHelper.localizedString(.Cancel), for: .normal)
         cancelButton.setTitleColor(#colorLiteral(red: 0.006965646986, green: 0.474057734, blue: 0.9945388436, alpha: 1), for: .normal)
         cancelButton.addTarget(self, action: #selector(cancelButtonClick), for: .touchUpInside)
         toolBarContentView.addArrangedSubview(cancelButton)
@@ -88,7 +88,7 @@ class PhotoEditCropToolBar: UIView {
             make.height.equalTo(32)
         }
         
-        doneButton.setTitle("确定", for: .normal)
+        doneButton.setTitle(BundleHelper.localizedString(.Confirm), for: .normal)
         doneButton.setTitleColor(#colorLiteral(red: 0.9805411696, green: 0.7804852724, blue: 0.001862275065, alpha: 1), for: .normal)
         doneButton.addTarget(self, action: #selector(doneButtonClick), for: .touchUpInside)
         toolBarContentView.addArrangedSubview(doneButton)

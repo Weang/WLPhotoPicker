@@ -38,7 +38,7 @@ class AssetPickerLimitedPermissionView: UIView {
         let tipLabel = UILabel()
         tipLabel.numberOfLines = 0
         tipLabel.textColor = WLPhotoUIConfig.default.color.textColor
-        tipLabel.text = "你已设置\(UIApplication.shared.appName ?? "")只能访问相册部分照片，建议允许访问「所有照片」"
+        tipLabel.text = BundleHelper.localizedString(.AlbumPermissionLimitedAlert, UIApplication.shared.appName ?? "") 
         tipLabel.font = UIFont.systemFont(ofSize: 14)
         addSubview(tipLabel)
         tipLabel.snp.makeConstraints { make in
