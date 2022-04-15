@@ -16,7 +16,7 @@ class ViewController: FormViewController {
         super.viewDidLoad()
         
         self.navigationItem.title = "WLPhotoPicker"
-        WLPhotoUIConfig.default.language = .simplifiedChinese
+        
         form
         
         +++ Section("Picker")
@@ -26,12 +26,6 @@ class ViewController: FormViewController {
             cell.accessoryType = .disclosureIndicator
         }.onCellSelection { cell, row in
             self.navigationController?.pushViewController(PickerViewController(), animated: true)
-        }
-        
-        <<< LabelRow() { row in
-            row.title = "视频压缩"
-        }.cellSetup { cell, row in
-            cell.accessoryType = .disclosureIndicator
         }
         
         
@@ -55,13 +49,4 @@ class ViewController: FormViewController {
         
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        let config = WLPhotoConfig()
-        config.photoEditConfig.photoEditPasters = (1...18).map{ "paster\($0)" }.map{ .imageName($0) }
-        config.pickerConfig.selectableType = [.photo, .livePhoto, .GIF]
-        config.pickerConfig.exportImageURLWhenPick = true
-        let vc = WLPhotoPickerController(config: config)
-        self.present(vc, animated: true, completion: nil)
-    }
 }

@@ -19,8 +19,7 @@ class PickerViewController: FormViewController {
         
         self.navigationItem.title = "Picker"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Picker", style: .done, target: self, action: #selector(openPicker))
-        config.pickerConfig.showHiddenAlbum = true
-        config.pickerConfig.showRecentlyDeletedAlbum = true
+        
         form +++ Section("Picker")
         
         <<< PickerInputRow<String>() { row in
