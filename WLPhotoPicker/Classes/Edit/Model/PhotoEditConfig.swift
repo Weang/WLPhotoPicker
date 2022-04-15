@@ -36,7 +36,7 @@ public class PhotoEditConfig {
     public var photoEditMosaicWidth: CGFloat = 30
     
     // 照片裁剪比例
-    public var photoEditCropRatios: PhotoEditCropRatio = .freedom
+    // TODO: public var photoEditCropRatios: PhotoEditCropRatio = .freedom
     
     // 照片裁剪是否裁剪圆形，如果为true，那么photoEditCropRatios不会生效，只会默认圆形
     // TODO: public var photoEditCropCircle: Bool = false

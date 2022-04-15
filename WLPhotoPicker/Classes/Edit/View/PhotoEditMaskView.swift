@@ -33,7 +33,7 @@ class PhotoEditMaskView: UIView {
     
     func reset() {
         transform = .identity
-        size = maskLayer.size
+        frame.size = maskLayer.size
         center = maskLayer.center
     }
     
@@ -41,24 +41,24 @@ class PhotoEditMaskView: UIView {
         if showActive {
             self.showActive(dismissLater: dismissLater)
         }
-        center = CGPoint(x: maskLayer.center.x * maskLayer.cropScale, y: maskLayer.center.y * maskLayer.cropScale)
         maskImageView.image = maskLayer.maskImage
-        maskLayer.scale = max(0.5, min(maskLayer.scale, 3))
+        maskLayer.scale = max(0.1, maskLayer.scale)
         
-        let transform = CGAffineTransform(translationX: maskLayer.translation.x * maskLayer.cropScale, y: maskLayer.translation.y * maskLayer.cropScale)
-            .scaledBy(x: maskLayer.scale * maskLayer.cropScale, y: maskLayer.scale * maskLayer.cropScale)
+        let transform = CGAffineTransform(translationX: maskLayer.translation.x, y: maskLayer.translation.y)
+            .scaledBy(x: maskLayer.scale, y: maskLayer.scale)
             .rotated(by: maskLayer.rotation)
         if animate {
             UIView.animate(withDuration: 0.2, animations: {
+                self.center = CGPoint(x: self.maskLayer.center.x, y: self.maskLayer.center.y)
                 self.transform = transform
             }, completion: { _ in
                 completion?()
             })
         } else {
+            self.center = CGPoint(x: self.maskLayer.center.x, y: self.maskLayer.center.y)
             self.transform = transform
             completion?()
         }
-        
     }
     
     func showActive(dismissLater: Bool = true) {

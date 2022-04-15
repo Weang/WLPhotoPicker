@@ -25,17 +25,19 @@ public class PhotoEditViewController: UIViewController {
     private let photo: UIImage?
     private let assetModel: AssetModel?
     private let photoEditConfig: PhotoEditConfig
-    
     private var currentEditItemType: PhotoEditItemType?
     
-    private let singleTapGesture = UITapGestureRecognizer()
+    var originalImageViewSize: CGSize = .zero
     
     let editContentView = UIView()
     let contentScrollView = UIScrollView()
     let imageContainerView = UIImageView()
     let contentImageView = UIImageView()
+    let contentImageViewMask = CAShapeLayer()
     let topToolBar = PhotoEditTopToolBar()
     let bottomToolBar: PhotoEditBottomToolBar
+    
+    private let singleTapGesture = UITapGestureRecognizer()
     
     private var graffitiDrawColor: UIColor = .clear
     private let graffitiDrawLayer = CALayer()
@@ -48,7 +50,7 @@ public class PhotoEditViewController: UIViewController {
     private let mosaicDrawGesture = UIPanGestureRecognizer()
     private var mosaicDrawPath = PhotoEditMosaicPath()
     
-    private let maskLayerContentView = UIView()
+    let maskLayerContentView = UIView()
     private let masksTapGesture = UITapGestureRecognizer()
     private let masksPanGesture = UIPanGestureRecognizer()
     private let masksPinchGesture = UIPinchGestureRecognizer()
@@ -139,6 +141,7 @@ public class PhotoEditViewController: UIViewController {
         
         contentImageView.contentMode = .scaleAspectFit
         contentImageView.isUserInteractionEnabled = true
+        contentImageView.layer.mask = contentImageViewMask
         imageContainerView.addSubview(contentImageView)
         
         contentImageView.layer.addSublayer(graffitiDrawLayer)
@@ -150,7 +153,7 @@ public class PhotoEditViewController: UIViewController {
         mosaicDrawLayer.mask = mosaicDrawMaskLayer
         contentImageView.layer.insertSublayer(mosaicDrawLayer, at: 0)
         
-        maskLayerContentView.layer.masksToBounds = true
+        maskLayerContentView.layer.masksToBounds = false
         imageContainerView.addSubview(maskLayerContentView)
         
         topToolBar.delegate = self
@@ -225,10 +228,11 @@ public class PhotoEditViewController: UIViewController {
     
     private func setupPhoto() {
         contentImageView.image = assetModel?.editedImage ?? assetModel?.previewImage ?? photo
-        
         guard let photo = self.photo else { return }
+        
         imageContainerView.frame = AssetDisplayHelper.imageViewRectFrom(imageSize: photo.size, mediaType: .photo)
         contentImageView.frame = imageContainerView.bounds
+        originalImageViewSize = contentImageView.size
         
         contentScrollView.contentSize = imageContainerView.size
         contentScrollView.maximumZoomScale = AssetDisplayHelper.imageViewMaxZoomScaleFrom(imageSize: photo.size)
@@ -241,6 +245,8 @@ public class PhotoEditViewController: UIViewController {
         mosaicDrawLayer.frame = imageContainerView.bounds
         maskLayerContentView.frame = imageContainerView.bounds
         
+        updateContentImageViewMask()
+        
         currentFilterImage = photo
         
         photoEditConfig.photoEditAdjustModes.forEach {
@@ -250,6 +256,7 @@ public class PhotoEditViewController: UIViewController {
     
     private func setupEditedImage() {
         guard let assetModel = self.assetModel, assetModel.hasEdit else { return }
+        
         graffitiDrawPath = assetModel.editGraffitiPath
         currentFilter = assetModel.filter
         adjustValue = assetModel.adjustValue
@@ -257,25 +264,21 @@ public class PhotoEditViewController: UIViewController {
         cropRect = assetModel.cropRect
         cropRotation = assetModel.cropRotation
         
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            let filterImage = self.currentFilter?.filterImage(self.photo) ?? self.photo
-            let adjustedImage = filterImage?.adjustImageFrom(self.adjustValue)
-            let mosaicMaskImage = adjustedImage?.mosaicImage(level: self.photoEditConfig.photoEditMosaicWidth)
-            let image = self.mosaicDrawPath.drawMosaicImage(from: adjustedImage, mosaicImage: mosaicMaskImage)
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                for maskLayer in assetModel.maskLayers {
-                    let maskView = PhotoEditMaskView(maskLayer: maskLayer)
-                    maskView.updateMaskLayer(showActive: false)
-                    self.maskLayerContentView.addSubview(maskView)
-                }
-                self.currentFilterImage = filterImage
-                self.graffitiDrawLayer.contents = self.graffitiDrawPath.draw()?.cgImage
-                self.graffitiDrawLayer.removeAllAnimations()
-                self.contentImageView.image = image
-            }
+        let filterImage = currentFilter?.filterImage(photo) ?? photo
+        let adjustedImage = filterImage?.adjustImageFrom(adjustValue)
+        let mosaicMaskImage = adjustedImage?.mosaicImage(level: photoEditConfig.photoEditMosaicWidth)
+        let image = mosaicDrawPath.drawMosaicImage(from: adjustedImage, mosaicImage: mosaicMaskImage)
+        currentFilterImage = filterImage
+        contentImageView.image = image
+        
+        for maskLayer in assetModel.maskLayers {
+            let maskView = PhotoEditMaskView(maskLayer: maskLayer)
+            maskView.updateMaskLayer(showActive: false)
+            maskLayerContentView.addSubview(maskView)
         }
+        graffitiDrawLayer.contents = self.graffitiDrawPath.draw()?.cgImage
+        graffitiDrawLayer.removeAllAnimations()
+        layoutCropedImageView()
     }
     
     @objc private func contentViewSingleTap() {
@@ -291,6 +294,11 @@ public class PhotoEditViewController: UIViewController {
         }
     }
     
+    private func updateContentImageViewMask() {
+        let maskFrame = editContentView.convert(imageContainerView.frame, to: contentImageView)
+        contentImageViewMask.path = UIBezierPath.init(rect: maskFrame).cgPath
+    }
+    
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
@@ -301,19 +309,16 @@ public class PhotoEditViewController: UIViewController {
 extension PhotoEditViewController {
     
     @objc private func graffitiDraw(_ gesture: UIPanGestureRecognizer) {
-        var location = gesture.location(in: contentImageView)
+        let location = gesture.location(in: contentImageView)
         let zoomScale = contentScrollView.zoomScale
-        let cropRatio: CGFloat
-        if cropRotation.isPortrait {
-            cropRatio = view.width / contentImageView.width
-        } else {
-            cropRatio = view.height / contentImageView.width
+        let contentImageViewSize = imageContainerView.convert(contentImageView.frame, to: view).size
+        var rotateScale = contentImageViewSize.width / originalImageViewSize.width
+        if cropRotation.isLandscape {
+            rotateScale = contentImageViewSize.height / originalImageViewSize.width
         }
-        location.x = location.x * cropRatio
-        location.y = location.y * cropRatio
         switch gesture.state {
         case .began:
-            let lineWidth = photoEditConfig.photoEditGraffitiLineWidth / zoomScale * cropRatio
+            let lineWidth = photoEditConfig.photoEditGraffitiLineWidth / zoomScale / rotateScale
             let pathLine = PhotoEditGraffitiPathLine(graffitiColor: graffitiDrawColor,
                                                      lineWidth: lineWidth,
                                                      startPoint: location)
@@ -344,19 +349,16 @@ extension PhotoEditViewController {
     }
     
     @objc private func mosaicDraw(_ gesture: UIPanGestureRecognizer) {
-        var location = gesture.location(in: contentImageView)
+        let location = gesture.location(in: contentImageView)
         let zoomScale = contentScrollView.zoomScale
-        let cropRatio: CGFloat
-        if cropRotation.isPortrait {
-            cropRatio = view.width / contentImageView.width
-        } else {
-            cropRatio = view.height / contentImageView.width
+        let contentImageViewSize = imageContainerView.convert(contentImageView.frame, to: view).size
+        var rotateScale = contentImageViewSize.width / originalImageViewSize.width
+        if cropRotation.isLandscape {
+            rotateScale = contentImageViewSize.height / originalImageViewSize.width
         }
-        location.x = location.x * cropRatio
-        location.y = location.y * cropRatio
         switch gesture.state {
         case .began:
-            let lineWidth = photoEditConfig.photoEditMosaicLineWidth / zoomScale * cropRatio
+            let lineWidth = photoEditConfig.photoEditMosaicLineWidth / zoomScale / rotateScale
             mosaicDrawMaskLayer.lineWidth = lineWidth
             mosaicDrawMaskLayer.removeAllAnimations()
             let pathLine = PhotoEditMosaicPathLine(lineWidth: lineWidth,
@@ -390,7 +392,8 @@ extension PhotoEditViewController {
     private func addMaskLayer(maskLayer: PhotoEditMaskLayer) {
         var maskLayer = maskLayer
         let viewCenter = CGPoint(x: UIScreen.width * 0.5, y: UIScreen.height * 0.5)
-        maskLayer.center = view.convert(viewCenter, to: contentImageView)
+        maskLayer.center = view.convert(viewCenter, to: maskLayerContentView)
+        maskLayer.rotation = -cropRotation.rotationAngle
         let maskView = PhotoEditMaskView(maskLayer: maskLayer)
         maskLayerContentView.addSubview(maskView)
         dismissAllMaskActive()
@@ -415,8 +418,8 @@ extension PhotoEditViewController {
     }
     
     private func dismissAllMaskActive() {
-        maskLayerContentView.subviews.forEach {
-            ($0 as? PhotoEditMaskView)?.dismissActive()
+        maskSubviews.forEach {
+            $0.dismissActive()
         }
     }
     
@@ -424,7 +427,6 @@ extension PhotoEditViewController {
         hasHighlightMasksTrashCanView = false
         setTrashCanViweHidden(false, animated: true)
         setToolBarsHidden(true)
-        maskLayerContentView.layer.masksToBounds = false
         showMaskActiveAt(location)
     }
     
@@ -456,6 +458,7 @@ extension PhotoEditViewController {
         let location = gesture.location(in: maskLayerContentView)
         switch gesture.state {
         case .began:
+            imageContainerView.clipsToBounds = false
             maskGestureBeginAt(location)
         case .changed:
             guard let maskView = activeMaskView() else { return }
@@ -464,7 +467,7 @@ extension PhotoEditViewController {
                                                      y: maskView.maskLayer.translation.y + translation.y)
             gesture.setTranslation(.zero, in: maskLayerContentView)
             maskView.updateMaskLayer(dismissLater: false)
-            let viewLocation = maskLayerContentView.convert(location, to: self.view)
+            let viewLocation = maskLayerContentView.convert(location, to: view)
             let isLocationInTrashCan = masksTrashCanView.frame.contains(viewLocation)
             masksTrashCanView.isHighlighted = isLocationInTrashCan
             if isLocationInTrashCan {
@@ -481,13 +484,16 @@ extension PhotoEditViewController {
                 return
             }
             setTrashCanViweHidden(true, animated: true)
-            if maskLayerContentView.frame.contains(location) {
-                maskLayerContentView.layer.masksToBounds = true
+            let viewLocation = maskLayerContentView.convert(location, to: view)
+            if imageContainerView.frame.contains(viewLocation) {
+                imageContainerView.clipsToBounds = true
                 maskView.showActive()
             } else {
+                let viewCenter = CGPoint(x: UIScreen.width * 0.5, y: UIScreen.height * 0.5)
+                maskView.maskLayer.center = view.convert(viewCenter, to: maskLayerContentView)
                 maskView.maskLayer.translation = .zero
                 maskView.updateMaskLayer(animate: true) {
-                    self.maskLayerContentView.layer.masksToBounds = true
+                    self.imageContainerView.clipsToBounds = true
                 }
             }
         default:
@@ -496,7 +502,6 @@ extension PhotoEditViewController {
     }
     
     @objc private func handleMasksPinchGesture(_ gesture: UIPinchGestureRecognizer) {
-        let location = gesture.location(in: maskLayerContentView)
         switch gesture.state {
         case .began:
             maskGestureBeginAt(gesture.location(in: maskLayerContentView))
@@ -508,9 +513,6 @@ extension PhotoEditViewController {
         case .cancelled, .ended:
             setToolBarsHidden(false)
             setTrashCanViweHidden(true, animated: true)
-            if maskLayerContentView.frame.contains(location) {
-                maskLayerContentView.layer.masksToBounds = true
-            }
         default:
             break
         }
@@ -529,9 +531,6 @@ extension PhotoEditViewController {
         case .cancelled, .ended:
             setToolBarsHidden(false)
             setTrashCanViweHidden(true, animated: true)
-            if maskLayerContentView.frame.contains(location) {
-                maskLayerContentView.layer.masksToBounds = true
-            }
         default:
             break
         }
@@ -548,28 +547,25 @@ extension PhotoEditViewController {
         let photoSize = cropRotation.isPortrait ? photo.size : photo.size.turn
         let cropedImageRect = cropRect.convertSizeToRect(photoSize)
         let toDisplayFrame = AssetDisplayHelper.imageViewRectFrom(imageSize: cropedImageRect.size, mediaType: .photo)
-      
-        let rotationAngle = cropRotation.rotationAngle
-        let ratio = cropedImageRect.width / toDisplayFrame.width
-        let transform = CGAffineTransform(rotationAngle: rotationAngle)
-        contentImageView.transform = transform
-        maskLayerContentView.transform = transform
         
-        let imageFrame = CGRect(x: -cropedImageRect.minX / ratio,
-                                y: -cropedImageRect.minY / ratio,
-                                width: photoSize.width / ratio,
-                                height: photoSize.height / ratio)
         imageContainerView.frame = toDisplayFrame
         contentScrollView.contentSize = toDisplayFrame.size
-        contentImageView.frame = imageFrame
-        maskLayerContentView.frame = imageFrame
-        graffitiDrawLayer.frame = contentImageView.bounds
-        mosaicDrawLayer.frame = contentImageView.bounds
         
-        maskSubviews.forEach {
-            $0.maskLayer.cropScale = (cropRotation.isPortrait ? imageFrame.width : imageFrame.height) / imageContainerView.width
-            $0.updateMaskLayer(showActive: false, dismissLater: false, animate: false)
-        }
+        var transform = CGAffineTransform(rotationAngle: cropRotation.rotationAngle)
+        
+        let imageScale = cropedImageRect.width / toDisplayFrame.width
+        let targetDisplaySize = CGSize(width: photoSize.width / imageScale, height: photoSize.height / imageScale)
+        let zoomScale = targetDisplaySize.width / (cropRotation.isPortrait ? originalImageViewSize.width : originalImageViewSize.height)
+        transform = transform.scaledBy(x: zoomScale, y: zoomScale)
+        contentImageView.transform = transform
+        
+        let targetDisplayOrigin = CGPoint(x: -targetDisplaySize.width * cropRect.x, y: -targetDisplaySize.height * cropRect.y)
+        contentImageView.frame.origin = targetDisplayOrigin
+        
+        maskLayerContentView.transform = transform
+        maskLayerContentView.frame = contentImageView.frame
+        
+        updateContentImageViewMask()
     }
     
 }
@@ -677,9 +673,7 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
         case .text:
             showEditTextController(textMaskLayer: nil)
         case .crop:
-            let maskLayers = maskLayerContentView.subviews.compactMap{
-                ($0 as? PhotoEditMaskView)?.maskLayer
-            }
+            let maskLayers =  maskSubviews.map{ $0.maskLayer }
             let image = EditManager.drawMasksAt(photo: contentImageView.image, editGraffitiPath: graffitiDrawPath, maskLayers: maskLayers)
             guard let editedImage = image else { return }
             let vc = PhotoEditCropViewController(photo: editedImage, cropRect: cropRect, cropRotation: cropRotation)
@@ -762,9 +756,7 @@ extension PhotoEditViewController: PhotoEditPasterViewControllerDelegate {
 extension PhotoEditViewController: PhotoEditTextViewControllerDelegate {
     
     func textMaskViewFrom(id: Double) -> PhotoEditMaskView? {
-        maskLayerContentView.subviews.compactMap {
-            $0 as? PhotoEditMaskView
-        }.first(where:  {
+        maskSubviews.first(where:  {
             ($0.maskLayer as? PhotoEditTextMaskLayer)?.id == id
         })
     }

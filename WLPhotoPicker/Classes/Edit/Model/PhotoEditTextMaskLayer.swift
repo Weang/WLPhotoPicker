@@ -16,7 +16,6 @@ struct PhotoEditTextMaskLayer: PhotoEditMaskLayer {
     var isWrap: Bool
     var colorIndex: Int
     
-    var cropScale: CGFloat = 1
     var center: CGPoint = .zero
     var scale: CGFloat = 1
     var rotation: CGFloat = 0

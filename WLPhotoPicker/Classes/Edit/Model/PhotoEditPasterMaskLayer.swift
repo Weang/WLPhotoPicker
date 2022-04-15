@@ -13,7 +13,6 @@ struct PhotoEditPasterMaskLayer: PhotoEditMaskLayer {
     
     var center: CGPoint = .zero
     var scale: CGFloat = 1
-    var cropScale: CGFloat = 1
     var rotation: CGFloat = 0
     var translation: CGPoint = .zero
     

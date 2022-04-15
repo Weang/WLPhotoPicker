@@ -55,5 +55,13 @@ class ViewController: FormViewController {
         
     }
     
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let config = WLPhotoConfig()
+        config.photoEditConfig.photoEditPasters = (1...18).map{ "paster\($0)" }.map{ .imageName($0) }
+        config.pickerConfig.selectableType = [.photo, .livePhoto, .GIF]
+        config.pickerConfig.exportImageURLWhenPick = true
+        let vc = WLPhotoPickerController(config: config)
+        self.present(vc, animated: true, completion: nil)
+    }
 }

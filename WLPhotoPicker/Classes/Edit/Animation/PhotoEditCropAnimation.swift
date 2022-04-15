@@ -70,9 +70,10 @@ extension PhotoEditCropViewController {
         animateImageView.frame = editViewController.contentScrollView.convert(editViewController.imageContainerView.frame, to: editViewController.view)
         editViewController.view.addSubview(animateImageView)
         
+        editViewController.contentImageView.isHidden = true
+        editViewController.maskLayerContentView.isHidden = true
         editViewController.view.bringSubviewToFront(editViewController.topToolBar)
         editViewController.view.bringSubviewToFront(editViewController.bottomToolBar)
-        editViewController.contentImageView.isHidden = true
         view.alpha = 0
         
         let toFrame = adaptionDisplayRect(displaySize: photo.size)
@@ -88,6 +89,7 @@ extension PhotoEditCropViewController {
         }) { (completed) in
             animateImageView.removeFromSuperview()
             editViewController.contentImageView.isHidden = false
+            editViewController.maskLayerContentView.isHidden = false
             editViewController.topToolBar.alpha = 1
             editViewController.bottomToolBar.alpha = 1
             completion(completed)
@@ -104,6 +106,7 @@ extension PhotoEditCropViewController {
         
         editViewController.view.bringSubviewToFront(editViewController.topToolBar)
         editViewController.view.bringSubviewToFront(editViewController.bottomToolBar)
+        editViewController.maskLayerContentView.isHidden = true
         editViewController.contentImageView.isHidden = true
         editViewController.topToolBar.alpha = 0
         editViewController.bottomToolBar.alpha = 0
@@ -117,6 +120,7 @@ extension PhotoEditCropViewController {
             editViewController.bottomToolBar.alpha = 1
         }) { (completed) in
             animateImageView.removeFromSuperview()
+            editViewController.maskLayerContentView.isHidden = false
             editViewController.contentImageView.isHidden = false
             completion(completed)
         }

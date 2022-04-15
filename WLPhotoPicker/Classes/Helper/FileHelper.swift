@@ -10,7 +10,7 @@ import UIKit
 class FileHelper {
     
     static var temporaryPath: String {
-        return NSTemporaryDirectory() + "WLPhoto/"
+        return NSTemporaryDirectory() + "WLPhotoPicker/"
     }
     
     static var dateString: String {
