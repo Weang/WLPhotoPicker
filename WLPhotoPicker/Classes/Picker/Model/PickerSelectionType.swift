@@ -16,28 +16,24 @@ public struct PickerSelectionType: OptionSet {
         self.rawValue = rawValue
     }
     
+    // 照片，GIF、实况都处理为静态图片
+    static public let photo = PickerSelectionType(rawValue: 1 << 0)
+    
+    // 视频
+    static public let video = PickerSelectionType(rawValue: 1 << 1)
+    
+    // 动图
+    static public let GIF = PickerSelectionType(rawValue: 1 << 2)
+    
+    // 实况
+    static public let livePhoto = PickerSelectionType(rawValue: 1 << 3)
+    
+    // 所有类型
+    static public let all: PickerSelectionType = [.photo, .video, .GIF, .livePhoto]
+    
 }
 
 public extension PickerSelectionType {
-    
-    // 照片，GIF、实况都处理为静态图片
-    static let photo = PickerSelectionType(rawValue: 1 << 0)
-    
-    // 视频
-    static let video = PickerSelectionType(rawValue: 1 << 1)
-    
-    // 动图
-    static let GIF = PickerSelectionType(rawValue: 1 << 2)
-    
-    // 实况
-    static let livePhoto = PickerSelectionType(rawValue: 1 << 3)
-    
-    // 所有类型
-    static let all: PickerSelectionType = [.photo, .video, .GIF, .livePhoto]
-    
-}
-
-extension PickerSelectionType {
     
     var hasPhoto: Bool {
         return contains(.photo) || contains(.GIF) || contains(.livePhoto)

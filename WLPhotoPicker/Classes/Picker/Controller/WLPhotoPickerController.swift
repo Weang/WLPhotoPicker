@@ -48,16 +48,7 @@ public class WLPhotoPickerController: UINavigationController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        if #available(iOS 15.0, *) {
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithTransparentBackground()
-            appearance.shadowImage = UIImage.imageWithColor(.clear)
-            appearance.backgroundImage = navigationBar.standardAppearance.backgroundImage
-            appearance.titleTextAttributes = navigationBar.standardAppearance.titleTextAttributes
-            navigationBar.standardAppearance = appearance
-            navigationBar.scrollEdgeAppearance = appearance
-            navigationBar.compactAppearance = appearance
-        } else {
+        if #unavailable(iOS 15.0) {
             navigationBar.shadowImage = UIImage.imageWithColor(.clear)
         }
     }

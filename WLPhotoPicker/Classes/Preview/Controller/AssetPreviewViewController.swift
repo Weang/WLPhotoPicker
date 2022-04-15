@@ -246,6 +246,10 @@ extension AssetPreviewViewController: AssetPreviewCellDelegate {
     }
     
     func previewCellSingleTapDidBeginPan(_ previewCell: AssetPreviewCell) {
+        if let currentIndex = collectionView.indexPathsForVisibleItems.first?.item,
+           let sourceImageView = animateDataSource?.imageBrowser(self, sourceViewFor: currentIndex) {
+            sourceImageView.isHidden = true
+        }
         previewCellIsDragging = true
         setNeedsStatusBarAppearanceUpdate()
         guard showToolBar else {
@@ -266,6 +270,10 @@ extension AssetPreviewViewController: AssetPreviewCellDelegate {
         if dismiss {
             self.dismiss(animated: true, completion: nil)
             return
+        }
+        if let currentIndex = collectionView.indexPathsForVisibleItems.first?.item,
+           let sourceImageView = animateDataSource?.imageBrowser(self, sourceViewFor: currentIndex) {
+            sourceImageView.isHidden = false
         }
         previewCellIsDragging = false
         setNeedsStatusBarAppearanceUpdate()

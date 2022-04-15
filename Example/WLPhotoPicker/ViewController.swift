@@ -16,7 +16,7 @@ class ViewController: FormViewController {
         super.viewDidLoad()
         
         self.navigationItem.title = "WLPhotoPicker"
-        
+        WLPhotoUIConfig.default.language = .simplifiedChinese
         form
         
         +++ Section("Picker")

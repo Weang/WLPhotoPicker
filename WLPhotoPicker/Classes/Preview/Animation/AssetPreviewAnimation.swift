@@ -76,9 +76,9 @@ extension AssetPreviewViewController {
     
     fileprivate func showAnimation(animator: UIViewPropertyAnimator, completion: @escaping (Bool) -> ()) {
         if let currentIndex = self.currentIndex,
-           let imageView = animateDataSource?.imageBrowser(self, sourceViewFor: currentIndex),
-           let image = imageView.image,
-           let imageOrginFrame = imageView.superview?.convert(imageView.frame, to: view.window) {
+           let sourceImageView = animateDataSource?.imageBrowser(self, sourceViewFor: currentIndex),
+           let image = sourceImageView.image,
+           let imageOrginFrame = sourceImageView.superview?.convert(sourceImageView.frame, to: view.window) {
             
             let animateImageView = UIImageView()
             animateImageView.contentMode = .scaleAspectFill
@@ -86,21 +86,25 @@ extension AssetPreviewViewController {
             animateImageView.isHidden = false
             animateImageView.image = image
             animateImageView.frame = imageOrginFrame
-            animateImageView.layer.cornerRadius = imageView.layer.cornerRadius
+            animateImageView.layer.cornerRadius = sourceImageView.layer.cornerRadius
             view.addSubview(animateImageView)
+            
+            sourceImageView.isHidden = true
+            collectionView.isHidden = true
             
             let mediaType = assetFetchTool.albumModel?.assets[currentIndex].mediaType ?? .photo
             let animateImageViewToFrame = AssetDisplayHelper.imageViewRectFrom(imageSize: image.size, mediaType: mediaType)
             animator.addAnimations {
+                animateImageView.layer.cornerRadius = 0
                 animateImageView.frame = animateImageViewToFrame
             }
             
             animator.addCompletion { [unowned self] _ in
                 animateImageView.removeFromSuperview()
+                sourceImageView.isHidden = false
                 self.collectionView.isHidden = false
             }
             
-            collectionView.isHidden = true
             toolbars.forEach {
                 view.bringSubviewToFront($0)
             }
@@ -146,6 +150,11 @@ extension AssetPreviewViewController {
             animator.addAnimations {
                 animateImageView.layer.cornerRadius = sourceImageView.layer.cornerRadius
                 animateImageView.frame = imageToFrame
+            }
+            
+            sourceImageView.isHidden = true
+            animator.addCompletion { _ in
+                sourceImageView.isHidden = false
             }
             
             collectionView.isHidden = true

@@ -20,8 +20,8 @@
 "CountLimitedTip" = "You can only select at most %d photos";
 "AddMore" = "Add More\nPhotos";
 "UnableToAccessAlbum" = "Unable to access photos in album";
-"AlbumPermissionDeniedAlert" = "You have disabled %@ photos access permission, it is recommended to allow access to \"all photos\"";
-"AlbumPermissionLimitedAlert" = "You have set %@ to only access some photos in the album, it is recommended to allow access to \"all photos\"";
+"AlbumPermissionDeniedAlert" = "You have disabled %@ photos access permission, it is recommended to allow access to \"All Photos\"";
+"AlbumPermissionLimitedAlert" = "You have set %@ to only access some photos in the album, it is recommended to allow access to \"All Photos\"";
 "GoSetting" = "Settings";
 
 // Edit

@@ -1257,14 +1257,14 @@
 				02D86B2F343C369387CF103CDB0BE6B7 /* AssetFetchResponse.swift */,
 				C408AF84FCCAA7E4BD45570CD13A69AD /* AssetFetchTool.swift */,
 				B1C2BE5CA357892DD930CAFB89563B1F /* AssetFetchTool+Album.swift */,
-				FB519AFD0E58EB4824A4187327B39395 /* AssetFetchTool+GIF.swift */,
 				E50528B2619936D7DBBF3E55DD19AF49 /* AssetFetchTool+Image.swift */,
 				3F5BDBDECC6ACC74E9987E7208BC58DF /* AssetFetchTool+ImageData.swift */,
+				FB519AFD0E58EB4824A4187327B39395 /* AssetFetchTool+GIF.swift */,
 				1CC3CDD393832C59F7C3667524488426 /* AssetFetchTool+LivePhoto.swift */,
+				E48CEAA7CE2526F5B42E0A39E5621887 /* AssetFetchTool+Video.swift */,
 				2BE76436ABCB2339B804FC5F076A44D9 /* AssetFetchTool+Observer.swift */,
 				D1E602D10C859C3851EEB3E5615C9CED /* AssetFetchTool+Operation.swift */,
 				AC930A7757BD8833A160E50AE59AE0C2 /* AssetFetchTool+Select.swift */,
-				E48CEAA7CE2526F5B42E0A39E5621887 /* AssetFetchTool+Video.swift */,
 				7A88EB88DDD7B3C43FF79A6690FAB6A4 /* WeakAssetFetchToolDelegate.swift */,
 			);
 			path = Fetch;

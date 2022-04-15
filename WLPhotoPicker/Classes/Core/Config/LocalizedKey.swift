@@ -22,9 +22,9 @@ extension LanguageType {
             guard let language = Locale.preferredLanguages.first else {
                 return "en"
             }
-            let languageCode = LanguageRegionCode.languageCodeWith(language)
-            return languageCode
-        default: return rawValue
+            return LanguageRegionCode.languageCodeWith(language)
+        default:
+            return rawValue
         }
     }
     
