@@ -10,7 +10,7 @@ import UIKit
 class PhotoEditFilterCollectionViewCell: UICollectionViewCell {
     
     let imageView = UIImageView()
-    private let nameLabel = UILabel()
+    let nameLabel = UILabel()
     
     override var isSelected: Bool {
         didSet {
@@ -42,10 +42,6 @@ class PhotoEditFilterCollectionViewCell: UICollectionViewCell {
             make.bottom.equalToSuperview()
         }
         
-    }
-    
-    func bind(_ filter: PhotoEditFilterProvider) {
-        nameLabel.text = filter.name
     }
     
     required init?(coder: NSCoder) {

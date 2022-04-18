@@ -19,8 +19,8 @@ public class AssetModel {
     var cropRect: PhotoEditCropRect = .identity
     var cropRotation: UIImage.Orientation = .up
     var maskLayers: [PhotoEditMaskLayer] = []
-    var filter: PhotoEditFilterProvider?
-    var filterIndex: Int = 0
+    var photoFilter: PhotoEditFilterProvider?
+    var photoFilterIndex: Int = 0
     var adjustValue: [PhotoEditAdjustMode: Double] = [:]
     
     var hasEdit: Bool {
@@ -29,18 +29,18 @@ public class AssetModel {
         cropRect != .identity ||
         cropRotation != .up ||
         maskLayers.count > 0 ||
-        filter != nil ||
+        photoFilter?.filter != nil ||
         adjustValue.filter{ $0.value != 0 }.count > 0
     }
     
-    public var previewImage: UIImage?
+    public var previewPhoto: UIImage?
     public var editedImage: UIImage?
     public var originalImage: UIImage?
     public var displayingImage: UIImage? {
         if let editedImage = editedImage {
             return editedImage
         }
-        return previewImage
+        return previewPhoto
     }
     
     public var mediaType: AssetMediaType {

@@ -25,17 +25,14 @@ extension PhotoEditMaskLayer {
     }
     
     var imageSize: CGSize {
-        let minWidth: CGFloat = 40
-        let maxWidth: CGFloat = 200
+        let maximumSize: CGFloat = 120
         let imageRatio = maskImage.size.width / maskImage.size.height
         if imageRatio >= 1 {
-            let width = min(maxWidth, max(minWidth, maskImage.size.width))
-            let height = width / imageRatio
-            return CGSize(width: width, height: height)
+            let height = maximumSize / imageRatio
+            return CGSize(width: maximumSize, height: height)
         } else {
-            let height = min(maxWidth, max(minWidth, maskImage.size.width))
-            let width = height * imageRatio
-            return CGSize(width: width, height: height)
+            let width = maximumSize * imageRatio
+            return CGSize(width: width, height: maximumSize)
         }
     }
     

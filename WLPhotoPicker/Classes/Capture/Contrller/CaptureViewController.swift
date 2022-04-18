@@ -106,7 +106,7 @@ extension CaptureViewController: CaptureManagerDelegate {
         self.present(alert, animated: true, completion: nil)
     }
     
-    public func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage?) {
+    public func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage) {
         if let photoEditConfig = self.photoEditConfig {
             let editVC = PhotoEditViewController(photo: photo, photoEditConfig: photoEditConfig)
             editVC.delegate = self

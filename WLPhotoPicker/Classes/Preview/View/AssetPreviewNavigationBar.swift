@@ -43,7 +43,7 @@ class AssetPreviewNavigationBar: UIView {
             make.width.equalTo(40)
         }
         
-        if pickerConfig.allowSelectMultiPhoto {
+        if pickerConfig.allowsMultipleSelection {
             selectButton.addTarget(self, action: #selector(selectButtonClick), for: .touchUpInside)
             selectButton.isSelected = false
             addSubview(selectButton)

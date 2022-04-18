@@ -9,8 +9,8 @@ import UIKit
 
 struct PhotoEditGraffitiPath {
     
-    var imageSize: CGSize = .zero
-    var shapeSize: CGSize = .zero
+    var contextSize: CGSize = .zero
+    var drawedViewSize: CGSize = .zero
     
     var pathLines: [PhotoEditGraffitiPathLine] = []
     
@@ -32,8 +32,8 @@ struct PhotoEditGraffitiPath {
         if pathLines.isEmpty {
             return nil
         }
-        let scale = imageSize.width / shapeSize.width
-        UIGraphicsBeginImageContextWithOptions(imageSize, false, 1)
+        let scale = contextSize.width / drawedViewSize.width
+        UIGraphicsBeginImageContextWithOptions(contextSize, false, 1)
         defer {
             UIGraphicsEndImageContext()
         }

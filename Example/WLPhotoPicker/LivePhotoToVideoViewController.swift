@@ -33,7 +33,7 @@ class LivePhotoToVideoViewController: UIViewController {
         let config = WLPhotoConfig()
         config.pickerConfig.selectableType = [.video]
         config.pickerConfig.allowVideoSelectOriginal = true
-        config.pickerConfig.allowSelectMultiPhoto = false
+        config.pickerConfig.allowsMultipleSelection = false
         config.pickerConfig.exportVideoURLWhenPick = true
         let vc = WLPhotoPickerController(config: config)
         vc.pickerDelegate = self
@@ -51,7 +51,7 @@ extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
             return
         }
         
-        LivePhotoGenerator.createLivePhotoFrom(videoURL) { progress in
+        LivePhotoGenerator.createLivePhotoFrom(videoURL, isMute: true) { progress in
             SVProgressHUD.showProgress(Float(progress))
         } completion: { result in
             guard let result = result else {

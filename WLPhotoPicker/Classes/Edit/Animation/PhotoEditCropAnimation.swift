@@ -76,7 +76,7 @@ extension PhotoEditCropViewController {
         editViewController.view.bringSubviewToFront(editViewController.bottomToolBar)
         view.alpha = 0
         
-        let toFrame = adaptionDisplayRect(displaySize: photo.size)
+        let toFrame = adjustDisplayRect(photo.size)
         
         UIView.animate(withDuration: duration - 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
             animateImageView.frame = toFrame
@@ -98,7 +98,7 @@ extension PhotoEditCropViewController {
     
     fileprivate func dismissAnimation(duration: Double, to editViewController: PhotoEditViewController, completion: @escaping (Bool) -> ()) {
         let image = cropedImage ?? photo
-        let fromRect = adaptionDisplayRect(displaySize: image.size)
+        let fromRect = adjustDisplayRect(image.size)
         let animateImageView = UIImageView()
         animateImageView.image = image
         animateImageView.frame = fromRect

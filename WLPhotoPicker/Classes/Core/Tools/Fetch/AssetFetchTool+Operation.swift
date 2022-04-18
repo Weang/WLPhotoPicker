@@ -163,7 +163,7 @@ extension AssetFetchOperation {
         var currentPhoto: UIImage?
         switch (isOriginal, assetModel.hasEdit) {
         case (false, false):
-            currentPhoto = assetModel.previewImage
+            currentPhoto = assetModel.previewPhoto
         case (false, true):
             currentPhoto = assetModel.editedImage
         case (true, false):
@@ -184,12 +184,11 @@ extension AssetFetchOperation {
             case .success(let response):
                 self.assetModel.originalImage = response.photo
                 if self.assetModel.hasEdit {
-                    EditManager.drawEditOriginalImageFrom(asset: self.assetModel, photoEditConfig: self.config.photoEditConfig) { [weak self] photo in
-                        guard let self = self else { return }
-                        if let photo = photo?.rotate(orientation: self.assetModel.cropRotation).cropToRect(self.assetModel.cropRect) {
-                            self.finishRequestPhoto(photo)
-                        }
+                    let editManager = EditManager(photo: response.photo, assetModel: self.assetModel)
+                    guard let photo = editManager.drawOverlay(at: editManager.drawPhoto(), withCrop: true) else {
+                        return
                     }
+                    self.finishRequestPhoto(photo)
                 } else {
                     self.finishRequestPhoto(response.photo)
                 }
@@ -309,13 +308,13 @@ extension AssetFetchOperation {
     func finishRequestVideo(_ response: VideoFetchResponse, options: AssetFetchOptions) {
         if config.pickerConfig.exportVideoURLWhenPick {
             if isOriginal, #available(iOS 13, *), let fileURL = assetModel.asset.locallyVideoFileURL {
-                let result = AssetPickerVideoResult(playerItem: response.playerItem, videoURL: fileURL)
+                let result = AssetPickerVideoResult(avasset: response.avasset, playerItem: response.playerItem, videoURL: fileURL)
                 recudeVideoResult(result, options: options)
             } else {
                 compressExportVideo(response, options: options)
             }
         } else {
-            let result = AssetPickerVideoResult(playerItem: response.playerItem)
+            let result = AssetPickerVideoResult(avasset: response.avasset, playerItem: response.playerItem)
             recudeVideoResult(result, options: options)
         }
     }
@@ -335,7 +334,7 @@ extension AssetFetchOperation {
                 self.completion?(.failure(.failedToExportVideo))
                 self.finishAssetRequest()
             } else {
-                let result = AssetPickerVideoResult(playerItem: response.playerItem, videoURL: fileURL)
+                let result = AssetPickerVideoResult(avasset: response.avasset, playerItem: response.playerItem, videoURL: fileURL)
                 self.recudeVideoResult(result, options: options)
             }
         }

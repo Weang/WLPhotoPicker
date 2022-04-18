@@ -32,9 +32,9 @@ class PickerViewController: FormViewController {
         
         <<< SwitchRow() { row in
             row.title = "是否可以多选照片"
-            row.value = self.config.pickerConfig.allowSelectMultiPhoto
+            row.value = self.config.pickerConfig.allowsMultipleSelection
         }.onChange { row in
-            self.config.pickerConfig.allowSelectMultiPhoto = (row.value ?? false)
+            self.config.pickerConfig.allowsMultipleSelection = (row.value ?? false)
         }
         
         <<< SwitchRow() { row in

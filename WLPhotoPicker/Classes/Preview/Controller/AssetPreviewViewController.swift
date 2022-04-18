@@ -123,8 +123,8 @@ class AssetPreviewViewController: UIViewController {
     }
     
     private func openEditViewController(_ assetModel: AssetModel) {
-        let vc = PhotoEditViewController(assetModel: assetModel,
-                                         photoEditConfig: config.photoEditConfig)
+        guard let previewPhoto = assetModel.previewPhoto else { return }
+        let vc = PhotoEditViewController(photo: previewPhoto, assetModel: assetModel, photoEditConfig: config.photoEditConfig)
         vc.delegate = self
         present(vc, animated: false, completion: nil)
     }
@@ -327,7 +327,7 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
         let offsetIndex = Int(round(collectionView.contentOffset.x / collectionView.width))
         let assetModel = albumModel.assets[offsetIndex]
         
-        if let _ = assetModel.previewImage {
+        if let _ = assetModel.previewPhoto {
             openEditViewController(assetModel)
         } else {
             LoadingHUD.shared.showLoading()
@@ -337,7 +337,7 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
             
             AssetFetchTool.requestPhoto(for: assetModel.asset, options: options) { [weak self] result, _ in
                 guard case .success(let response) = result else { return }
-                assetModel.previewImage = response.photo
+                assetModel.previewPhoto = response.photo
                 self?.openEditViewController(assetModel)
                 LoadingHUD.shared.hideLoading()
             }

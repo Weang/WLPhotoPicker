@@ -42,7 +42,7 @@ class PhotoEditMaskView: UIView {
             self.showActive(dismissLater: dismissLater)
         }
         maskImageView.image = maskLayer.maskImage
-        maskLayer.scale = max(0.1, maskLayer.scale)
+        maskLayer.scale = max(0.2, maskLayer.scale)
         
         let transform = CGAffineTransform(translationX: maskLayer.translation.x, y: maskLayer.translation.y)
             .scaledBy(x: maskLayer.scale, y: maskLayer.scale)

@@ -17,20 +17,21 @@ public struct LivePhotoGeneratorRsult {
 }
 
 public typealias LivePhotoGeneratorCompletion = (LivePhotoGeneratorRsult?) -> Void
+public typealias LivePhotoGeneratorProgress = (Double) -> Void
 
 // 通过视频生成实况照片
 public class LivePhotoGenerator {
     
-    static public func createLivePhotoFrom(_ videoURL: URL, progress: @escaping (Double) -> Void, completion: @escaping LivePhotoGeneratorCompletion) {
+    static public func createLivePhotoFrom(_ videoURL: URL, isMute: Bool = false, progress: LivePhotoGeneratorProgress? = nil, completion: @escaping LivePhotoGeneratorCompletion) {
         let videoAsset = AVAsset(url: videoURL)
         guard let videoThumbImage = videoAsset.thumbnailImage() else {
             completion(nil)
             return
         }
-        createLivePhotoFrom(videoURL, placeholderImage: videoThumbImage, progress: progress, completion: completion)
+        createLivePhotoFrom(videoURL, isMute: isMute, placeholderImage: videoThumbImage, progress: progress, completion: completion)
     }
     
-    static public func createLivePhotoFrom(_ videoURL: URL, placeholderImage: UIImage, progress: @escaping (Double) -> Void, completion: @escaping LivePhotoGeneratorCompletion) {
+    static public func createLivePhotoFrom(_ videoURL: URL, isMute: Bool = false, placeholderImage: UIImage, progress: LivePhotoGeneratorProgress? = nil, completion: @escaping LivePhotoGeneratorCompletion) {
         let assetIdentifier = UUID().uuidString
         
         guard let imageURL = createImageURL(placeholderImage, assetIdentifier: assetIdentifier) else {
@@ -40,7 +41,7 @@ public class LivePhotoGenerator {
         
         let videoAsset = AVAsset(url: videoURL)
         
-        createVideoURL(videoAsset, assetIdentifier: assetIdentifier, progress: progress, completion: { videoURL in
+        createVideoURL(videoAsset, isMute: isMute, assetIdentifier: assetIdentifier, progress: progress, completion: { videoURL in
             guard let videoURL = videoURL else {
                 completion(nil)
                 return
@@ -77,7 +78,7 @@ public class LivePhotoGenerator {
     }
     
     // MARK: Video
-    static private func createVideoURL(_ asset: AVAsset, assetIdentifier: String, progress: @escaping (Double) -> Void, completion: @escaping (URL?) -> Void) {
+    static private func createVideoURL(_ asset: AVAsset, isMute: Bool, assetIdentifier: String, progress: LivePhotoGeneratorProgress? = nil, completion: @escaping (URL?) -> Void) {
         let videoPath = FileHelper.createLivePhotoVideoPath()
         let videoURL = URL.init(fileURLWithPath: videoPath)
         
@@ -116,7 +117,7 @@ public class LivePhotoGenerator {
         var readerAudioOutput: AVAssetReaderTrackOutput?
         var assetWriterAudioInput: AVAssetWriterInput?
         
-        if let audioTrack = asset.tracks(withMediaType: .audio).first {
+        if !isMute, let audioTrack = asset.tracks(withMediaType: .audio).first {
             readerAudioOutput = AVAssetReaderTrackOutput(track: audioTrack, outputSettings: nil)
             readerAudioOutput!.alwaysCopiesSampleData = false
             if assetReader.canAdd(readerAudioOutput!) {
@@ -175,7 +176,7 @@ public class LivePhotoGenerator {
                     break
                 }
                 let timeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-                progress(timeStamp.seconds / totalSeconds)
+                progress?(timeStamp.seconds / totalSeconds)
                 assetWriterVideoInput.append(sampleBuffer)
             }
         }

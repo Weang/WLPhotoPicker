@@ -13,8 +13,8 @@ public class PhotoEditOriginalFilter: PhotoEditFilterProvider {
         "Original"
     }
     
-    public func filterImage(_ image: UIImage?) -> UIImage? {
-        return image
+    public var filter: FilterProviderClosure? {
+        return nil
     }
     
 }

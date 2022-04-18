@@ -206,6 +206,9 @@
 		C15B3F89E6F83DC9CCB14903FC5D80C5 /* SVProgressHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = 034FE48632D30C8C362520B6BB40AB17 /* SVProgressHUD.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2030CB72808230300B902EB /* LocalizedKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2030CB62808230300B902EB /* LocalizedKey.swift */; };
 		C241A011154907D4A4B377DB529E9C9D /* DoublePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3724840F64AB024DFAF0401F25FA3D /* DoublePickerRow.swift */; };
+		C259B81F280D7AAB008BA48F /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259B81E280D7AAB008BA48F /* CGRect+Extensions.swift */; };
+		C259B821280D87F8008BA48F /* PhotoEditNashvilleFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259B820280D87F8008BA48F /* PhotoEditNashvilleFilter.swift */; };
+		C259B823280D896B008BA48F /* PhotoEdit1977Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259B822280D896B008BA48F /* PhotoEdit1977Filter.swift */; };
 		C2E3C5EC2808380400689881 /* LanguageRegionCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E3C5EB2808380400689881 /* LanguageRegionCode.swift */; };
 		C3084F02EE743DF804B2CF433A2D3323 /* AssetPickerDeniedPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2D91E2749047129AE4D903407F6B /* AssetPickerDeniedPermissionView.swift */; };
 		C349EC4320374ACC958CAF804D9183ED /* AssetFetchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A443623F2EE1660883C52AD040051499 /* AssetFetchOptions.swift */; };
@@ -554,6 +557,9 @@
 		C1EF2029021342545815C993EF4DBAE0 /* MultipleSelectorViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MultipleSelectorViewController.swift; path = Source/Rows/Controllers/MultipleSelectorViewController.swift; sourceTree = "<group>"; };
 		C2030CB62808230300B902EB /* LocalizedKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedKey.swift; sourceTree = "<group>"; };
 		C21C425D1A97665C8880B56F20F8795D /* CaptureManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CaptureManager.swift; sourceTree = "<group>"; };
+		C259B81E280D7AAB008BA48F /* CGRect+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
+		C259B820280D87F8008BA48F /* PhotoEditNashvilleFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditNashvilleFilter.swift; sourceTree = "<group>"; };
+		C259B822280D896B008BA48F /* PhotoEdit1977Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEdit1977Filter.swift; sourceTree = "<group>"; };
 		C25D809CBDDB59C2B1E25F7E9E7F83CE /* AVCaptureDevice+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "AVCaptureDevice+Extensions.swift"; sourceTree = "<group>"; };
 		C293868447B2D89FBEA31766A5EC8463 /* CaptureVideoFileType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CaptureVideoFileType.swift; sourceTree = "<group>"; };
 		C2E3C5EA2808314F00689881 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -613,7 +619,7 @@
 		E5D8D1D318E24D4A933869AE2B08C51A /* TriplePickerInputRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TriplePickerInputRow.swift; path = Source/Rows/TriplePickerInputRow.swift; sourceTree = "<group>"; };
 		E8190AD4F97A195BDAD88141D8A25D0E /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
 		E8473647F1BA56D1510F5747327C99C3 /* AssetPreviewVideoCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetPreviewVideoCell.swift; sourceTree = "<group>"; };
-		E97D43C46A45EE515A4DA3AF94398441 /* SVProgressHUD */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SVProgressHUD; path = SVProgressHUD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E97D43C46A45EE515A4DA3AF94398441 /* SVProgressHUD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SVProgressHUD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA0BA9421607A951EC3C9242AAF31EB9 /* PhotoEditFadeFilter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditFadeFilter.swift; sourceTree = "<group>"; };
 		EA2E2C376F23EDFAB4AC83B3ADC3851F /* WLPhotoPicker.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = WLPhotoPicker.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		EB3053BE551CC3913A6403279E492808 /* WLPhotoPicker.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = WLPhotoPicker.modulemap; sourceTree = "<group>"; };
@@ -956,6 +962,7 @@
 				8E4BBBCACDA76F15C5F1407EC2AB6AE3 /* AVAsset+Extensions.swift */,
 				C25D809CBDDB59C2B1E25F7E9E7F83CE /* AVCaptureDevice+Extensions.swift */,
 				90C7FCD1BA63F1B795FA173E9CE35645 /* CGSize+Extensions.swift */,
+				C259B81E280D7AAB008BA48F /* CGRect+Extensions.swift */,
 				ABD78738182FA1E79C323C807C6A6F4D /* CoreImage+Extensions.swift */,
 				D49AB5B671A6B7366859CDFA2384BD8C /* PHAsset+Extensions.swift */,
 				6CED7F1AE6CB9E92C50D3473A61C0B52 /* PHAssetCollection+Extensions.swift */,
@@ -975,6 +982,8 @@
 		5ED297F1233332622423609E1F3F54F9 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
+				C259B822280D896B008BA48F /* PhotoEdit1977Filter.swift */,
+				C259B820280D87F8008BA48F /* PhotoEditNashvilleFilter.swift */,
 				46A786AFE5E46446084BEA8186806C0F /* PhotoEditClarendonFilter.swift */,
 				EA0BA9421607A951EC3C9242AAF31EB9 /* PhotoEditFadeFilter.swift */,
 				E5554CA4FFBF5248C61144E6D26F0287 /* PhotoEditOriginalFilter.swift */,
@@ -1060,7 +1069,7 @@
 				082977F3777A7D434AB35C357B487F83 /* Eureka */,
 				8131F1B6FD18B1E2BD4C142B26441CC7 /* Pods-WLPhotoPicker_Example */,
 				979486118B3E90C08386079D57962701 /* SnapKit */,
-				E97D43C46A45EE515A4DA3AF94398441 /* SVProgressHUD */,
+				E97D43C46A45EE515A4DA3AF94398441 /* SVProgressHUD.framework */,
 				63DC9AF0F0534539201B17DBCE4217E3 /* WLPhotoPicker */,
 			);
 			name = Products;
@@ -1358,8 +1367,8 @@
 			children = (
 				41CC755CFF853B6D9F432AF7F14FF7A3 /* Animation */,
 				7A053E82EBA907861E870A4092160DBF /* Controller */,
-				4F8B2806791692727344BBC2AA199069 /* Model */,
 				023FDCEAA6741291CB353F4901BA24EE /* View */,
+				4F8B2806791692727344BBC2AA199069 /* Model */,
 			);
 			name = Edit;
 			path = WLPhotoPicker/Classes/Edit;
@@ -1474,7 +1483,7 @@
 			);
 			name = SVProgressHUD;
 			productName = SVProgressHUD;
-			productReference = E97D43C46A45EE515A4DA3AF94398441 /* SVProgressHUD */;
+			productReference = E97D43C46A45EE515A4DA3AF94398441 /* SVProgressHUD.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		2E420594F0924D8878D6F23C194AB5AF /* WLPhotoPicker */ = {
@@ -1762,6 +1771,7 @@
 				63193C6F0D1DE299F860C0D32FE88A0A /* AssetCameraCollectionViewCell.swift in Sources */,
 				D5C44152F081170CE58092D39CB6A6CF /* AssetCollectionViewCell.swift in Sources */,
 				4A56D270745433FCDB15CC75BAFF2DD8 /* AssetDescriptionView.swift in Sources */,
+				C259B821280D87F8008BA48F /* PhotoEditNashvilleFilter.swift in Sources */,
 				3E071343855311EEFE0E980E1766F137 /* AssetDisplayHelper.swift in Sources */,
 				37D17DC626A80E9AB89EC70F0E28A4FA /* AssetFetchError.swift in Sources */,
 				C349EC4320374ACC958CAF804D9183ED /* AssetFetchOptions.swift in Sources */,
@@ -1818,6 +1828,7 @@
 				D2F15182C8093B2FC128C7900BF794FB /* CaptureVideoFileType.swift in Sources */,
 				37FB463B956C48FE1716BAAA7D90AFFE /* CaptureVideoStabilizationMode.swift in Sources */,
 				8E8AEE74CC0DC0C3995C813DC8F28BC5 /* CaptureViewController.swift in Sources */,
+				C259B823280D896B008BA48F /* PhotoEdit1977Filter.swift in Sources */,
 				28C8F9A150886DF8915370CACC8AF348 /* CGSize+Extensions.swift in Sources */,
 				56AE7D2818BD7F0DF890988C3C03FF33 /* CircleSelectedButton.swift in Sources */,
 				0F90E3BAB0852F97A8FFC7D6671C6678 /* ColorConfig.swift in Sources */,
@@ -1862,6 +1873,7 @@
 				DE068F8CE95D47EDC61E014CBE7506DD /* PhotoEditGraffitiColorCollectionViewCell.swift in Sources */,
 				129F75B58E223F1F8F604DABA2F2FC87 /* PhotoEditGraffitiColorsView.swift in Sources */,
 				E46ABBF5BBB12970F8A158AAEA6ADDE8 /* PhotoEditGraffitiPath.swift in Sources */,
+				C259B81F280D7AAB008BA48F /* CGRect+Extensions.swift in Sources */,
 				B4F3591B4F64EF55B234EF6C347B0892 /* PhotoEditItemCollectionViewCell.swift in Sources */,
 				AC8B3725EAB52F754728CD8A6C361107 /* PhotoEditItemType.swift in Sources */,
 				FD898270DCE965EE185B061716F4A9F2 /* PhotoEditMaskLayer.swift in Sources */,
@@ -2004,7 +2016,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/SVProgressHUD/SVProgressHUD-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/SVProgressHUD/SVProgressHUD-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/SVProgressHUD/SVProgressHUD.modulemap";
 				PRODUCT_MODULE_NAME = SVProgressHUD;
@@ -2160,7 +2172,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/SVProgressHUD/SVProgressHUD-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/SVProgressHUD/SVProgressHUD-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MODULEMAP_FILE = "Target Support Files/SVProgressHUD/SVProgressHUD.modulemap";
 				PRODUCT_MODULE_NAME = SVProgressHUD;

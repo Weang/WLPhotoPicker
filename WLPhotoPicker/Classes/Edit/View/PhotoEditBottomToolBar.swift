@@ -20,7 +20,7 @@ protocol PhotoEditBottomToolBarDelegate: AnyObject {
     func bottomToolBarDidClickMosaicUndoButton(_ bottomToolBar: PhotoEditBottomToolBar)
     
     // 图片滤镜
-    func bottomToolBar(_ bottomToolBar: PhotoEditBottomToolBar, didSelectFilter filter: PhotoEditFilterProvider)
+    func bottomToolBar(_ bottomToolBar: PhotoEditBottomToolBar, didSelectFilter filter: PhotoEditFilterProvider, index: Int)
     
     // 图片调整
     func bottomToolBar(_ bottomToolBar: PhotoEditBottomToolBar, didSelectAdjustMode adjustMode: PhotoEditAdjustMode)
@@ -64,6 +64,7 @@ class PhotoEditBottomToolBar: UIView {
     private let photo: UIImage?
     private let photoEditConfig: PhotoEditConfig
     private var currentItemType: PhotoEditItemType?
+    var selectedFilterIndex: Int = 0
     
     init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
         self.photo = photo
@@ -156,6 +157,7 @@ class PhotoEditBottomToolBar: UIView {
     private func setupFiltersView() {
         filtersContentView.delegate = self
         filtersContentView.isHidden = true
+        filtersContentView.selectFilterIndex(selectedFilterIndex)
         addSubview(filtersContentView)
         filtersContentView.snp.makeConstraints { make in
             make.bottom.equalTo(contentView.snp.top)
@@ -301,8 +303,8 @@ extension PhotoEditBottomToolBar: PhotoEditAdjustViewDelegate {
 
 extension PhotoEditBottomToolBar: PhotoEditFiltersViewDelegate {
     
-    func filtersView(_ filtersView: PhotoEditFiltersView, didSelectFilter filter: PhotoEditFilterProvider) {
-        delegate?.bottomToolBar(self, didSelectFilter: filter)
+    func filtersView(_ filtersView: PhotoEditFiltersView, didSelectFilter filter: PhotoEditFilterProvider, index: Int) {
+        delegate?.bottomToolBar(self, didSelectFilter: filter, index: index)
     }
     
 }

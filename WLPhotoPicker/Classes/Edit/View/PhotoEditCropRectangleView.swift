@@ -167,6 +167,8 @@ class PhotoEditCropRectangleView: UIView {
             }
             cropRect.size.width = max(cropRect.size.width, minimumSize)
             cropRect.size.height = max(cropRect.size.height, minimumSize)
+            
+            cropRect = cropRect.rounded()
             updateCropRect(cropRect, animate: false)
         default:
             showCoverWithDelay()

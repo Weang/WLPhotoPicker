@@ -47,6 +47,8 @@ public struct AssetPickerPhotoResult {
 
 public struct AssetPickerVideoResult {
     
+    public var avasset: AVAsset
+    
     // 相册中未经过压缩的原视频，用于预览
     public var playerItem: AVPlayerItem
     

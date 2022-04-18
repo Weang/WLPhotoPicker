@@ -9,7 +9,7 @@ import UIKit
 
 struct PhotoEditMosaicPath {
     
-    var shapeSize: CGSize = .zero
+    var drawedViewSize: CGSize = .zero
     
     var pathLines: [PhotoEditMosaicPathLine] = []
     
@@ -41,14 +41,14 @@ struct PhotoEditMosaicPath {
         return mosaicPath.cgPath
     }
     
-    func drawMosaicImage(from image: UIImage?, mosaicImage: UIImage?) -> UIImage? {
-        guard let image = image else {
+    func drawMosaicImage(ornginalImage: UIImage?, mosaicImage: UIImage?) -> UIImage? {
+        guard let image = ornginalImage else {
             return nil
         }
         if pathLines.count == 0 {
             return image
         }
-        let scale = image.size.width / self.shapeSize.width
+        let scale = image.size.width / drawedViewSize.width
         let size = image.size
         let rect = CGRect(origin: .zero, size: size)
         UIGraphicsBeginImageContextWithOptions(size, false, 1)

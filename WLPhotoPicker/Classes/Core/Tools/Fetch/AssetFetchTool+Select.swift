@@ -16,7 +16,7 @@ extension AssetFetchTool {
     }
     
     public func selectedAsset(asset: AssetModel, delegateEvent: Bool = true) {
-        guard let albumModel = self.albumModel, config.pickerConfig.allowSelectMultiPhoto else {
+        guard let albumModel = self.albumModel, config.pickerConfig.allowsMultipleSelection else {
             return
         }
         if !asset.isSelected && isUptoLimit {
@@ -88,7 +88,7 @@ extension AssetFetchTool {
         
         let request = AssetFetchTool.requestPhoto(for: asset.asset, options: options) { result, _ in
             guard case .success(let response) = result else { return }
-            asset.previewImage = response.photo
+            asset.previewPhoto = response.photo
         }
         selectedAssetRequest[asset.localIdentifier] = request
     }
@@ -96,6 +96,6 @@ extension AssetFetchTool {
     func cancelFetchSelectedAsset(asset: AssetModel) {
         selectedAssetRequest[asset.localIdentifier]?.cancel()
         selectedAssetRequest.removeValue(forKey: asset.localIdentifier)
-        asset.previewImage = nil
+        asset.previewPhoto = nil
     }
 }

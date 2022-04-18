@@ -13,16 +13,18 @@ public class PhotoEditFadeFilter: PhotoEditFilterProvider {
         "Fade"
     }
     
-    public func filterImage(_ image: UIImage?) -> UIImage? {
-        guard let ciImage = image?.toCIImage() else {
-            return image
+    public var filter: FilterProviderClosure? {
+        return { image in
+            guard let ciImage = image?.toCIImage() else {
+                return image
+            }
+            let filter = CIFilter(name: "CIPhotoEffectFade")
+            filter?.setValue(ciImage, forKey: kCIInputImageKey)
+            guard let outputImage = filter?.outputImage?.toUIImage() else {
+                return image
+            }
+            return outputImage
         }
-        let filter = CIFilter(name: "CIPhotoEffectFade")
-        filter?.setValue(ciImage, forKey: kCIInputImageKey)
-        guard let outputImage = filter?.outputImage?.toUIImage() else {
-            return image
-        }
-        return outputImage
     }
     
 }

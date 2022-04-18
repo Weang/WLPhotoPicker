@@ -11,41 +11,47 @@ class EditManager {
     
     private static let queue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.EditManager.Draw")
     
-    static func drawEditOriginalImageFrom(asset: AssetModel, photoEditConfig: PhotoEditConfig, completion: @escaping (UIImage?) -> Void) {
-        guard let originalImage = asset.originalImage else {
-            completion(nil)
+    let photo: UIImage
+    let assetModel: AssetModel?
+    
+    var mosaicWidth: CGFloat = 30
+    
+    var editGraffitiPath = PhotoEditGraffitiPath()
+    var editMosaicPath = PhotoEditMosaicPath()
+    var cropRect: PhotoEditCropRect = .identity
+    var cropRotation: UIImage.Orientation = .up
+    var maskLayers: [PhotoEditMaskLayer] = []
+    var photoFilter: PhotoEditFilterProvider? = nil
+    var selectedFilterIndex: Int = 0
+    var adjustValue: [PhotoEditAdjustMode: Double] = [:]
+    
+    init(photo: UIImage, assetModel: AssetModel?) {
+        self.photo = photo
+        self.assetModel = assetModel
+        
+        guard let assetModel = assetModel, assetModel.hasEdit else {
             return
         }
-        imageFrom(photo: originalImage, asset: asset, photoEditConfig: photoEditConfig, completion: completion)
+        editGraffitiPath = assetModel.editGraffitiPath
+        editMosaicPath = assetModel.editMosaicPath
+        cropRect = assetModel.cropRect
+        cropRotation = assetModel.cropRotation
+        maskLayers = assetModel.maskLayers
+        photoFilter = assetModel.photoFilter
+        adjustValue = assetModel.adjustValue
     }
     
-    static private func imageFrom(photo: UIImage, asset: AssetModel, photoEditConfig: PhotoEditConfig, completion: @escaping (UIImage?) -> Void) {
-        queue.async {
-            // 这里之所以用previewImage作为马赛克的底图，是因为在选择原图时，大图马赛克效果和小图不一致
-            // 所以使用小图的马赛克图片作为底图，保证在选择原图时输出的效果和编辑时一致
-            // 如果图片被编辑过，并且选中导出，那么previewImage一定不为空
-            let mosaicMaskImage = (asset.filter?.filterImage(asset.previewImage) ?? asset.previewImage)?
-                .adjustImageFrom(asset.adjustValue)
-                .mosaicImage(level: photoEditConfig.photoEditMosaicWidth)
-            
-            let adjustedImage = (asset.filter?.filterImage(photo) ?? photo).adjustImageFrom(asset.adjustValue)
-            let image = asset.editMosaicPath.drawMosaicImage(from: adjustedImage, mosaicImage: mosaicMaskImage)
-            
-            let outputImage = drawMasksAt(photo: image, with: asset)
-            DispatchQueue.main.async {
-                completion(outputImage)
-            }
-        }
+    func drawPhoto() -> UIImage? {
+        let mosaicImage = (assetModel?.previewPhoto ?? photo).mosaicImage(level: mosaicWidth)
+        let mosaicDrawedImage = editMosaicPath.drawMosaicImage(ornginalImage: photo, mosaicImage: mosaicImage)
+        let filterImage = photoFilter?.filter?(mosaicDrawedImage) ?? mosaicDrawedImage
+        let adjustedImage = filterImage?.adjustImageFrom(adjustValue)
+        return adjustedImage
     }
     
-    static func drawMasksAt(photo: UIImage?, with asset: AssetModel) -> UIImage? {
-        return drawMasksAt(photo: photo, editGraffitiPath: asset.editGraffitiPath, maskLayers: asset.maskLayers)
-    }
-    
-    static func drawMasksAt(photo: UIImage?, editGraffitiPath: PhotoEditGraffitiPath, maskLayers: [PhotoEditMaskLayer]) -> UIImage? {
-        guard let photo = photo else {
-            return nil
-        }
+    func drawOverlay(at photo: UIImage?, withCrop: Bool) -> UIImage? {
+        guard let photo = photo else { return nil }
+        
         let contextRect = AssetDisplayHelper.imageViewRectFrom(imageSize: photo.size, mediaType: .photo)
         let scale = photo.size.width / contextRect.size.width
         let rect = CGRect(origin: .zero, size: photo.size)
@@ -56,7 +62,7 @@ class EditManager {
         photo.draw(in: rect)
         
         var editGraffitiPath = editGraffitiPath
-        editGraffitiPath.imageSize = photo.size
+        editGraffitiPath.contextSize = photo.size
         editGraffitiPath.draw()?.draw(in: rect)
         
         for maskLayer in maskLayers {
@@ -74,7 +80,14 @@ class EditManager {
                                               width: transformedFrame.size.width * scale,
                                               height:transformedFrame.size.height * scale))
         }
-        return UIGraphicsGetImageFromCurrentImageContext()
+        
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        if withCrop {
+            return image?.rotate(orientation: cropRotation)
+                .cropToRect(cropRect)
+        } else {
+            return image
+        }
     }
     
 }

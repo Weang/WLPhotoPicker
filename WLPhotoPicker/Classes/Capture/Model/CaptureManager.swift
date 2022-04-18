@@ -12,13 +12,13 @@ import VideoToolbox
 
 public protocol CaptureManagerDelegate: AnyObject {
     func captureManager(_ captureManager: CaptureManager, didOccurredError error: CaptureError)
-    func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage?)
+    func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage)
     func captureManager(_ captureManager: CaptureManager, finishTakingVideo url: URL)
 }
 
 public extension CaptureManagerDelegate {
     func captureManager(_ captureManager: CaptureManager, didOccurredError error: CaptureError) { }
-    func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage?) { }
+    func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage) { }
     func captureManager(_ captureManager: CaptureManager, finishTakingVideo url: URL) { }
 }
 

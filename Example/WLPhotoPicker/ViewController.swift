@@ -49,4 +49,11 @@ class ViewController: FormViewController {
         
     }
     
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        let config = WLPhotoConfig()
+//        config.photoEditConfig.photoEditPasters = (1...18).map{ "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) }
+//        let vc = WLPhotoPickerController(config: config)
+//        self.present(vc, animated: true, completion: nil)
+//    }
 }

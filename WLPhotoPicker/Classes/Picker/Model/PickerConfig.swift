@@ -43,9 +43,9 @@ public class PickerConfig {
     // 可选择的最长视频时长，单位为秒, 0不做限制
     public var pickerMaximumVideoDuration: TimeInterval = 0
     
-    // 是否可选择多个照片
+    // 是否可选择多个照片和视频
     // 如果为false, 任何时候都不会选中照片，并且cell和预览页面不会显示选中按钮，selectCountLimit会失效
-    public var allowSelectMultiPhoto: Bool = true
+    public var allowsMultipleSelection: Bool = true
     
     // 是否可选择原图
     // 如果为false, 勾选原图按钮会隐藏

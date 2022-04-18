@@ -102,8 +102,8 @@ class PhotoEditCropViewController: UIViewController {
         view.bringSubviewToFront(bottomToolBar)
         view.layoutIfNeeded()
         
-        let displayRect = adaptionDisplayRect(displaySize: photo.size)
-        let contentInset = scrollViewContentInsetFrom(displayRect: displayRect)
+        let displayRect = adjustDisplayRect(photo.size)
+        let contentInset = fitContentInset(displayRect)
         
         contentScrollView.zoomScale = 1
         
@@ -123,7 +123,7 @@ class PhotoEditCropViewController: UIViewController {
         currentPhoto = currentPhoto.rotate(orientation: cropRotation)
         cropedImage = currentPhoto.cropToRect(cropRect)
 
-        let toDisplayImageRect = adaptionDisplayRect(displaySize: currentPhoto.size)
+        let toDisplayImageRect = adjustDisplayRect(currentPhoto.size)
         currentImageViewsize = toDisplayImageRect.size
         contentScrollView.minimumZoomScale = 1
         contentScrollView.zoomScale = 1
@@ -139,12 +139,12 @@ class PhotoEditCropViewController: UIViewController {
         cropToImageRect(cropImageRect, animate: false)
     }
     
-    func adaptionDisplayRect(displaySize: CGSize) -> CGRect {
+    func adjustDisplayRect(_ imageSize: CGSize) -> CGRect {
         let viewWidth = contentScrollView.width - originalContentInset.left - originalContentInset.right
         let viewHeight = contentScrollView.height - originalContentInset.top - originalContentInset.bottom
         let viewRatio = viewWidth / viewHeight
         
-        let displayRatio = displaySize.width / displaySize.height
+        let displayRatio = imageSize.width / imageSize.height
         
         var displayRect: CGRect = .zero
         
@@ -159,42 +159,13 @@ class PhotoEditCropViewController: UIViewController {
             displayRect.origin.y = originalContentInset.top
             displayRect.origin.x = (viewWidth - displayRect.size.width) * 0.5 + originalContentInset.left
         }
-        
+        displayRect = displayRect.rounded()
         return displayRect
     }
     
-    func fitMaximumCropRect() {
-        let imageViweFrame = contentScrollView.convert(contentImageView.frame, to: cropRectangleView)
-        var x: CGFloat = 0
-        var y: CGFloat = 0
-        var width: CGFloat = 0
-        var height: CGFloat = 0
-        if imageViweFrame.origin.x < originalContentInset.left {
-            x = originalContentInset.left
-        } else {
-            x = imageViweFrame.origin.x
-        }
-        if imageViweFrame.origin.y < originalContentInset.top {
-            y = originalContentInset.top
-        } else {
-            y = imageViweFrame.origin.y
-        }
-        if cropRectangleView.width - (imageViweFrame.size.width + imageViweFrame.origin.x) < originalContentInset.right {
-            width = cropRectangleView.width - originalContentInset.right - cropRectangleView.cropRect.origin.x
-        } else {
-            width = imageViweFrame.size.width + imageViweFrame.origin.x - cropRectangleView.cropRect.origin.x
-        }
-        if cropRectangleView.height - (imageViweFrame.size.height + imageViweFrame.origin.y) < originalContentInset.bottom {
-            height = cropRectangleView.height - originalContentInset.bottom - cropRectangleView.cropRect.origin.y
-        } else {
-            height = imageViweFrame.size.height + imageViweFrame.origin.y - cropRectangleView.cropRect.origin.y
-        }
-        cropRectangleView.maximumCropRect = CGRect(x: x, y: y, width: width, height: height)
-    }
-    
     func cropToImageRect(_ cropImageRect: CGRect, animate: Bool) {
-        let displayRect = adaptionDisplayRect(displaySize: cropImageRect.size)
-        let contentInset = scrollViewContentInsetFrom(displayRect: displayRect)
+        let displayRect = adjustDisplayRect(cropImageRect.size)
+        let contentInset = fitContentInset(displayRect)
         var scale = min(displayRect.size.width / cropImageRect.size.width,
                         displayRect.size.height / cropImageRect.size.height)
         if scale < contentScrollView.minimumZoomScale {
@@ -220,7 +191,29 @@ class PhotoEditCropViewController: UIViewController {
         }
     }
     
-    func scrollViewContentInsetFrom(displayRect: CGRect) -> UIEdgeInsets {
+    func fitMaximumCropRect() {
+        let imageViweFrame = contentScrollView.convert(contentImageView.frame, to: cropRectangleView)
+        
+        var maximumCropRect: CGRect = .zero
+        maximumCropRect.origin.x = max(imageViweFrame.origin.x, originalContentInset.left)
+        maximumCropRect.origin.y = max(imageViweFrame.origin.y, originalContentInset.top)
+        
+        if cropRectangleView.width - (imageViweFrame.size.width + imageViweFrame.origin.x) < originalContentInset.right {
+            maximumCropRect.size.width = cropRectangleView.width - originalContentInset.right - cropRectangleView.cropRect.origin.x
+        } else {
+            maximumCropRect.size.width = imageViweFrame.size.width + imageViweFrame.origin.x - cropRectangleView.cropRect.origin.x
+        }
+        
+        if cropRectangleView.height - (imageViweFrame.size.height + imageViweFrame.origin.y) < originalContentInset.bottom {
+            maximumCropRect.size.height = cropRectangleView.height - originalContentInset.bottom - cropRectangleView.cropRect.origin.y
+        } else {
+            maximumCropRect.size.height = imageViweFrame.size.height + imageViweFrame.origin.y - cropRectangleView.cropRect.origin.y
+        }
+        
+        cropRectangleView.maximumCropRect = maximumCropRect
+    }
+    
+    func fitContentInset(_ displayRect: CGRect) -> UIEdgeInsets {
         return UIEdgeInsets(top: displayRect.origin.y,
                             left: displayRect.origin.x,
                             bottom: contentScrollView.height - displayRect.maxY,
@@ -233,7 +226,7 @@ class PhotoEditCropViewController: UIViewController {
         let fromImageViewSize = view.convert(contentImageView.frame, to: contentImageView).size
         let fromCropImageRect = view.convert(cropRectangleView.cropRect, to: contentImageView)
         
-        let toDisplayImageRect = adaptionDisplayRect(displaySize: currentPhoto.size)
+        let toDisplayImageRect = adjustDisplayRect(currentPhoto.size)
         let toImageViewSize = toDisplayImageRect.size
         let toCropImageRect: CGRect
         switch orientation {
@@ -251,7 +244,7 @@ class PhotoEditCropViewController: UIViewController {
         
         if let image = contentImageView.screenShot(rect: fromCropImageRect) {
             let toImageSize = CGSize(width: image.size.height, height: image.size.width)
-            let toCropRect = adaptionDisplayRect(displaySize: toImageSize)
+            let toCropRect = adjustDisplayRect(toImageSize)
             
             let transformScale: CGFloat
             if cropRectangleView.cropRect.size.width > cropRectangleView.cropRect.size.height {
@@ -310,6 +303,7 @@ class PhotoEditCropViewController: UIViewController {
     }
 }
 
+// MARK: UIScrollViewDelegate
 extension PhotoEditCropViewController: UIScrollViewDelegate {
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -348,6 +342,7 @@ extension PhotoEditCropViewController: UIScrollViewDelegate {
     }
 }
 
+// MARK: PhotoEditCropToolBarDelegate
 extension PhotoEditCropViewController: PhotoEditCropToolBarDelegate {
     func toolBarDidClickCancelButton(_ toolBar: PhotoEditCropToolBar) {
         dismiss(animated: true, completion: nil)
@@ -359,7 +354,7 @@ extension PhotoEditCropViewController: PhotoEditCropToolBarDelegate {
     
     func toolBarDidClickResetButton(_ toolBar: PhotoEditCropToolBar) {
         contentScrollView.minimumZoomScale = 1
-        cropToImageRect(contentImageView.bounds, animate: true)
+        cropToImageRect(contentImageView.bounds.rounded(), animate: true)
     }
     
     func toolBarDidClickRotateRightButton(_ toolBar: PhotoEditCropToolBar) {
@@ -381,6 +376,7 @@ extension PhotoEditCropViewController: PhotoEditCropToolBarDelegate {
     
 }
 
+// MARK: PhotoEditCropRectangleViewDelegate
 extension PhotoEditCropViewController: PhotoEditCropRectangleViewDelegate {
     
     func cropViewDidBeginDrag(_ cropView: PhotoEditCropRectangleView) {
@@ -388,7 +384,7 @@ extension PhotoEditCropViewController: PhotoEditCropRectangleViewDelegate {
     }
     
     func cropView(_ cropView: PhotoEditCropRectangleView, willCropToRect cropRect: CGRect) {
-        contentScrollView.contentInset = scrollViewContentInsetFrom(displayRect: cropRect)
+        contentScrollView.contentInset = fitContentInset(cropRect)
     }
     
     func cropView(_ cropView: PhotoEditCropRectangleView, didCropToRect cropRect: CGRect) {
