@@ -70,6 +70,8 @@ public enum LocalizedKey: String {
     case FailedToExportVideo
     case FailedToInitializeCameraDevice
     case FailedToInitializeMicrophoneDevice
+    case CameraPermissionDenied
+    case MicrophonePermissionDenied
     case FailedToLoadAsset
     case FailedToWriteAsset
 }

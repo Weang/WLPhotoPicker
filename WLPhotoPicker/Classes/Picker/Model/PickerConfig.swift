@@ -47,6 +47,9 @@ public class PickerConfig {
     // 如果为false, 任何时候都不会选中照片，并且cell和预览页面不会显示选中按钮，selectCountLimit会失效
     public var allowsMultipleSelection: Bool = true
     
+    // 是否可以同时选择图片和视频
+    public var allowsSelectBothPhotoAndVideo: Bool = true
+    
     // 是否可选择原图
     // 如果为false, 勾选原图按钮会隐藏
     public var allowSelectOriginal: Bool = true

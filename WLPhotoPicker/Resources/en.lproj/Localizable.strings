@@ -43,5 +43,7 @@
 "FailedToExportVideo" = "Failed to export selected video";
 "FailedToInitializeCameraDevice" = "Camera initialization failed";
 "FailedToInitializeMicrophoneDevice" = "Failed to initialize microphone";
+"CameraPermissionDenied" = "Cannot get camera permission, please allow %@ to access camera in \"Settings\"";
+"MicrophonePermissionDenied" = "Cannot get microphone permission, please allow %@ to access the microphone in \"Settings\"";
 "FailedToLoadAsset" = "Failed to load video file";
 "FailedToWriteAsset" = "Failed to write video file";

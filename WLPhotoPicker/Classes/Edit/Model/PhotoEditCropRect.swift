@@ -56,7 +56,7 @@ extension UIImage {
         let toRect = CGRect(x: size.width * rect.x,
                             y: size.height * rect.y,
                             width: size.width * rect.width,
-                            height: size.height * rect.height)
+                            height: size.height * rect.height).rounded()
         UIGraphicsBeginImageContextWithOptions(toRect.size, false, 1)
         let drawRect = CGRect(x: -toRect.minX, y: -toRect.minY, width: size.width, height: size.height)
         draw(in: drawRect)

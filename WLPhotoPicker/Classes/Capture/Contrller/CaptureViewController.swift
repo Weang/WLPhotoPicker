@@ -27,6 +27,8 @@ public class CaptureViewController: UIViewController {
     
     public weak var delegate: CaptureViewControllerDelegate?
     
+    private var isPermissionReady = false
+    
     public init(captureConfig: CaptureConfig, photoEditConfig: PhotoEditConfig? = nil) {
         self.captureConfig = captureConfig
         self.photoEditConfig = photoEditConfig

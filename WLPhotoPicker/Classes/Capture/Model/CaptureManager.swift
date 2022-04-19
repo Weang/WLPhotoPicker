@@ -57,11 +57,22 @@ public class CaptureManager: NSObject {
         try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .videoRecording, options: .mixWithOthers)
         try? AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         
-        orientationManager.delegate = self
-        
-        sessionQueue.async { [weak self] in
-            self?.setupCapture()
-            self?.focusAt(CGPoint(x: 0.5, y: 0.5))
+        PermissionProvider.request(.camera) { [unowned self] status in
+            guard status == .authorized else {
+                self.delegate?.captureManager(self, didOccurredError: .cameraPermissionDenied)
+                return
+            }
+            PermissionProvider.request(.camera) { [unowned self] status in
+                guard status == .authorized else {
+                    self.delegate?.captureManager(self, didOccurredError: .microphonePermissionDenied)
+                    return
+                }
+                self.orientationManager.delegate = self
+                self.sessionQueue.async {
+                    self.setupCapture()
+                    self.focusAt(CGPoint(x: 0.5, y: 0.5))
+                }
+            }
         }
     }
     

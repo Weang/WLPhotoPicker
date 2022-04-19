@@ -43,5 +43,7 @@
 "FailedToExportVideo" = "无法导出选择的视频";
 "FailedToInitializeCameraDevice" = "相机初始化失败";
 "FailedToInitializeMicrophoneDevice" = "麦克风初始化失败";
+"CameraPermissionDenied" = "无法获取相机权限，请在“设置”中允许%@访问相机";
+"MicrophonePermissionDenied" = "无法获取麦克风权限，请在“设置”中允许%@访问麦克风";
 "FailedToLoadAsset" = "读取视频文件失败";
 "FailedToWriteAsset" = "写入视频文件失败";

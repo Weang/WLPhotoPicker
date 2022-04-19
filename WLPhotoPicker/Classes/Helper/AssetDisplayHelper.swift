@@ -39,7 +39,7 @@ class AssetDisplayHelper {
             imageViewRect.origin.y = 0
             imageViewRect.origin.x = 0
         }
-        return imageViewRect.rounded()
+        return imageViewRect
     }
     
     static func imageViewMaxZoomScaleFrom(imageSize: CGSize) -> CGFloat {

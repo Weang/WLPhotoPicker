@@ -19,7 +19,12 @@ extension AssetFetchTool {
         guard let albumModel = self.albumModel, config.pickerConfig.allowsMultipleSelection else {
             return
         }
-        if !asset.isSelected && isUptoLimit {
+        
+        if asset.isSelected {
+            return
+        }
+        
+        if isUptoLimit {
             if delegateEvent {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
@@ -30,19 +35,39 @@ extension AssetFetchTool {
             }
             return
         }
-        if !asset.isSelected {
-            asset.selectedIndex = selectedAssets.count + 1
-            asset.isSelected = true
-            selectedAssets.append(asset)
-            if isUptoLimit {
-                albumModel.assets.filter { asset in
-                    !selectedAssets.contains(where: { $0.localIdentifier == asset.localIdentifier })
+        
+        if !pickerConfig.allowsSelectBothPhotoAndVideo {
+            if !asset.isEnabled {
+                return
+            }
+            if asset.mediaType.isPhoto {
+                albumModel.assets.filter {
+                    $0.mediaType.isVideo
+                }.forEach {
+                    $0.isEnabled = false
+                }
+            } else {
+                albumModel.assets.filter {
+                    $0.mediaType.isPhoto
                 }.forEach {
                     $0.isEnabled = false
                 }
             }
-            fetchSelectedAsset(asset: asset)
         }
+        
+        asset.selectedIndex = selectedAssets.count + 1
+        asset.isSelected = true
+        selectedAssets.append(asset)
+        if isUptoLimit {
+            albumModel.assets.filter { asset in
+                !selectedAssets.contains(where: { $0.localIdentifier == asset.localIdentifier })
+            }.forEach {
+                $0.isEnabled = false
+            }
+        }
+        
+        fetchSelectedAsset(asset: asset)
+        
         if delegateEvent {
             delegateEventsWith(asset: asset)
         }
@@ -65,6 +90,22 @@ extension AssetFetchTool {
         }
         albumModel.assets.forEach {
             $0.isEnabled = true
+        }
+        if !pickerConfig.allowsSelectBothPhotoAndVideo,
+           let asset = selectedAssets.first {
+            if asset.mediaType.isPhoto {
+                albumModel.assets.filter {
+                    $0.mediaType.isVideo
+                }.forEach {
+                    $0.isEnabled = false
+                }
+            } else {
+                albumModel.assets.filter {
+                    $0.mediaType.isPhoto
+                }.forEach {
+                    $0.isEnabled = false
+                }
+            }
         }
         cancelFetchSelectedAsset(asset: asset)
         if delegateEvent {
