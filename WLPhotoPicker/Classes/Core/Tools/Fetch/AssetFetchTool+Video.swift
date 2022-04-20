@@ -21,7 +21,7 @@ extension AssetFetchTool {
             options.progressHandler?(progress)
         }
         
-        if #available(iOS 13, *), let fileURL = asset.locallyVideoFileURL {
+        if let fileURL = asset.locallyVideoFileURL {
             let avasset = AVAsset(url: fileURL)
             let playerItem = AVPlayerItem(asset: avasset)
             DispatchQueue.main.async {

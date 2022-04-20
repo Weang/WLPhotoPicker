@@ -9,23 +9,23 @@
 import UIKit
 import WLPhotoPicker
 import SVProgressHUD
+import Eureka
 
-class LivePhotoToVideoViewController: UIViewController {
+class LivePhotoToVideoViewController: FormViewController {
+    
+    var isMute: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        SVProgressHUD.setDefaultStyle(.dark)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Picker", style: .done, target: self, action: #selector(openPicker))
         
-        view.backgroundColor = .white
-        
-        let button = UIButton()
-        button.setTitleColor(.black, for: .normal)
-        button.addTarget(self, action: #selector(openPicker), for: .touchUpInside)
-        button.setTitle("选择视频", for: .normal)
-        view.addSubview(button)
-        button.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+        form +++ Section("")
+        <<< SwitchRow() { row in
+            row.title = "是否静音"
+            row.value = self.isMute
+        }.onChange { row in
+            self.isMute = row.value ?? false
         }
     }
     
@@ -44,14 +44,14 @@ class LivePhotoToVideoViewController: UIViewController {
 
 extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
     
-    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult]) {
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [PhotoPickerResult]) {
         guard let result = results.first,
               case .video(let videoResult) = result.result,
               let videoURL = videoResult.videoURL else {
             return
         }
         
-        LivePhotoGenerator.createLivePhotoFrom(videoURL, isMute: true) { progress in
+        LivePhotoGenerator.createLivePhotoFrom(videoURL, isMute: isMute) { progress in
             SVProgressHUD.showProgress(Float(progress))
         } completion: { result in
             guard let result = result else {

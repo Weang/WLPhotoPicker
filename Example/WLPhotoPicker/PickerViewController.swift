@@ -17,8 +17,9 @@ class PickerViewController: FormViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = "Picker"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Picker", style: .done, target: self, action: #selector(openPicker))
+        
+        config.photoEditConfig.photoEditPasters = (1...18).map{ "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) }
         
         form +++ Section("Picker")
         
@@ -29,20 +30,6 @@ class PickerViewController: FormViewController {
         }.onChange({ row in
             self.config.pickerConfig.columnsOfPhotos = Int(row.value ?? "4") ?? 4
         })
-        
-        <<< SwitchRow() { row in
-            row.title = "是否可以多选照片"
-            row.value = self.config.pickerConfig.allowsMultipleSelection
-        }.onChange { row in
-            self.config.pickerConfig.allowsMultipleSelection = (row.value ?? false)
-        }
-        
-        <<< SwitchRow() { row in
-            row.title = "点击按钮是否进入预览页面"
-            row.value = self.config.pickerConfig.allowPreview
-        }.onChange { row in
-            self.config.pickerConfig.allowPreview = (row.value ?? false)
-        }
         
         <<< MultipleSelectorRow<String>() { row in
             row.title = "可选择资源类型"
@@ -65,8 +52,8 @@ class PickerViewController: FormViewController {
             }
             self.config.pickerConfig.selectableType = type
         }).onPresent { from, to in
-                to.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: from, action: #selector(PickerViewController.multipleSelectorDone(_:)))
-            }
+            to.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: from, action: #selector(PickerViewController.multipleSelectorDone(_:)))
+        }
         
         <<< PickerInputRow<String>() { row in
             row.title = "排序方式"
@@ -78,7 +65,7 @@ class PickerViewController: FormViewController {
         
         <<< IntRow() { row in
             row.title = "可选择的最长视频时长"
-            row.value = 120
+            row.value = 0
         }.onChange({ row in
             self.config.pickerConfig.pickerMaximumVideoDuration = TimeInterval(row.value ?? 0)
         })
@@ -92,6 +79,41 @@ class PickerViewController: FormViewController {
         })
         
         <<< SwitchRow() { row in
+            row.title = "是否显示隐藏相册"
+            row.value = self.config.pickerConfig.showHiddenAlbum
+        }.onChange { row in
+            self.config.pickerConfig.showHiddenAlbum = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "是否显示最近删除相册"
+            row.value = self.config.pickerConfig.showRecentlyDeletedAlbum
+        }.onChange { row in
+            self.config.pickerConfig.showRecentlyDeletedAlbum = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "是否可以同时选择图片和视频"
+            row.value = self.config.pickerConfig.allowsSelectBothPhotoAndVideo
+        }.onChange { row in
+            self.config.pickerConfig.allowsSelectBothPhotoAndVideo = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "是否可以多选照片"
+            row.value = self.config.pickerConfig.allowsMultipleSelection
+        }.onChange { row in
+            self.config.pickerConfig.allowsMultipleSelection = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
+            row.title = "点击图片cell是否进入预览页面"
+            row.value = self.config.pickerConfig.allowPreview
+        }.onChange { row in
+            self.config.pickerConfig.allowPreview = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
             row.title = "图片是否可编辑"
             row.value = self.config.pickerConfig.allowEditPhoto
         }.onChange { row in
@@ -99,14 +121,14 @@ class PickerViewController: FormViewController {
         }
         
         <<< SwitchRow() { row in
-            row.title = "是否显示添加更多照片"
+            row.title = "是否显示添加更多可访问照片"
             row.value = self.config.pickerConfig.canAddMoreAssetWhenLimited
         }.onChange { row in
             self.config.pickerConfig.canAddMoreAssetWhenLimited = (row.value ?? false)
         }
         
         <<< SwitchRow() { row in
-            row.title = "是否自动选中添加的照片"
+            row.title = "是否自动选中添加的可访问照片"
             row.value = self.config.pickerConfig.autoSelectAssetFromLimitedLibraryPicker
         }.onChange { row in
             self.config.pickerConfig.autoSelectAssetFromLimitedLibraryPicker = (row.value ?? false)
@@ -120,84 +142,17 @@ class PickerViewController: FormViewController {
         }
         
         <<< SwitchRow() { row in
-            row.title = "选取照片时是否导出照片地址"
+            row.title = "选取照片时是否将图片导出文件"
             row.value = self.config.pickerConfig.exportImageURLWhenPick
         }.onChange { row in
             self.config.pickerConfig.exportImageURLWhenPick = (row.value ?? false)
         }
         
         <<< SwitchRow() { row in
-            row.title = "选取视频时是否导出视频地址"
-            row.value = self.config.pickerConfig.exportVideoURLWhenPick
-        }.onChange { row in
-            self.config.pickerConfig.exportVideoURLWhenPick = (row.value ?? false)
-        }
-        
-        <<< SwitchRow() { row in
-            row.title = "勾选原图时是否导出原视频"
-            row.value = self.config.pickerConfig.allowVideoSelectOriginal
-        }.onChange { row in
-            self.config.pickerConfig.allowVideoSelectOriginal = (row.value ?? false)
-        }
-        
-        <<< PickerInputRow<String>() { row in
-            row.title = "导出视频尺寸"
-            row.options = ["_640x480", "_960x540", "_1280x720", "_1920x1080", "_3840x2160"]
-            row.value = "_960x540"
-        }.onChange({ row in
-            let value: PickerVideoCompressSize
-            switch (row.value ?? "_960x540") {
-            case "_640x480": value = ._640x480
-            case "_960x540": value = ._960x540
-            case "_1280x720": value = ._1280x720
-            case "_1920x1080": value = ._1920x1080
-            case "_3840x2160": value = ._3840x2160
-            default : value = ._960x540
-            }
-            self.config.pickerConfig.videoExportCompressSize = value
-        })
-        
-        <<< IntRow() { row in
-            row.title = "导出视频帧率"
-            row.value = 30
-        }.onChange({ row in
-            self.config.pickerConfig.videoExportFrameDuration = Float(row.value ?? 0)
-        })
-        
-        <<< SwitchRow() { row in
-            row.title = "点击确定是否自动关闭"
+            row.title = "确定或者取消之后是否自动关闭"
             row.value = self.config.pickerConfig.dismissPickerAfterDone
         }.onChange { row in
             self.config.pickerConfig.dismissPickerAfterDone = (row.value ?? false)
-        }
-        
-        <<< SwitchRow() { row in
-            row.title = "是否保存编辑后的照片"
-            row.value = self.config.pickerConfig.saveEditedPhotoToAlbum
-        }.onChange { row in
-            self.config.pickerConfig.saveEditedPhotoToAlbum = (row.value ?? false)
-        }
-        
-        form +++ Section("Editor")
-        
-        <<< SwitchRow() { row in
-            row.title = "使用自定义贴图"
-            row.value = false
-        }.onChange { row in
-            self.config.photoEditConfig.photoEditPasters = (row.value ?? false) ? (1...18).map{ "paster\($0)" }.map{ PhotoEditPasterProvider.imageName($0) } : []
-            if (row.value ?? false),
-               !self.config.photoEditConfig.photoEditItemTypes.contains(.paster) {
-                self.config.photoEditConfig.photoEditItemTypes.insert(.paster, at: 1)
-            }
-        }
-        
-        form +++ Section("Capture")
-        
-        <<< SwitchRow() { row in
-            row.title = "是否使用系统相机进行拍摄"
-            row.value = self.config.pickerConfig.useSystemImagePickerController
-        }.onChange { row in
-            self.config.pickerConfig.useSystemImagePickerController = row.value ?? false
         }
         
         <<< SwitchRow() { row in
@@ -214,6 +169,12 @@ class PickerViewController: FormViewController {
             self.config.pickerConfig.allowTakingVideo = row.value ?? false
         }
         
+        <<< SwitchRow() { row in
+            row.title = "是否使用系统相机进行拍摄"
+            row.value = self.config.pickerConfig.useSystemImagePickerController
+        }.onChange { row in
+            self.config.pickerConfig.useSystemImagePickerController = row.value ?? false
+        }
     }
     
     @objc func multipleSelectorDone(_ item: UIBarButtonItem) {
@@ -229,9 +190,9 @@ class PickerViewController: FormViewController {
 
 extension PickerViewController: WLPhotoPickerControllerDelegate {
     
-    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult]) {
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [PhotoPickerResult]) {
         let vc = PickerResultViewController()
-        vc.result = results
+        vc.results = results
         navigationController?.pushViewController(vc, animated: true)
     }
     

@@ -15,19 +15,28 @@ public protocol WLPhotoPickerControllerDelegate: AnyObject {
     func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController)
     
     // 点击完成按钮
-    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult])
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [PhotoPickerResult])
 }
 
 public extension WLPhotoPickerControllerDelegate {
     func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController) { }
-    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [AssetPickerResult]) { }
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [PhotoPickerResult]) { }
 }
 
 public class WLPhotoPickerController: UINavigationController {
     
     public weak var pickerDelegate: WLPhotoPickerControllerDelegate?
     
-    let config: WLPhotoConfig
+    // 传入已选中的localIdentifier，默认选中已选择的资源
+    public var selectedIdentifiers: [String]? {
+        didSet {
+            if let viewController = viewControllers.first as? AssetPickerController {
+                viewController.selectedIdentifiers = selectedIdentifiers
+            }
+        }
+    }
+    
+    private let config: WLPhotoConfig
     
     public init(config: WLPhotoConfig = .default) {
         self.config = config.checkCongfig()
@@ -73,7 +82,7 @@ extension WLPhotoPickerController: AssetPickerControllerDelegate {
         }
     }
     
-    func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [AssetPickerResult]) {
+    func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [PhotoPickerResult]) {
         pickerDelegate?.pickerController(self, didSelectResult: results)
         
         if config.pickerConfig.dismissPickerAfterDone {

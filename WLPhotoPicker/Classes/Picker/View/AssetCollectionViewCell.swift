@@ -70,7 +70,7 @@ class AssetCollectionViewCell: UICollectionViewCell {
         
         cancelCurrentRequest()
         
-        if let displayingImage = model.displayingImage {
+        if let displayingImage = model.displayingPhoto {
             assetImageView.image = displayingImage
         } else {
             let options = AssetFetchOptions()

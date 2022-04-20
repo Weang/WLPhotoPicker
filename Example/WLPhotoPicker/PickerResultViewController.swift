@@ -12,69 +12,60 @@ import AVFoundation
 import AVKit
 
 class PickerResultViewController: UIViewController {
-
-    var result: [AssetPickerResult] = []
-    let tableView = UITableView(frame: .zero, style: .grouped)
+    
+    var results: [PhotoPickerResult] = []
+    var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        navigationItem.title = "结果"
         
         view.backgroundColor = .white
         
-        tableView.register(PickerResultTableViewCell.self, forCellReuseIdentifier: "PickerResultTableViewCell")
-        tableView.estimatedRowHeight = 0
-        tableView.estimatedSectionFooterHeight = 0
-        tableView.estimatedSectionHeaderHeight = 0
-        tableView.rowHeight = 120
-        tableView.delegate = self
-        tableView.dataSource = self
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
+        let layout = WaterfallLayout()
+        layout.delegate = self
+        layout.sectionInset = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
+        layout.minimumLineSpacing = 4
+        layout.minimumInteritemSpacing = 4
+        
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.alwaysBounceVertical = true
+        collectionView.backgroundColor = .white
+        collectionView.register(PickerResultCollectionViewCell.self, forCellWithReuseIdentifier: "PickerResultCollectionViewCell")
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        view.addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
     
 }
 
-extension PickerResultViewController: UITableViewDataSource, UITableViewDelegate {
+extension PickerResultViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return result.count
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return results.count
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PickerResultTableViewCell") as! PickerResultTableViewCell
-        cell.bind(result[indexPath.section])
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PickerResultCollectionViewCell", for: indexPath) as! PickerResultCollectionViewCell
+        cell.setResult(results[indexPath.item])
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let model = result[indexPath.section]
-        guard case .video(let video) = model.result else { return }
-        
-        if let fileURL = video.videoURL {
-            let player = AVPlayer(url: fileURL)
-            let controller = AVPlayerViewController()
-            controller.player = player
-            controller.modalPresentationStyle = .fullScreen
-            present(controller, animated: true) {
-                player.play()
-            }
-        } else if let playerItem = video.playerItem.copy() as? AVPlayerItem {
-            let player = AVPlayer(playerItem: playerItem)
-            let controller = AVPlayerViewController()
-            controller.player = player
-            controller.modalPresentationStyle = .fullScreen
-            present(controller, animated: true) {
-                player.play()
-            }
+}
+
+extension PickerResultViewController: WaterfallLayoutDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, layout: WaterfallLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if let imageSize = results[indexPath.item].photo?.size {
+            return imageSize
         }
+        return WaterfallLayout.automaticSize
     }
+    
+    func collectionViewLayout(for section: Int) -> WaterfallLayout.Layout {
+        return .waterfall(column: 2, distributionMethod: .balanced)
+    }
+    
 }

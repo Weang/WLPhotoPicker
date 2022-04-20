@@ -212,7 +212,7 @@ public class PhotoEditViewController: UIViewController {
     }
     
     private func setupPhoto() {
-        contentImageView.image = assetModel?.editedImage ?? photo
+        contentImageView.image = assetModel?.editedPhoto ?? photo
         
         imageContainerView.frame = AssetDisplayHelper.imageViewRectFrom(imageSize: photo.size, mediaType: .photo)
         originalImageViewSize = imageContainerView.size
@@ -700,7 +700,7 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
     
     func bottomToolBarDidClickDoneButton(_ bottomToolBar: PhotoEditBottomToolBar) {
         editManager.maskLayers = maskSubviews.map { $0.maskLayer }
-        let editedImage = editManager.drawOverlay(at: contentImageView.image, withCrop: true)
+        let editedPhoto = editManager.drawOverlay(at: contentImageView.image, withCrop: true)
         
         if let assetModel = self.assetModel {
             assetModel.editMosaicPath = editManager.editMosaicPath
@@ -711,10 +711,10 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
             assetModel.photoFilter = editManager.photoFilter
             assetModel.photoFilterIndex = editManager.selectedFilterIndex
             assetModel.adjustValue = editManager.adjustValue
-            assetModel.editedImage = editedImage
+            assetModel.editedPhoto = editedPhoto
             delegate?.editController(self, didDidFinishEditAsset: assetModel)
         } else {
-            delegate?.editController(self, didDidFinishEditPhoto: editedImage)
+            delegate?.editController(self, didDidFinishEditPhoto: editedPhoto)
         }
         
         dismiss(animated: false, completion: nil)
@@ -762,6 +762,10 @@ extension PhotoEditViewController: PhotoEditTextViewControllerDelegate {
 
 // MARK: PhotoEditCropViewControllerDelegate
 extension PhotoEditViewController: PhotoEditCropViewControllerDelegate {
+    
+    public func cropViewControllerDidClickCancel(_ viewController: PhotoEditCropViewController) {
+        viewController.dismiss(animated: true)
+    }
     
     public func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, rotation: UIImage.Orientation) {
         editManager.cropRect = cropRect

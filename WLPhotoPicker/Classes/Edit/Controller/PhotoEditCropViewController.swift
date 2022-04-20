@@ -9,6 +9,7 @@ import UIKit
 
 public protocol PhotoEditCropViewControllerDelegate: AnyObject {
     
+    func cropViewControllerDidClickCancel(_ viewController: PhotoEditCropViewController)
     func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, rotation: UIImage.Orientation)
     
 }
@@ -17,7 +18,7 @@ public class PhotoEditCropViewController: UIViewController {
     
     public weak var delegate: PhotoEditCropViewControllerDelegate?
     
-    let photoEditCropRatios: PhotoEditCropRatio
+    private let photoEditCropRatios: PhotoEditCropRatio
     var cropRect: PhotoEditCropRect = .identity
     var cropRotation: UIImage.Orientation = .up
     
@@ -38,6 +39,8 @@ public class PhotoEditCropViewController: UIViewController {
                       width: contentScrollView.width - originalContentInset.left - originalContentInset.right,
                       height: contentScrollView.height - originalContentInset.top - originalContentInset.bottom)
     }
+    
+    var navigationBarIsHidden: Bool = false
     
     public override var prefersStatusBarHidden: Bool {
         return true
@@ -73,13 +76,19 @@ public class PhotoEditCropViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        navigationBarIsHidden = navigationController?.navigationBar.isHidden ?? false
         navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(navigationBarIsHidden, animated: animated)
     }
     
     func setupView() {
         view.backgroundColor = .black
         view.clipsToBounds = true
-        
         bottomToolBar.delegate = self
         view.addSubview(bottomToolBar)
         bottomToolBar.snp.makeConstraints { make in
@@ -376,11 +385,7 @@ extension PhotoEditCropViewController: UIScrollViewDelegate {
 extension PhotoEditCropViewController: PhotoEditCropToolBarDelegate {
     
     func toolBarDidClickCancelButton(_ toolBar: PhotoEditCropToolBar) {
-        if let _ = presentingViewController {
-            dismiss(animated: true, completion: nil)
-        } else {
-            navigationController?.popViewController(animated: true)
-        }
+        delegate?.cropViewControllerDidClickCancel(self)
     }
     
     func toolBarDidClickRotateLeftButton(_ toolBar: PhotoEditCropToolBar) {

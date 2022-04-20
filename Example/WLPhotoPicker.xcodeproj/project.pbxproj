@@ -13,8 +13,15 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		9E5B4ECD62450EB6832C707C /* Pods_WLPhotoPicker_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA728D7721073FFF198A556 /* Pods_WLPhotoPicker_Example.framework */; };
 		C20970C62797DDCB00C67662 /* PickerResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20970C52797DDCB00C67662 /* PickerResultViewController.swift */; };
-		C20970C82797DE5E00C67662 /* PickerResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C20970C72797DE5E00C67662 /* PickerResultTableViewCell.swift */; };
 		C239052027A29AB700445761 /* PickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C239051F27A29AB700445761 /* PickerViewController.swift */; };
+		C26B8E06280FDF8100DE19C8 /* VideoCompressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E05280FDF8100DE19C8 /* VideoCompressViewController.swift */; };
+		C26B8E08280FF80300DE19C8 /* PickerResultCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E07280FF80300DE19C8 /* PickerResultCollectionViewCell.swift */; };
+		C26B8E0A280FF85800DE19C8 /* WaterfallLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E09280FF85800DE19C8 /* WaterfallLayout.swift */; };
+		C26B8E0F28100BD100DE19C8 /* AvatarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E0E28100BD100DE19C8 /* AvatarViewController.swift */; };
+		C26B8E1128100D5800DE19C8 /* AvatarResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E1028100D5800DE19C8 /* AvatarResultViewController.swift */; };
+		C26B8E132810125A00DE19C8 /* NineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E122810125A00DE19C8 /* NineViewController.swift */; };
+		C26B8E152810163B00DE19C8 /* NineCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E142810163B00DE19C8 /* NineCollectionViewCell.swift */; };
+		C26B8E17281022EB00DE19C8 /* SelectVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E16281022EB00DE19C8 /* SelectVideoViewController.swift */; };
 		C2D055A42807EBE1004B82C1 /* CaptureDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D055A32807EBE1004B82C1 /* CaptureDemoViewController.swift */; };
 		C2E9C7CF28065A0B006CEBBD /* LivePhotoToVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E9C7CE28065A0B006CEBBD /* LivePhotoToVideoViewController.swift */; };
 		C2E9C7D128065CDC006CEBBD /* LivePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E9C7D028065CDC006CEBBD /* LivePhotoViewController.swift */; };
@@ -33,8 +40,15 @@
 		7EA728D7721073FFF198A556 /* Pods_WLPhotoPicker_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WLPhotoPicker_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B87DA51362148267E03077B3 /* WLPhotoPicker.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = WLPhotoPicker.podspec; path = ../WLPhotoPicker.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		C20970C52797DDCB00C67662 /* PickerResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerResultViewController.swift; sourceTree = "<group>"; };
-		C20970C72797DE5E00C67662 /* PickerResultTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerResultTableViewCell.swift; sourceTree = "<group>"; };
 		C239051F27A29AB700445761 /* PickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerViewController.swift; sourceTree = "<group>"; };
+		C26B8E05280FDF8100DE19C8 /* VideoCompressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCompressViewController.swift; sourceTree = "<group>"; };
+		C26B8E07280FF80300DE19C8 /* PickerResultCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerResultCollectionViewCell.swift; sourceTree = "<group>"; };
+		C26B8E09280FF85800DE19C8 /* WaterfallLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaterfallLayout.swift; sourceTree = "<group>"; };
+		C26B8E0E28100BD100DE19C8 /* AvatarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarViewController.swift; sourceTree = "<group>"; };
+		C26B8E1028100D5800DE19C8 /* AvatarResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarResultViewController.swift; sourceTree = "<group>"; };
+		C26B8E122810125A00DE19C8 /* NineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NineViewController.swift; sourceTree = "<group>"; };
+		C26B8E142810163B00DE19C8 /* NineCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NineCollectionViewCell.swift; sourceTree = "<group>"; };
+		C26B8E16281022EB00DE19C8 /* SelectVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectVideoViewController.swift; sourceTree = "<group>"; };
 		C2D055A32807EBE1004B82C1 /* CaptureDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureDemoViewController.swift; sourceTree = "<group>"; };
 		C2E9C7CE28065A0B006CEBBD /* LivePhotoToVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePhotoToVideoViewController.swift; sourceTree = "<group>"; };
 		C2E9C7D028065CDC006CEBBD /* LivePhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePhotoViewController.swift; sourceTree = "<group>"; };
@@ -88,10 +102,17 @@
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				C239051F27A29AB700445761 /* PickerViewController.swift */,
 				C20970C52797DDCB00C67662 /* PickerResultViewController.swift */,
-				C20970C72797DE5E00C67662 /* PickerResultTableViewCell.swift */,
+				C26B8E07280FF80300DE19C8 /* PickerResultCollectionViewCell.swift */,
+				C26B8E0E28100BD100DE19C8 /* AvatarViewController.swift */,
+				C26B8E1028100D5800DE19C8 /* AvatarResultViewController.swift */,
+				C26B8E122810125A00DE19C8 /* NineViewController.swift */,
+				C26B8E142810163B00DE19C8 /* NineCollectionViewCell.swift */,
+				C26B8E16281022EB00DE19C8 /* SelectVideoViewController.swift */,
+				C26B8E05280FDF8100DE19C8 /* VideoCompressViewController.swift */,
 				C2E9C7CE28065A0B006CEBBD /* LivePhotoToVideoViewController.swift */,
 				C2E9C7D028065CDC006CEBBD /* LivePhotoViewController.swift */,
 				C2D055A32807EBE1004B82C1 /* CaptureDemoViewController.swift */,
+				C26B8E09280FF85800DE19C8 /* WaterfallLayout.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
@@ -250,12 +271,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				C239052027A29AB700445761 /* PickerViewController.swift in Sources */,
+				C26B8E0F28100BD100DE19C8 /* AvatarViewController.swift in Sources */,
 				C20970C62797DDCB00C67662 /* PickerResultViewController.swift in Sources */,
+				C26B8E0A280FF85800DE19C8 /* WaterfallLayout.swift in Sources */,
 				C2D055A42807EBE1004B82C1 /* CaptureDemoViewController.swift in Sources */,
+				C26B8E17281022EB00DE19C8 /* SelectVideoViewController.swift in Sources */,
 				C2E9C7D128065CDC006CEBBD /* LivePhotoViewController.swift in Sources */,
 				C2E9C7CF28065A0B006CEBBD /* LivePhotoToVideoViewController.swift in Sources */,
+				C26B8E06280FDF8100DE19C8 /* VideoCompressViewController.swift in Sources */,
+				C26B8E132810125A00DE19C8 /* NineViewController.swift in Sources */,
+				C26B8E1128100D5800DE19C8 /* AvatarResultViewController.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
-				C20970C82797DE5E00C67662 /* PickerResultTableViewCell.swift in Sources */,
+				C26B8E08280FF80300DE19C8 /* PickerResultCollectionViewCell.swift in Sources */,
+				C26B8E152810163B00DE19C8 /* NineCollectionViewCell.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

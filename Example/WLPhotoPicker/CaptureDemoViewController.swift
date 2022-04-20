@@ -19,8 +19,6 @@ class CaptureDemoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        SVProgressHUD.setDefaultStyle(.dark)
-        
         view.backgroundColor = .white
         
         let label = UILabel()

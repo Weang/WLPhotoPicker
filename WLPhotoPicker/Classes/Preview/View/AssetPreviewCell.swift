@@ -86,7 +86,7 @@ class AssetPreviewCell: UICollectionViewCell {
         
         cancelCurrentRequest()
         
-        if let image = model.displayingImage {
+        if let image = model.displayingPhoto {
             layoutImage(image)
         } else {
             layoutImage(thumbnail)

@@ -55,19 +55,22 @@ extension PHAsset {
     }
     
     // 视频资源在本地相册的存储路径
-    @available(iOS 13, *)
     var locallyVideoFileURL: URL? {
-        return PHAssetResource.assetResources(for: self)
-            .lazy
-            .filter {
-                $0.type == .video || $0.type == .fullSizeVideo
-            }.filter {
-                $0.value(forKey: "isCurrent") as? Bool == true // iOS 13 以下的系统没有isCurrent
-            }.filter {
-                $0.value(forKey: "locallyAvailable") as? Bool == true
-            }.compactMap {
-                $0.value(forKey: "privateFileURL") as? URL
-            }.first
+        if #available(iOS 13, *) { // iOS 13 以下的系统没有isCurrent
+            return PHAssetResource.assetResources(for: self)
+                .lazy
+                .filter {
+                    $0.type == .video || $0.type == .fullSizeVideo
+                }.filter {
+                    $0.value(forKey: "isCurrent") as? Bool == true
+                }.filter {
+                    $0.value(forKey: "locallyAvailable") as? Bool == true
+                }.compactMap {
+                    $0.value(forKey: "privateFileURL") as? URL
+                }.first
+        } else {
+            return nil
+        }
     }
     
 }

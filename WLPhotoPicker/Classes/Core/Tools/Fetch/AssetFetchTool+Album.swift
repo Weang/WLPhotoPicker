@@ -42,6 +42,14 @@ extension AssetFetchTool {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.albumModel = albumModel
+                if let selectedIdentifiers = self.selectedIdentifiers {
+                    selectedIdentifiers.forEach { identifier in
+                        if let assetModel = albumModel.assets.first(where: { $0.localIdentifier == identifier }) {
+                            self.selectedAsset(asset: assetModel, delegateEvent: false)
+                        }
+                    }
+                    self.selectedIdentifiers = nil
+                }
                 self.delegates.forEach {
                     $0.value?.assetFetchTool(self, finishFetchCameraAlbum: albumModel)
                 }

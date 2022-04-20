@@ -50,7 +50,7 @@ class AssetPreviewThumbnailCell: UICollectionViewCell {
         descriptionView.bindPreview(model)
         cancelCurrentRequest()
         
-        if let displayingImage = model.displayingImage {
+        if let displayingImage = model.displayingPhoto {
             assetImageView.image = displayingImage
             return
         }

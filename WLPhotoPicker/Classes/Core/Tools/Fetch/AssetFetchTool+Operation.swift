@@ -11,13 +11,13 @@ import CoreMedia
 import Photos
 
 typealias AssetFetchOperationProgress = (Double) -> Void
-typealias AssetFetchOperationResult = (Result<AssetPickerResult, AssetFetchError>) -> Void
-typealias AssetFetchAssetsResult = (Result<[AssetPickerResult], AssetFetchError>) -> Void
+typealias AssetFetchOperationResult = (Result<PhotoPickerResult, AssetFetchError>) -> Void
+typealias AssetFetchAssetsResult = (Result<[PhotoPickerResult], AssetFetchError>) -> Void
 
 extension AssetFetchTool {
     
     func requestAssets(assets: [AssetModel], progressHandle: AssetFetchOperationProgress? = nil, completionHandle: @escaping AssetFetchAssetsResult) {
-        var resultArray: [AssetPickerResult] = []
+        var resultArray: [PhotoPickerResult] = []
         for asset in assets {
             let progressClosure: AssetFetchOperationProgress = { progress in
                 DispatchQueue.main.async {
@@ -165,9 +165,9 @@ extension AssetFetchOperation {
         case (false, false):
             currentPhoto = assetModel.previewPhoto
         case (false, true):
-            currentPhoto = assetModel.editedImage
+            currentPhoto = assetModel.editedPhoto
         case (true, false):
-            currentPhoto = assetModel.originalImage
+            currentPhoto = assetModel.originalPhoto
         default: break
         }
         
@@ -182,7 +182,11 @@ extension AssetFetchOperation {
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                self.assetModel.originalImage = response.photo
+                if self.isOriginal {
+                    self.assetModel.originalPhoto = response.photo
+                } else {
+                    self.assetModel.previewPhoto = response.photo
+                }
                 if self.assetModel.hasEdit {
                     let editManager = EditManager(photo: response.photo, assetModel: self.assetModel)
                     guard let photo = editManager.drawOverlay(at: editManager.drawPhoto(), withCrop: true) else {
@@ -231,8 +235,8 @@ extension AssetFetchOperation {
         if config.pickerConfig.saveEditedPhotoToAlbum, assetModel.hasEdit {
             AssetSaveManager.savePhoto(photo: photo)
         }
-        let photoResult = AssetPickerPhotoResult(photo: photo, photoURL: fileURL)
-        completion?(.success(AssetPickerResult(asset: assetModel, result: .photo(photoResult))))
+        let photoResult = PhotoPickerPhotoResult(photo: photo, photoURL: fileURL)
+        completion?(.success(PhotoPickerResult(asset: assetModel, result: .photo(photoResult))))
         finishAssetRequest()
     }
     
@@ -277,8 +281,8 @@ extension AssetFetchOperation {
             guard let self = self else { return }
             switch result {
             case .success(let response):
-                let photoResult = AssetPickerLivePhotoResult(livePhoto: livePhoto, photo: response.photo)
-                self.completion?(.success(AssetPickerResult(asset: self.assetModel, result: .livePhoto(photoResult))))
+                let photoResult = PhotoPickerLivePhotoResult(livePhoto: livePhoto, photo: response.photo, videoURL: videoURL)
+                self.completion?(.success(PhotoPickerResult(asset: self.assetModel, result: .livePhoto(photoResult))))
                 self.finishAssetRequest()
             case .failure(let error):
                 self.completion?(.failure(error))
@@ -307,14 +311,16 @@ extension AssetFetchOperation {
     
     func finishRequestVideo(_ response: VideoFetchResponse, options: AssetFetchOptions) {
         if config.pickerConfig.exportVideoURLWhenPick {
-            if isOriginal, #available(iOS 13, *), let fileURL = assetModel.asset.locallyVideoFileURL {
-                let result = AssetPickerVideoResult(avasset: response.avasset, playerItem: response.playerItem, videoURL: fileURL)
+            if isOriginal,
+               config.pickerConfig.allowVideoSelectOriginal,
+               let fileURL = assetModel.asset.locallyVideoFileURL {
+                let result = PhotoPickerVideoResult(avasset: response.avasset, playerItem: response.playerItem, videoURL: fileURL)
                 recudeVideoResult(result, options: options)
             } else {
                 compressExportVideo(response, options: options)
             }
         } else {
-            let result = AssetPickerVideoResult(avasset: response.avasset, playerItem: response.playerItem)
+            let result = PhotoPickerVideoResult(avasset: response.avasset, playerItem: response.playerItem)
             recudeVideoResult(result, options: options)
         }
     }
@@ -334,20 +340,20 @@ extension AssetFetchOperation {
                 self.completion?(.failure(.failedToExportVideo))
                 self.finishAssetRequest()
             } else {
-                let result = AssetPickerVideoResult(avasset: response.avasset, playerItem: response.playerItem, videoURL: fileURL)
+                let result = PhotoPickerVideoResult(avasset: response.avasset, playerItem: response.playerItem, videoURL: fileURL)
                 self.recudeVideoResult(result, options: options)
             }
         }
     }
     
-    func recudeVideoResult(_ result: AssetPickerVideoResult, options: AssetFetchOptions) {
+    func recudeVideoResult(_ result: PhotoPickerVideoResult, options: AssetFetchOptions) {
         var videoResult = result
         assetRequest = AssetFetchTool.requestPhoto(for: assetModel.asset, options: options) { [weak self] result, _ in
             guard let self = self else { return }
             switch result {
             case .success(let response):
                 videoResult.thumbnail = response.photo
-                self.completion?(.success(AssetPickerResult(asset: self.assetModel, result: .video(videoResult))))
+                self.completion?(.success(PhotoPickerResult(asset: self.assetModel, result: .video(videoResult))))
                 self.finishAssetRequest()
             case .failure(let error):
                 self.completion?(.failure(error))

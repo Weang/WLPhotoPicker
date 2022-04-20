@@ -34,11 +34,11 @@ public class AssetModel {
     }
     
     public var previewPhoto: UIImage?
-    public var editedImage: UIImage?
-    public var originalImage: UIImage?
-    public var displayingImage: UIImage? {
-        if let editedImage = editedImage {
-            return editedImage
+    public var editedPhoto: UIImage?
+    public var originalPhoto: UIImage?
+    public var displayingPhoto: UIImage? {
+        if let editedPhoto = editedPhoto {
+            return editedPhoto
         }
         return previewPhoto
     }

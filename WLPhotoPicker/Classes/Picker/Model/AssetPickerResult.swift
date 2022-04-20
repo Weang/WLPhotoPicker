@@ -1,5 +1,5 @@
 //
-//  AssetPickerResult.swift
+//  PhotoPickerResult.swift
 //  WLPhotoPicker
 //
 //  Created by Mr.Wang on 2021/12/29.
@@ -9,13 +9,13 @@ import UIKit
 import AVFoundation
 import Photos
 
-public struct AssetPickerResult {
+public struct PhotoPickerResult {
     
     // 资源模型
     public let asset: AssetModel
     
     // 导出资源
-    public let result: AssetPickerResultType
+    public let result: PhotoPickerResultType
     
     public var photo: UIImage? {
         switch result {
@@ -30,13 +30,13 @@ public struct AssetPickerResult {
 }
 
 // 选中的资源结果类型
-public enum AssetPickerResultType {
-    case photo(AssetPickerPhotoResult)
-    case video(AssetPickerVideoResult)
-    case livePhoto(AssetPickerLivePhotoResult)
+public enum PhotoPickerResultType {
+    case photo(PhotoPickerPhotoResult)
+    case video(PhotoPickerVideoResult)
+    case livePhoto(PhotoPickerLivePhotoResult)
 }
 
-public struct AssetPickerPhotoResult {
+public struct PhotoPickerPhotoResult {
     
     // 选择的图片或者编辑后的图片
     public var photo: UIImage
@@ -45,7 +45,7 @@ public struct AssetPickerPhotoResult {
     public var photoURL: URL? = nil
 }
 
-public struct AssetPickerVideoResult {
+public struct PhotoPickerVideoResult {
     
     public var avasset: AVAsset
     
@@ -59,7 +59,7 @@ public struct AssetPickerVideoResult {
     public var videoURL: URL? = nil
 }
 
-public struct AssetPickerLivePhotoResult {
+public struct PhotoPickerLivePhotoResult {
     
     // 实况照片
     public var livePhoto: PHLivePhoto

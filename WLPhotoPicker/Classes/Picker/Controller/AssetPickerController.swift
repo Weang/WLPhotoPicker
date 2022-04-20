@@ -11,7 +11,7 @@ import MobileCoreServices
 
 protocol AssetPickerControllerDelegate: AnyObject {
     func pickerControllerDidCancel(_ pickerController: AssetPickerController)
-    func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [AssetPickerResult])
+    func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [PhotoPickerResult])
 }
 
 class AssetPickerController: UIViewController {
@@ -24,6 +24,7 @@ class AssetPickerController: UIViewController {
     private let deniedPermissionView = AssetPickerDeniedPermissionView()
     private weak var albumController: AlbumListViewController?
     
+    var selectedIdentifiers: [String]?
     private let assetFetchTool: AssetFetchTool
     private let config: WLPhotoConfig
     
@@ -142,6 +143,7 @@ class AssetPickerController: UIViewController {
     }
     
     private func requestPermission() {
+        assetFetchTool.selectedIdentifiers = selectedIdentifiers
         PermissionProvider.request(.photoLibrary) { [weak self] status in
             guard let self = self else { return }
             switch status {
@@ -391,6 +393,7 @@ extension AssetPickerController: AssetFetchToolDelegate {
     
     func assetFetchTool(_ fetchTool: AssetFetchTool, finishFetchCameraAlbum albumModel: AlbumModel) {
         setCurrentAlbum(albumModel)
+        bottomToolBar.isEnabled = assetFetchTool.selectedAssets.count > 0
     }
     
     func assetFetchTool(_ fetchTool: AssetFetchTool, updateAlbum albumModel: AlbumModel, insertedItems: IndexSet, removedItems: IndexSet, changedItems: IndexSet) {

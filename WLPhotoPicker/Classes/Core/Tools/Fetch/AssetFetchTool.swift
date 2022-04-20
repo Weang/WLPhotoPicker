@@ -45,6 +45,7 @@ class AssetFetchTool: NSObject {
     var albumModel: AlbumModel?
     var albumsList: [AlbumModel] = []
     var selectedAssets: [AssetModel] = []
+    var selectedIdentifiers: [String]?
     
     var isOriginal = false
     

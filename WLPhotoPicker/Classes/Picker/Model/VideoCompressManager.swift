@@ -187,9 +187,11 @@ public class VideoCompressManager {
                     dispatchGroup.leave()
                     break
                 }
-                let timeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-                progress?(timeStamp.seconds / totalSeconds)
                 assetWriterVideoInput.append(sampleBuffer)
+                let timeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+                DispatchQueue.main.async {
+                    progress?(timeStamp.seconds / totalSeconds)
+                }
             }
         }
         
