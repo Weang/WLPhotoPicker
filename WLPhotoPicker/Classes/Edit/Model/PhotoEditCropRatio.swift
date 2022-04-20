@@ -7,25 +7,28 @@
 
 import UIKit
 
-public class PhotoEditCropRatio {
+public struct PhotoEditCropRatio {
 
-    let name: String
+    // width / height
     let ratio: CGFloat
 
-    init(name: String, ratio: CGFloat) {
-        self.name = name
+    init(ratio: CGFloat) {
         self.ratio = ratio
     }
     
+    static public let freedom = PhotoEditCropRatio(ratio: 0)
+    static public let ratio_1_1 = PhotoEditCropRatio(ratio: 1)
+    static public let ratio_16_9 = PhotoEditCropRatio(ratio: CGFloat(16) / CGFloat(9))
+    static public let ratio_9_16 = PhotoEditCropRatio(ratio: CGFloat(9) / CGFloat(16))
+    static public let ratio_4_3 = PhotoEditCropRatio(ratio: CGFloat(4) / CGFloat(3))
+    static public let ratio_3_4 = PhotoEditCropRatio(ratio: CGFloat(3) / CGFloat(4))
+    
 }
 
-public extension PhotoEditCropRatio {
+extension PhotoEditCropRatio: Equatable {
     
-    static let freedom = PhotoEditCropRatio(name: "自由", ratio: 0)
-    static let ratio_1_1 = PhotoEditCropRatio(name: "1:1", ratio: 1)
-    static let ratio_16_9 = PhotoEditCropRatio(name: "16:9", ratio: CGFloat(16) / CGFloat(9))
-    static let ratio_9_16 = PhotoEditCropRatio(name: "9:16", ratio: CGFloat(9) / CGFloat(16))
-    static let ratio_4_3 = PhotoEditCropRatio(name: "4:3", ratio: CGFloat(4) / CGFloat(3))
-    static let ratio_3_4 = PhotoEditCropRatio(name: "3:4", ratio: CGFloat(3) / CGFloat(4))
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.ratio == rhs.ratio
+    }
     
 }

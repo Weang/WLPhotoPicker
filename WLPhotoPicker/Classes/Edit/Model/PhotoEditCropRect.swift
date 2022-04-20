@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct PhotoEditCropRect {
+public struct PhotoEditCropRect {
     
     static var identity = PhotoEditCropRect(x: 0, y: 0, width: 1, height: 1)
     
@@ -41,7 +41,7 @@ struct PhotoEditCropRect {
 
 extension PhotoEditCropRect: Equatable {
     
-    static func == (lhs: Self, rhs: Self) -> Bool {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
         return lhs.x == rhs.x &&
         lhs.y == rhs.y &&
         lhs.width == rhs.width &&
@@ -53,6 +53,9 @@ extension PhotoEditCropRect: Equatable {
 extension UIImage {
     
     func cropToRect(_ rect: PhotoEditCropRect) -> UIImage {
+        if rect == .identity {
+            return self
+        }
         let toRect = CGRect(x: size.width * rect.x,
                             y: size.height * rect.y,
                             width: size.width * rect.width,

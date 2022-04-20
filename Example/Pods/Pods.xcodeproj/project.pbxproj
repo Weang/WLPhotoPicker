@@ -210,6 +210,7 @@
 		C259B821280D87F8008BA48F /* PhotoEditNashvilleFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259B820280D87F8008BA48F /* PhotoEditNashvilleFilter.swift */; };
 		C259B823280D896B008BA48F /* PhotoEdit1977Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259B822280D896B008BA48F /* PhotoEdit1977Filter.swift */; };
 		C2E3C5EC2808380400689881 /* LanguageRegionCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E3C5EB2808380400689881 /* LanguageRegionCode.swift */; };
+		C2F15A33280ED8D700EEBD50 /* CGFloat+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2F15A32280ED8D700EEBD50 /* CGFloat+Extensions.swift */; };
 		C3084F02EE743DF804B2CF433A2D3323 /* AssetPickerDeniedPermissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 439C2D91E2749047129AE4D903407F6B /* AssetPickerDeniedPermissionView.swift */; };
 		C349EC4320374ACC958CAF804D9183ED /* AssetFetchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A443623F2EE1660883C52AD040051499 /* AssetFetchOptions.swift */; };
 		C386124E7218C3B64CC82F9E1DBD2FB5 /* PhotoLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF822FA3EBD01697AE59F5E25F74EA58 /* PhotoLibrary.swift */; };
@@ -564,6 +565,7 @@
 		C293868447B2D89FBEA31766A5EC8463 /* CaptureVideoFileType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CaptureVideoFileType.swift; sourceTree = "<group>"; };
 		C2E3C5EA2808314F00689881 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		C2E3C5EB2808380400689881 /* LanguageRegionCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageRegionCode.swift; sourceTree = "<group>"; };
+		C2F15A32280ED8D700EEBD50 /* CGFloat+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extensions.swift"; sourceTree = "<group>"; };
 		C30D9E8DA95268AB7F4C298F6F11D06E /* PhotoEditConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditConfig.swift; sourceTree = "<group>"; };
 		C383CCFF6979E4744EFEAA06FA33AE54 /* WLPhotoPicker-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "WLPhotoPicker-dummy.m"; sourceTree = "<group>"; };
 		C408AF84FCCAA7E4BD45570CD13A69AD /* AssetFetchTool.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetFetchTool.swift; sourceTree = "<group>"; };
@@ -967,6 +969,7 @@
 				D49AB5B671A6B7366859CDFA2384BD8C /* PHAsset+Extensions.swift */,
 				6CED7F1AE6CB9E92C50D3473A61C0B52 /* PHAssetCollection+Extensions.swift */,
 				BB12A7020D5E3EAB2C64E574DCC79080 /* PHFetchResult+Extensions.swift */,
+				C2F15A32280ED8D700EEBD50 /* CGFloat+Extensions.swift */,
 				84E82E571ED7360CFECBC2276339D997 /* UIApplication+Extensions.swift */,
 				D81B1FCDA0F79A3A628CDCF385BCC2EB /* UIImage+CIFilter.swift */,
 				BC57F1B80FDA48BC2E5ED441D2547007 /* UIImage+Extensions.swift */,
@@ -1844,6 +1847,7 @@
 				5E775E8086C2CB875C8294DECBE21DCD /* Microphone.swift in Sources */,
 				31806F5F9207AF1032A77E98E240E645 /* NormalStyleButton.swift in Sources */,
 				7ED153E3CCAA3D93491715388EE28137 /* Permission.swift in Sources */,
+				C2F15A33280ED8D700EEBD50 /* CGFloat+Extensions.swift in Sources */,
 				E26F9081FBA100B7CEF89BF09709582E /* PermissionProvider.swift in Sources */,
 				BB5335F890993489C73FDDD3AC391950 /* PermissionStatus.swift in Sources */,
 				D1865FC4B2CEEF3464A8FA449C725ABB /* PermissionType.swift in Sources */,

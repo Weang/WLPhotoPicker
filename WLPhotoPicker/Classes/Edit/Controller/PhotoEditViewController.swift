@@ -654,7 +654,7 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
         case .crop:
             editManager.maskLayers = maskSubviews.map { $0.maskLayer }
             guard let editedImage = editManager.drawOverlay(at: contentImageView.image, withCrop: false) else { return }
-            let vc = PhotoEditCropViewController(photo: editedImage, cropRect: editManager.cropRect, cropRotation: editManager.cropRotation)
+            let vc = PhotoEditCropViewController(photo: editedImage, cropRect: editManager.cropRect, cropRotation: editManager.cropRotation, photoEditCropRatios: photoEditConfig.photoEditCropRatios)
             vc.delegate = self
             vc.modalPresentationStyle = .custom
             vc.transitioningDelegate = vc
@@ -763,7 +763,7 @@ extension PhotoEditViewController: PhotoEditTextViewControllerDelegate {
 // MARK: PhotoEditCropViewControllerDelegate
 extension PhotoEditViewController: PhotoEditCropViewControllerDelegate {
     
-    func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, rotation: UIImage.Orientation) {
+    public func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, rotation: UIImage.Orientation) {
         editManager.cropRect = cropRect
         editManager.cropRotation = rotation
         layoutCropedImageView()

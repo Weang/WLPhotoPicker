@@ -65,9 +65,11 @@ extension PhotoEditCropViewController {
     
     fileprivate func showAnimation(duration: Double, from editViewController: PhotoEditViewController, completion: @escaping (Bool) -> ()) {
         let photo = self.photo.rotate(orientation: cropRotation).cropToRect(cropRect)
+        
         let animateImageView = UIImageView()
         animateImageView.image = photo
-        animateImageView.frame = editViewController.contentScrollView.convert(editViewController.imageContainerView.frame, to: editViewController.view)
+        animateImageView.frame = editViewController.contentScrollView.convert(editViewController.imageContainerView.frame,
+                                                                              to: editViewController.view)
         editViewController.view.addSubview(animateImageView)
         
         editViewController.contentImageView.isHidden = true
@@ -76,13 +78,18 @@ extension PhotoEditCropViewController {
         editViewController.view.bringSubviewToFront(editViewController.bottomToolBar)
         view.alpha = 0
         
-        let toFrame = adjustDisplayRect(photo.size)
+        let animateToFrame: CGRect
+        if cropRect == .identity && cropRotation == .up  {
+            animateToFrame = contentScrollView.convert(contentImageView.frame, to: view)
+        } else {
+            animateToFrame = adjustDisplayRect(photo.size)
+        }
         
-        UIView.animate(withDuration: duration - 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-            animateImageView.frame = toFrame
+        UIView.animate(withDuration: duration - 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
+            animateImageView.frame = animateToFrame
             editViewController.topToolBar.alpha = 0
             editViewController.bottomToolBar.alpha = 0
-        }) { _ in }
+        })
         
         UIView.animate(withDuration: 0.2, delay: duration - 0.2, animations: {
             self.view.alpha = 1
@@ -99,6 +106,7 @@ extension PhotoEditCropViewController {
     fileprivate func dismissAnimation(duration: Double, to editViewController: PhotoEditViewController, completion: @escaping (Bool) -> ()) {
         let image = cropedImage ?? photo
         let fromRect = adjustDisplayRect(image.size)
+        
         let animateImageView = UIImageView()
         animateImageView.image = image
         animateImageView.frame = fromRect
@@ -110,12 +118,14 @@ extension PhotoEditCropViewController {
         editViewController.contentImageView.isHidden = true
         editViewController.topToolBar.alpha = 0
         editViewController.bottomToolBar.alpha = 0
-        view.alpha = 0
         
-        let toFrame = editViewController.contentScrollView.convert(editViewController.imageContainerView.frame, to: editViewController.view)
+        UIView.animate(withDuration: 0.05, delay: 0, animations: {
+            self.view.alpha = 0
+        })
         
         UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-            animateImageView.frame = toFrame
+            animateImageView.frame = editViewController.contentScrollView.convert(editViewController.imageContainerView.frame,
+                                                                                  to: editViewController.view)
             editViewController.topToolBar.alpha = 1
             editViewController.bottomToolBar.alpha = 1
         }) { (completed) in

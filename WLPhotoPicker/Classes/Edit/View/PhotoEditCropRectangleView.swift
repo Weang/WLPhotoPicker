@@ -29,7 +29,7 @@ class PhotoEditCropRectangleView: UIView {
     private let leftBottomCorner = PhotoEditCropRectangleCorner(posotion: .leftBottom)
     
     private let photoEditCropRatios: PhotoEditCropRatio
-    private var minimumSize: CGFloat = 46
+    private var minimumSize: CGSize = CGSize(width: 46, height: 46)
     private var startCropRect: CGRect = .zero
     
     var cropRect: CGRect = .zero
@@ -41,6 +41,15 @@ class PhotoEditCropRectangleView: UIView {
         
         setupView()
         setupGesture()
+        
+        if photoEditCropRatios != .freedom {
+            let cropRatio = photoEditCropRatios.ratio
+            if photoEditCropRatios.ratio > 1 {
+                minimumSize = CGSize(width: minimumSize.height * cropRatio, height: minimumSize.height)
+            } else {
+                minimumSize = CGSize(width: minimumSize.width, height: minimumSize.width / cropRatio)
+            }
+        }
     }
     
     func setupView() {
@@ -84,6 +93,9 @@ class PhotoEditCropRectangleView: UIView {
         backgroundView.layer.mask = backgroundMaskLayer
         
         cropGridLineLayer.lineWidth = 1.5
+        cropGridLineLayer.shadowColor = UIColor.black.cgColor
+        cropGridLineLayer.shadowRadius = 2
+        cropGridLineLayer.shadowOpacity = 0.5
         cropGridLineLayer.strokeColor = UIColor(white: 1, alpha: 0.6).cgColor
         cropGridView.layer.addSublayer(cropGridLineLayer)
     }
@@ -104,70 +116,55 @@ class PhotoEditCropRectangleView: UIView {
         case .changed:
             let translation = gesture.translation(in: self)
             var cropRect = startCropRect
+            let cropRatio = photoEditCropRatios.ratio
+            
+            var maxWidth: CGFloat = 0
+            var maxHeight: CGFloat = 0
+            if gesture.view == leftTopCorner || gesture.view == leftBottomCorner {
+                maxWidth = startCropRect.maxX - maximumCropRect.origin.x
+            } else {
+                maxWidth = maximumCropRect.size.width
+            }
+            if gesture.view == leftTopCorner || gesture.view == rightTopCorner {
+                maxHeight = startCropRect.maxY - maximumCropRect.origin.y
+            } else {
+                maxHeight = maximumCropRect.size.height
+            }
+            if photoEditCropRatios != .freedom {
+                maxWidth = min(maxWidth, maxHeight * cropRatio)
+                maxHeight = min(maxHeight, maxWidth / cropRatio)
+            }
+            
+            func fitCropRectSize(_ cropRect: inout CGRect) {
+                cropRect.size.width = cropRect.size.width.between(min: minimumSize.width, max: maxWidth)
+                if photoEditCropRatios == .freedom {
+                    cropRect.size.height = cropRect.size.height.between(min: minimumSize.height, max: maxHeight)
+                } else {
+                    cropRect.size.height = cropRect.size.width / cropRatio
+                }
+            }
+            
             if gesture.view == leftTopCorner {
-                cropRect.origin.x += translation.x
-                cropRect.origin.y += translation.y
                 cropRect.size.width -= translation.x
                 cropRect.size.height -= translation.y
-                if cropRect.size.width <= minimumSize {
-                    cropRect.origin.x -= (minimumSize - cropRect.size.width)
-                    cropRect.size.width = minimumSize
-                }
-                if cropRect.size.height <= minimumSize {
-                    cropRect.origin.y -= (minimumSize - cropRect.size.height)
-                    cropRect.size.height = minimumSize
-                }
-                if cropRect.origin.x < maximumCropRect.origin.x {
-                    cropRect.size.width -= (maximumCropRect.origin.x - cropRect.origin.x)
-                    cropRect.origin.x = maximumCropRect.origin.x
-                }
-                if cropRect.origin.y < maximumCropRect.origin.y {
-                    cropRect.size.height -= (maximumCropRect.origin.y - cropRect.origin.y)
-                    cropRect.origin.y = maximumCropRect.origin.y
-                }
+                fitCropRectSize(&cropRect)
+                cropRect.origin.x = startCropRect.maxX - cropRect.size.width
+                cropRect.origin.y = startCropRect.maxY - cropRect.size.height
             } else if gesture.view == rightTopCorner {
-                cropRect.origin.y +=  translation.y
                 cropRect.size.width += translation.x
-                cropRect.size.height -=  translation.y
-                if cropRect.size.height <= minimumSize {
-                    cropRect.origin.y -= (minimumSize - cropRect.size.height)
-                    cropRect.size.height = minimumSize
-                }
-                if cropRect.origin.y < maximumCropRect.origin.y {
-                    cropRect.size.height -= (maximumCropRect.origin.y - cropRect.origin.y)
-                    cropRect.origin.y = maximumCropRect.origin.y
-                }
-                if cropRect.size.width > maximumCropRect.size.width {
-                    cropRect.size.width = maximumCropRect.size.width
-                }
+                cropRect.size.height -= translation.y
+                fitCropRectSize(&cropRect)
+                cropRect.origin.y = startCropRect.maxY - cropRect.size.height
             } else if gesture.view == rightBottomCorner {
                 cropRect.size.width += translation.x
                 cropRect.size.height += translation.y
-                if cropRect.size.width > maximumCropRect.size.width {
-                    cropRect.size.width = maximumCropRect.size.width
-                }
-                if cropRect.size.height > maximumCropRect.size.height {
-                    cropRect.size.height = maximumCropRect.size.height
-                }
+                fitCropRectSize(&cropRect)
             } else if gesture.view == leftBottomCorner {
-                cropRect.origin.x += translation.x
                 cropRect.size.width -= translation.x
                 cropRect.size.height +=  translation.y
-                if cropRect.size.width <= minimumSize {
-                    cropRect.origin.x -= (minimumSize - cropRect.size.width)
-                    cropRect.size.width = minimumSize
-                }
-                if cropRect.origin.x < maximumCropRect.origin.x {
-                    cropRect.size.width -= (maximumCropRect.origin.x - cropRect.origin.x)
-                    cropRect.origin.x = maximumCropRect.origin.x
-                }
-                if cropRect.size.height > maximumCropRect.size.height {
-                    cropRect.size.height = maximumCropRect.size.height
-                }
+                fitCropRectSize(&cropRect)
+                cropRect.origin.x = startCropRect.maxX - cropRect.size.width
             }
-            cropRect.size.width = max(cropRect.size.width, minimumSize)
-            cropRect.size.height = max(cropRect.size.height, minimumSize)
-            
             cropRect = cropRect.rounded()
             updateCropRect(cropRect, animate: false)
         default:
