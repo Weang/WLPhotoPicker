@@ -130,7 +130,7 @@ class CaptureDemoViewController: FormViewController {
     }
     
     @objc func openCapture() {
-        let vc = CaptureViewController(captureConfig: CaptureConfig(), photoEditConfig: PhotoEditConfig())
+        let vc = CaptureViewController(captureConfig: captureConfig, photoEditConfig: photoEditConfig )
         vc.delegate = self
         present(vc, animated: true)
     }
