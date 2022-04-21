@@ -58,6 +58,7 @@ class AssetPreviewCell: UICollectionViewCell {
         assetImageView.contentMode = .scaleAspectFit
         contentScrollView.addSubview(assetImageView)
         
+        activityIndicator.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         activityIndicator.hidesWhenStopped = true
         contentView.addSubview(activityIndicator)
         activityIndicator.snp.makeConstraints { make in

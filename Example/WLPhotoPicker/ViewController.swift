@@ -45,7 +45,7 @@ class ViewController: FormViewController {
         }
         
         <<< LabelRow() { row in
-            row.title = "视频压缩"
+            row.title = "选择视频"
         }.cellSetup { cell, row in
             cell.accessoryType = .disclosureIndicator
         }.onCellSelection { cell, row in
@@ -60,15 +60,6 @@ class ViewController: FormViewController {
             self.navigationController?.pushViewController(VideoCompressViewController(), animated: true)
         }
         
-//        +++ Section("Capture")
-//        <<< LabelRow() { row in
-//            row.title = "自定义相机"
-//        }.cellSetup { cell, row in
-//            cell.accessoryType = .disclosureIndicator
-//        }.onCellSelection { _, _ in
-//            self.navigationController?.pushViewController(CaptureDemoViewController(), animated: true)
-//        }
-        
         +++ Section("Live Photo")
         <<< LabelRow() { row in
             row.title = "视频转实况"
@@ -76,6 +67,15 @@ class ViewController: FormViewController {
             cell.accessoryType = .disclosureIndicator
         }.onCellSelection { _, _ in
             self.navigationController?.pushViewController(LivePhotoToVideoViewController(), animated: true)
+        }
+        
+        +++ Section("Capture")
+        <<< LabelRow() { row in
+            row.title = "自定义相机"
+        }.cellSetup { cell, row in
+            cell.accessoryType = .disclosureIndicator
+        }.onCellSelection { _, _ in
+            self.navigationController?.pushViewController(CaptureDemoViewController(), animated: true)
         }
         
     }

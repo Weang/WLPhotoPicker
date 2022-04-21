@@ -17,7 +17,7 @@ public class AssetModel {
     var editGraffitiPath = PhotoEditGraffitiPath()
     var editMosaicPath = PhotoEditMosaicPath()
     var cropRect: PhotoEditCropRect = .identity
-    var cropRotation: UIImage.Orientation = .up
+    var cropOrientation: UIImage.Orientation = .up
     var maskLayers: [PhotoEditMaskLayer] = []
     var photoFilter: PhotoEditFilterProvider?
     var photoFilterIndex: Int = 0
@@ -27,7 +27,7 @@ public class AssetModel {
         return editMosaicPath.pathLines.count > 0 ||
         editGraffitiPath.pathLines.count > 0 ||
         cropRect != .identity ||
-        cropRotation != .up ||
+        cropOrientation != .up ||
         maskLayers.count > 0 ||
         photoFilter?.filter != nil ||
         adjustValue.filter{ $0.value != 0 }.count > 0

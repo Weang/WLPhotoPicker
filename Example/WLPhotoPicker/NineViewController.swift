@@ -17,7 +17,17 @@ class NineViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        if #available(iOS 13.0, *) {
+            view.backgroundColor = UIColor { traitCollection -> UIColor in
+                if traitCollection.userInterfaceStyle == .dark {
+                    return .black
+                } else {
+                    return .white
+                }
+            }
+        } else {
+            view.backgroundColor = .white
+        }
         
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
@@ -29,7 +39,7 @@ class NineViewController: UIViewController {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.alwaysBounceVertical = true
         collectionView.register(NineCollectionViewCell.self, forCellWithReuseIdentifier: "NineCollectionViewCell")
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
         collectionView.delegate = self
         collectionView.dataSource = self
         view.addSubview(collectionView)

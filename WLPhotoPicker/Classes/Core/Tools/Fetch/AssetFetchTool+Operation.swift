@@ -297,7 +297,7 @@ extension AssetFetchOperation {
 extension AssetFetchOperation {
     
     func requestVideo(_ options: AssetFetchOptions) {
-        assetRequest = AssetFetchTool.requestAVAsset(for: self.assetModel.asset, options: options, completion: { [weak self] result, _ in
+        assetRequest = AssetFetchTool.requestAVAsset(for: assetModel.asset, options: options, completion: { [weak self] result, _ in
             guard let self = self else { return }
             switch result {
             case .success(let response):

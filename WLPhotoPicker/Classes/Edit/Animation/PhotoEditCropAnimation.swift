@@ -64,7 +64,7 @@ private class PhotoEditCropDismissTransitioning: NSObject, UIViewControllerAnima
 extension PhotoEditCropViewController {
     
     fileprivate func showAnimation(duration: Double, from editViewController: PhotoEditViewController, completion: @escaping (Bool) -> ()) {
-        let photo = self.photo.rotate(orientation: cropRotation).cropToRect(cropRect)
+        let photo = self.photo.rotate(orientation: cropOrientation).cropToRect(cropRect)
         
         let animateImageView = UIImageView()
         animateImageView.image = photo
@@ -79,7 +79,7 @@ extension PhotoEditCropViewController {
         view.alpha = 0
         
         let animateToFrame: CGRect
-        if cropRect == .identity && cropRotation == .up  {
+        if cropRect == .identity && cropOrientation == .up  {
             animateToFrame = contentScrollView.convert(contentImageView.frame, to: view)
         } else {
             animateToFrame = adjustDisplayRect(photo.size)

@@ -19,7 +19,7 @@ class EditManager {
     var editGraffitiPath = PhotoEditGraffitiPath()
     var editMosaicPath = PhotoEditMosaicPath()
     var cropRect: PhotoEditCropRect = .identity
-    var cropRotation: UIImage.Orientation = .up
+    var cropOrientation: UIImage.Orientation = .up
     var maskLayers: [PhotoEditMaskLayer] = []
     var photoFilter: PhotoEditFilterProvider? = nil
     var selectedFilterIndex: Int = 0
@@ -35,7 +35,7 @@ class EditManager {
         editGraffitiPath = assetModel.editGraffitiPath
         editMosaicPath = assetModel.editMosaicPath
         cropRect = assetModel.cropRect
-        cropRotation = assetModel.cropRotation
+        cropOrientation = assetModel.cropOrientation
         maskLayers = assetModel.maskLayers
         photoFilter = assetModel.photoFilter
         adjustValue = assetModel.adjustValue
@@ -83,7 +83,7 @@ class EditManager {
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         if withCrop {
-            return image?.rotate(orientation: cropRotation)
+            return image?.rotate(orientation: cropOrientation)
                 .cropToRect(cropRect)
         } else {
             return image

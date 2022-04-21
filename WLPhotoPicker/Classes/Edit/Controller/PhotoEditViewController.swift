@@ -291,7 +291,7 @@ extension PhotoEditViewController {
         let zoomScale = contentScrollView.zoomScale
         let contentImageViewSize = imageContainerView.convert(contentImageView.frame, to: view).size
         var rotateScale = contentImageViewSize.width / originalImageViewSize.width
-        if editManager.cropRotation.isLandscape {
+        if editManager.cropOrientation.isLandscape {
             rotateScale = contentImageViewSize.height / originalImageViewSize.width
         }
         switch gesture.state {
@@ -334,7 +334,7 @@ extension PhotoEditViewController {
         let zoomScale = contentScrollView.zoomScale
         let contentImageViewSize = imageContainerView.convert(contentImageView.frame, to: view).size
         var rotateScale = contentImageViewSize.width / originalImageViewSize.width
-        if editManager.cropRotation.isLandscape {
+        if editManager.cropOrientation.isLandscape {
             rotateScale = contentImageViewSize.height / originalImageViewSize.width
         }
         switch gesture.state {
@@ -374,7 +374,7 @@ extension PhotoEditViewController {
         var maskLayer = maskLayer
         let viewCenter = CGPoint(x: UIScreen.width * 0.5, y: UIScreen.height * 0.5)
         maskLayer.center = view.convert(viewCenter, to: maskLayerContentView)
-        maskLayer.rotation = -editManager.cropRotation.rotationAngle
+        maskLayer.rotation = -editManager.cropOrientation.rotationAngle
         let maskView = PhotoEditMaskView(maskLayer: maskLayer)
         maskLayerContentView.addSubview(maskView)
         dismissAllMaskActive()
@@ -523,17 +523,17 @@ extension PhotoEditViewController {
 extension PhotoEditViewController {
     
     func layoutCropedImageView() {
-        let photoSize = editManager.cropRotation.isPortrait ? photo.size : photo.size.turn
+        let photoSize = editManager.cropOrientation.isPortrait ? photo.size : photo.size.turn
         let cropedImageRect = editManager.cropRect.convertSizeToRect(photoSize)
         let toDisplayFrame = AssetDisplayHelper.imageViewRectFrom(imageSize: cropedImageRect.size, mediaType: .photo)
         
         imageContainerView.frame = toDisplayFrame
         contentScrollView.contentSize = toDisplayFrame.size
         
-        let rotationAngle = editManager.cropRotation.rotationAngle
+        let rotationAngle = editManager.cropOrientation.rotationAngle
         let imageDisplayScale = cropedImageRect.width / toDisplayFrame.width
         let targetDisplaySize = CGSize(width: photoSize.width / imageDisplayScale, height: photoSize.height / imageDisplayScale)
-        let zoomScale = targetDisplaySize.width / (editManager.cropRotation.isPortrait ? originalImageViewSize.width : originalImageViewSize.height)
+        let zoomScale = targetDisplaySize.width / (editManager.cropOrientation.isPortrait ? originalImageViewSize.width : originalImageViewSize.height)
         let transform = CGAffineTransform(rotationAngle: rotationAngle)
             .scaledBy(x: zoomScale, y: zoomScale)
         
@@ -654,7 +654,7 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
         case .crop:
             editManager.maskLayers = maskSubviews.map { $0.maskLayer }
             guard let editedImage = editManager.drawOverlay(at: contentImageView.image, withCrop: false) else { return }
-            let vc = PhotoEditCropViewController(photo: editedImage, cropRect: editManager.cropRect, cropRotation: editManager.cropRotation, photoEditCropRatios: photoEditConfig.photoEditCropRatios)
+            let vc = PhotoEditCropViewController(photo: editedImage, cropRect: editManager.cropRect, cropOrientation: editManager.cropOrientation, photoEditCropRatios: photoEditConfig.photoEditCropRatios)
             vc.delegate = self
             vc.modalPresentationStyle = .custom
             vc.transitioningDelegate = vc
@@ -707,7 +707,7 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
             assetModel.editGraffitiPath = editManager.editGraffitiPath
             assetModel.maskLayers = editManager.maskLayers
             assetModel.cropRect = editManager.cropRect
-            assetModel.cropRotation = editManager.cropRotation
+            assetModel.cropOrientation = editManager.cropOrientation
             assetModel.photoFilter = editManager.photoFilter
             assetModel.photoFilterIndex = editManager.selectedFilterIndex
             assetModel.adjustValue = editManager.adjustValue
@@ -767,9 +767,9 @@ extension PhotoEditViewController: PhotoEditCropViewControllerDelegate {
         viewController.dismiss(animated: true)
     }
     
-    public func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, rotation: UIImage.Orientation) {
+    public func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, orientation: UIImage.Orientation) {
         editManager.cropRect = cropRect
-        editManager.cropRotation = rotation
+        editManager.cropOrientation = orientation
         layoutCropedImageView()
     }
     

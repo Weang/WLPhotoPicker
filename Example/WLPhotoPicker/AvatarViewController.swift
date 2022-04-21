@@ -20,6 +20,8 @@ class AvatarViewController: FormViewController {
         config.pickerConfig.dismissPickerAfterDone = false
         config.pickerConfig.selectableType = [.photo]
         config.pickerConfig.allowPreview = false
+        
+        // 如果底部toolbar的所有按钮都隐藏的话，toolbar也会隐藏
         config.pickerConfig.allowSelectOriginal = false
         config.pickerConfig.showPickerDoneButton = false
         
@@ -62,7 +64,9 @@ extension AvatarViewController: PhotoEditCropViewControllerDelegate {
         viewController.navigationController?.popViewController(animated: true)
     }
     
-    func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, rotation: UIImage.Orientation) {
+    func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, orientation: UIImage.Orientation) {
+        print(cropRect)
+        print(orientation)
         viewController.dismiss(animated: true)
         let vc = AvatarResultViewController()
         vc.imageView.image = image

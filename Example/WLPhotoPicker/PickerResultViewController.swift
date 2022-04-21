@@ -19,7 +19,17 @@ class PickerResultViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        if #available(iOS 13.0, *) {
+            view.backgroundColor = UIColor { traitCollection -> UIColor in
+                if traitCollection.userInterfaceStyle == .dark {
+                    return .black
+                } else {
+                    return .white
+                }
+            }
+        } else {
+            view.backgroundColor = .white
+        }
         
         let layout = WaterfallLayout()
         layout.delegate = self
@@ -29,7 +39,7 @@ class PickerResultViewController: UIViewController {
         
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.alwaysBounceVertical = true
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
         collectionView.register(PickerResultCollectionViewCell.self, forCellWithReuseIdentifier: "PickerResultCollectionViewCell")
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -53,6 +63,32 @@ extension PickerResultViewController: UICollectionViewDataSource, UICollectionVi
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let result = results[indexPath.item]
+        switch result.result {
+        case .photo(let photoResult):
+            let vc = PhotoPreviewViewController()
+            vc.imageView.image = photoResult.photo
+            present(vc, animated: true)
+        case .video(let videoResult):
+            let playerItem: AVPlayerItem
+            if let videoURL = videoResult.videoURL {
+                playerItem = AVPlayerItem(asset: AVAsset(url: videoURL))
+            } else {
+                playerItem = AVPlayerItem(asset: videoResult.avasset)
+            }
+            let controller = AVPlayerViewController()
+            controller.player = AVPlayer(playerItem: playerItem)
+            present(controller, animated: true) {
+                controller.player?.play()
+            }
+        case .livePhoto(let livePhotoResult):
+            let vc = LivePhotoPreviewViewController()
+            vc.videoURL = livePhotoResult.videoURL
+            vc.livePhotoView.livePhoto = livePhotoResult.livePhoto
+            present(vc, animated: true)
+        }
+    }
 }
 
 extension PickerResultViewController: WaterfallLayoutDelegate {

@@ -89,7 +89,7 @@ public class VideoCompressManager {
             return
         }
         let timescale: CMTimeScale
-        if compressVideo {
+        if compressVideo && frameDuration > 0 {
             timescale = CMTimeScale(min(frameDuration, assetVideoTrack.nominalFrameRate))
         } else {
             timescale = CMTimeScale(assetVideoTrack.nominalFrameRate)

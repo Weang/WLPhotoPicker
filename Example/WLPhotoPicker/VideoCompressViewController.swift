@@ -16,12 +16,9 @@ class VideoCompressViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
-        
         let tipLabel = UILabel()
         tipLabel.numberOfLines = 0
         tipLabel.font = UIFont.systemFont(ofSize: 15)
-        tipLabel.textColor = .darkGray
         tipLabel.text = "把视频文件拖到项目中，修改 VideoCompressViewController 中的文件名，再点击“开始压缩”按钮"
         view.addSubview(tipLabel)
         tipLabel.snp.makeConstraints { make in
@@ -33,13 +30,39 @@ class VideoCompressViewController: UIViewController {
         let button = UIButton()
         button.setTitle("开始压缩", for: .normal)
         button.addTarget(self, action: #selector(beginCompress), for: .touchUpInside)
-        button.setTitleColor(.black, for: .normal)
         view.addSubview(button)
         button.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(tipLabel.snp.bottom).offset(30)
         }
         
+        if #available(iOS 13.0, *) {
+            view.backgroundColor = UIColor { traitCollection -> UIColor in
+                if traitCollection.userInterfaceStyle == .dark {
+                    return .black
+                } else {
+                    return .white
+                }
+            }
+            tipLabel.textColor = UIColor { traitCollection -> UIColor in
+                if traitCollection.userInterfaceStyle == .dark {
+                    return .white
+                } else {
+                    return .darkGray
+                }
+            }
+            button.setTitleColor(UIColor { traitCollection -> UIColor in
+                if traitCollection.userInterfaceStyle == .dark {
+                    return .white
+                } else {
+                    return .black
+                }
+            }, for: .normal)
+        } else {
+            tipLabel.textColor = .darkGray
+            view.backgroundColor = .white
+            button.setTitleColor(.black, for: .normal)
+        }
     }
     
     @objc func beginCompress() {
@@ -70,7 +93,7 @@ class VideoCompressViewController: UIViewController {
             if let _ = manager.error {
                 SVProgressHUD.showError(withStatus: "压缩失败")
             } else {
-                SVProgressHUD.showSuccess(withStatus: "压缩成功")
+                SVProgressHUD.dismiss()
                 print(outputURL)
                 let playerItem = AVPlayerItem(asset: AVAsset(url: outputURL))
                 let player = AVPlayer(playerItem: playerItem)

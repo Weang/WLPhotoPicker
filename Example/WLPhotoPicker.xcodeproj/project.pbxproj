@@ -23,8 +23,10 @@
 		C26B8E152810163B00DE19C8 /* NineCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E142810163B00DE19C8 /* NineCollectionViewCell.swift */; };
 		C26B8E17281022EB00DE19C8 /* SelectVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26B8E16281022EB00DE19C8 /* SelectVideoViewController.swift */; };
 		C2D055A42807EBE1004B82C1 /* CaptureDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D055A32807EBE1004B82C1 /* CaptureDemoViewController.swift */; };
+		C2D297F92810FE3E00778BA3 /* PhotoPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D297F82810FE3E00778BA3 /* PhotoPreviewViewController.swift */; };
+		C2D297FB2810FECF00778BA3 /* LivePhotoPreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2D297FA2810FECF00778BA3 /* LivePhotoPreviewViewController.swift */; };
 		C2E9C7CF28065A0B006CEBBD /* LivePhotoToVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E9C7CE28065A0B006CEBBD /* LivePhotoToVideoViewController.swift */; };
-		C2E9C7D128065CDC006CEBBD /* LivePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E9C7D028065CDC006CEBBD /* LivePhotoViewController.swift */; };
+		C2E9C7D128065CDC006CEBBD /* LivePhotoResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E9C7D028065CDC006CEBBD /* LivePhotoResultViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,8 +52,10 @@
 		C26B8E142810163B00DE19C8 /* NineCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NineCollectionViewCell.swift; sourceTree = "<group>"; };
 		C26B8E16281022EB00DE19C8 /* SelectVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectVideoViewController.swift; sourceTree = "<group>"; };
 		C2D055A32807EBE1004B82C1 /* CaptureDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureDemoViewController.swift; sourceTree = "<group>"; };
+		C2D297F82810FE3E00778BA3 /* PhotoPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPreviewViewController.swift; sourceTree = "<group>"; };
+		C2D297FA2810FECF00778BA3 /* LivePhotoPreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePhotoPreviewViewController.swift; sourceTree = "<group>"; };
 		C2E9C7CE28065A0B006CEBBD /* LivePhotoToVideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePhotoToVideoViewController.swift; sourceTree = "<group>"; };
-		C2E9C7D028065CDC006CEBBD /* LivePhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePhotoViewController.swift; sourceTree = "<group>"; };
+		C2E9C7D028065CDC006CEBBD /* LivePhotoResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePhotoResultViewController.swift; sourceTree = "<group>"; };
 		CFC0F2CB80E09A2099BAEBBF /* Pods-WLPhotoPicker_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLPhotoPicker_Example.release.xcconfig"; path = "Target Support Files/Pods-WLPhotoPicker_Example/Pods-WLPhotoPicker_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -103,6 +107,8 @@
 				C239051F27A29AB700445761 /* PickerViewController.swift */,
 				C20970C52797DDCB00C67662 /* PickerResultViewController.swift */,
 				C26B8E07280FF80300DE19C8 /* PickerResultCollectionViewCell.swift */,
+				C2D297F82810FE3E00778BA3 /* PhotoPreviewViewController.swift */,
+				C2D297FA2810FECF00778BA3 /* LivePhotoPreviewViewController.swift */,
 				C26B8E0E28100BD100DE19C8 /* AvatarViewController.swift */,
 				C26B8E1028100D5800DE19C8 /* AvatarResultViewController.swift */,
 				C26B8E122810125A00DE19C8 /* NineViewController.swift */,
@@ -110,7 +116,7 @@
 				C26B8E16281022EB00DE19C8 /* SelectVideoViewController.swift */,
 				C26B8E05280FDF8100DE19C8 /* VideoCompressViewController.swift */,
 				C2E9C7CE28065A0B006CEBBD /* LivePhotoToVideoViewController.swift */,
-				C2E9C7D028065CDC006CEBBD /* LivePhotoViewController.swift */,
+				C2E9C7D028065CDC006CEBBD /* LivePhotoResultViewController.swift */,
 				C2D055A32807EBE1004B82C1 /* CaptureDemoViewController.swift */,
 				C26B8E09280FF85800DE19C8 /* WaterfallLayout.swift */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
@@ -276,12 +282,14 @@
 				C26B8E0A280FF85800DE19C8 /* WaterfallLayout.swift in Sources */,
 				C2D055A42807EBE1004B82C1 /* CaptureDemoViewController.swift in Sources */,
 				C26B8E17281022EB00DE19C8 /* SelectVideoViewController.swift in Sources */,
-				C2E9C7D128065CDC006CEBBD /* LivePhotoViewController.swift in Sources */,
+				C2E9C7D128065CDC006CEBBD /* LivePhotoResultViewController.swift in Sources */,
 				C2E9C7CF28065A0B006CEBBD /* LivePhotoToVideoViewController.swift in Sources */,
 				C26B8E06280FDF8100DE19C8 /* VideoCompressViewController.swift in Sources */,
 				C26B8E132810125A00DE19C8 /* NineViewController.swift in Sources */,
 				C26B8E1128100D5800DE19C8 /* AvatarResultViewController.swift in Sources */,
+				C2D297FB2810FECF00778BA3 /* LivePhotoPreviewViewController.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
+				C2D297F92810FE3E00778BA3 /* PhotoPreviewViewController.swift in Sources */,
 				C26B8E08280FF80300DE19C8 /* PickerResultCollectionViewCell.swift in Sources */,
 				C26B8E152810163B00DE19C8 /* NineCollectionViewCell.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,

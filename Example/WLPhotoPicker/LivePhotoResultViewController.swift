@@ -12,7 +12,7 @@ import PhotosUI
 import WLPhotoPicker
 import SVProgressHUD
 
-class LivePhotoViewController: UIViewController {
+class LivePhotoResultViewController: UIViewController {
 
     let result: LivePhotoGeneratorRsult
     
@@ -29,7 +29,7 @@ class LivePhotoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .black
         
         livePhotoView.livePhoto = result.livePhoto
         livePhotoView.contentMode = .scaleAspectFit
@@ -38,7 +38,30 @@ class LivePhotoViewController: UIViewController {
             make.edges.equalToSuperview()
         }
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveLivePhoto))
+        let saveButton = UIButton()
+        saveButton.backgroundColor = #colorLiteral(red: 0.1019607843, green: 0.6784313725, blue: 0.1019607843, alpha: 1)
+        saveButton.setTitleColor(.white, for: .normal)
+        saveButton.setTitle("保存到相册", for: .normal)
+        saveButton.layer.cornerRadius = 6
+        saveButton.layer.masksToBounds = true
+        saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        saveButton.addTarget(self, action: #selector(saveLivePhoto), for: .touchUpInside)
+        view.addSubview(saveButton)
+        saveButton.snp.makeConstraints { make in
+            make.width.equalTo(120)
+            make.height.equalTo(40)
+            make.right.equalTo(-20)
+            if #available(iOS 11.0, *) {
+                make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-20)
+            } else {
+                make.bottom.equalTo(bottomLayoutGuide.snp.bottom).offset(-20)
+            }
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        livePhotoView.startPlayback(with: .full)
     }
     
     @objc func saveLivePhoto() {

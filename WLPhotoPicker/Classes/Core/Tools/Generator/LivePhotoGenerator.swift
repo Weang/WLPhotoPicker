@@ -22,16 +22,21 @@ public typealias LivePhotoGeneratorProgress = (Double) -> Void
 // 通过视频生成实况照片
 public class LivePhotoGenerator {
     
-    static public func createLivePhotoFrom(_ videoURL: URL, isMute: Bool = false, progress: LivePhotoGeneratorProgress? = nil, completion: @escaping LivePhotoGeneratorCompletion) {
-        let videoAsset = AVAsset(url: videoURL)
-        guard let videoThumbImage = videoAsset.thumbnailImage() else {
-            completion(nil)
-            return
+    static public func createLivePhotoFrom(_ videoURL: URL, isMute: Bool = false, placeholder: UIImage? = nil, progress: LivePhotoGeneratorProgress? = nil, completion: @escaping LivePhotoGeneratorCompletion) {
+        
+        let placeholderImage: UIImage
+        if let placeholder = placeholder {
+            placeholderImage = placeholder
+        } else {
+            let videoAsset = AVAsset(url: videoURL)
+            guard let videoThumbImage = videoAsset.thumbnailImage() else {
+                completion(nil)
+                return
+            }
+            placeholderImage = videoThumbImage
         }
-        createLivePhotoFrom(videoURL, isMute: isMute, placeholderImage: videoThumbImage, progress: progress, completion: completion)
-    }
-    
-    static public func createLivePhotoFrom(_ videoURL: URL, isMute: Bool = false, placeholderImage: UIImage, progress: LivePhotoGeneratorProgress? = nil, completion: @escaping LivePhotoGeneratorCompletion) {
+        
+        
         let assetIdentifier = UUID().uuidString
         
         guard let imageURL = createImageURL(placeholderImage, assetIdentifier: assetIdentifier) else {

@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'WLPhotoPicker'
-  s.version          = '0.1.0'
-  s.summary          = 'Photo plcker.'
+  s.version          = '1.0.0'
+  s.summary          = 'A photo and video picker for iOS.'
   s.homepage         = 'https://github.com/Weang/WLPhotoPicker'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Weang' => 'w704444178@qq.com' }

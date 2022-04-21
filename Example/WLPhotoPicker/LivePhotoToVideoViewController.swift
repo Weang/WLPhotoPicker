@@ -14,18 +14,29 @@ import Eureka
 class LivePhotoToVideoViewController: FormViewController {
     
     var isMute: Bool = false
+    var placeholder: UIImage?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Picker", style: .done, target: self, action: #selector(openPicker))
         
-        form +++ Section("")
+        form
+        
+        +++ Section("Live")
         <<< SwitchRow() { row in
             row.title = "是否静音"
             row.value = self.isMute
         }.onChange { row in
             self.isMute = row.value ?? false
+        }
+        
+        +++ Section("建议占位图的比例和视频比例保持一致")
+        <<< SwitchRow() { row in
+            row.title = "是否使用自定义占位图"
+            row.value = self.placeholder != nil
+        }.onChange { row in
+            self.placeholder = (row.value ?? false) ? UIImage.init(named: "placeholder") : nil
         }
     }
     
@@ -51,15 +62,15 @@ extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
             return
         }
         
-        LivePhotoGenerator.createLivePhotoFrom(videoURL, isMute: isMute) { progress in
+        LivePhotoGenerator.createLivePhotoFrom(videoURL, isMute: isMute, placeholder: placeholder) { progress in
             SVProgressHUD.showProgress(Float(progress))
         } completion: { result in
             guard let result = result else {
                 return
             }
             SVProgressHUD.dismiss()
-            let vc = LivePhotoViewController(result: result)
-            self.navigationController?.pushViewController(vc, animated: true)
+            let vc = LivePhotoResultViewController(result: result)
+            self.present(vc, animated: true)
         }
     }
     

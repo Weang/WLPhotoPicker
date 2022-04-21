@@ -10,7 +10,7 @@ import UIKit
 public protocol PhotoEditCropViewControllerDelegate: AnyObject {
     
     func cropViewControllerDidClickCancel(_ viewController: PhotoEditCropViewController)
-    func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, rotation: UIImage.Orientation)
+    func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, orientation: UIImage.Orientation)
     
 }
 
@@ -20,7 +20,7 @@ public class PhotoEditCropViewController: UIViewController {
     
     private let photoEditCropRatios: PhotoEditCropRatio
     var cropRect: PhotoEditCropRect = .identity
-    var cropRotation: UIImage.Orientation = .up
+    var cropOrientation: UIImage.Orientation = .up
     
     let photo: UIImage
     var currentPhoto: UIImage
@@ -47,14 +47,14 @@ public class PhotoEditCropViewController: UIViewController {
     }
     
     public convenience init(photo: UIImage, photoEditCropRatios: PhotoEditCropRatio = .freedom) {
-        self.init(photo: photo, cropRect: .identity, cropRotation: .up, photoEditCropRatios: photoEditCropRatios)
+        self.init(photo: photo, cropRect: .identity, cropOrientation: .up, photoEditCropRatios: photoEditCropRatios)
     }
     
-     init(photo: UIImage, cropRect: PhotoEditCropRect = .identity, cropRotation: UIImage.Orientation = .up, photoEditCropRatios: PhotoEditCropRatio = .freedom) {
+    init(photo: UIImage, cropRect: PhotoEditCropRect = .identity, cropOrientation: UIImage.Orientation = .up, photoEditCropRatios: PhotoEditCropRatio = .freedom) {
         self.photo = photo
         self.currentPhoto = photo
         self.cropRect = cropRect
-        self.cropRotation = cropRotation
+        self.cropOrientation = cropOrientation
         self.photoEditCropRatios = photoEditCropRatios
         self.cropRectangleView = PhotoEditCropRectangleView(photoEditCropRatios: photoEditCropRatios)
         super.init(nibName: nil, bundle: nil)
@@ -67,7 +67,7 @@ public class PhotoEditCropViewController: UIViewController {
         
         setupView()
         
-        if cropRect != .identity || cropRotation != .up  {
+        if cropRect != .identity || cropOrientation != .up  {
             setupEditedImage()
         } else if photoEditCropRatios != .freedom {
             setupCropRatio(animate: false)
@@ -141,7 +141,7 @@ public class PhotoEditCropViewController: UIViewController {
     }
     
     func setupEditedImage() {
-        currentPhoto = currentPhoto.rotate(orientation: cropRotation)
+        currentPhoto = currentPhoto.rotate(orientation: cropOrientation)
         cropedImage = currentPhoto.cropToRect(cropRect)
 
         let toDisplayImageRect = adjustDisplayRect(currentPhoto.size)
@@ -305,10 +305,10 @@ public class PhotoEditCropViewController: UIViewController {
             switch orientation {
             case .left:
                 rotationAngle = -CGFloat.pi / 2
-                cropRotation = cropRotation.rotateLeft()
+                cropOrientation = cropOrientation.rotateLeft()
             case .right:
                 rotationAngle = CGFloat.pi / 2
-                cropRotation = cropRotation.rotateRight()
+                cropOrientation = cropOrientation.rotateRight()
             }
             
             UIView.animate(withDuration: 0.3) {
@@ -414,7 +414,7 @@ extension PhotoEditCropViewController: PhotoEditCropToolBarDelegate {
                                               height: cropImageViewRect.height / imageViewSize.height)
         let image = currentPhoto.cropToRect(cropImageRect)
         cropedImage = image
-        delegate?.cropViewController(self, didFinishCrop: image, cropRect: cropImageRect, rotation: cropRotation)
+        delegate?.cropViewController(self, didFinishCrop: image, cropRect: cropImageRect, orientation: cropOrientation)
         if let _ = presentingViewController {
             dismiss(animated: true, completion: nil)
         } else {
