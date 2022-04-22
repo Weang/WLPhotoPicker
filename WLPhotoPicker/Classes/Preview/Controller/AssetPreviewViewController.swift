@@ -236,16 +236,16 @@ extension AssetPreviewViewController: AssetFetchToolDelegate {
 // MARK: AssetPreviewCellDelegate
 extension AssetPreviewViewController: AssetPreviewCellDelegate {
     
-    func previewCellSingleTap(_ previewCell: AssetPreviewCell) {
+    func previewCellDidSingleTap(_ previewCell: AssetPreviewCell) {
         changeToolBarStatus()
     }
     
-    func previewCellSingleTap(_ previewCell: AssetPreviewCell, shouldShowToolbar isShow: Bool) {
+    func previewCell(_ previewCell: AssetPreviewCell, shouldShowToolbar isShow: Bool) {
         showToolBar = !isShow
         changeToolBarStatus()
     }
     
-    func previewCellSingleTapDidBeginPan(_ previewCell: AssetPreviewCell) {
+    func previewCellDidBeginPan(_ previewCell: AssetPreviewCell) {
         if let currentIndex = collectionView.indexPathsForVisibleItems.first?.item,
            let sourceImageView = animateDataSource?.imageBrowser(self, sourceViewFor: currentIndex) {
             sourceImageView.isHidden = true
@@ -262,11 +262,11 @@ extension AssetPreviewViewController: AssetPreviewCellDelegate {
         }
     }
     
-    func previewCellSingleTap(_ previewCell: AssetPreviewCell, didPanScale scale: CGFloat) {
+    func previewCell(_ previewCell: AssetPreviewCell, didPanScale scale: CGFloat) {
         view.backgroundColor = view.backgroundColor?.withAlphaComponent(scale)
     }
     
-    func previewCellSingleTap(_ previewCell: AssetPreviewCell, didFinishPanDismiss dismiss: Bool) {
+    func previewCell(_ previewCell: AssetPreviewCell, didFinishPanDismiss dismiss: Bool) {
         if dismiss {
             self.dismiss(animated: true, completion: nil)
             return

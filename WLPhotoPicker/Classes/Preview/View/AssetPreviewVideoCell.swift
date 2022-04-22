@@ -89,7 +89,7 @@ class AssetPreviewVideoCell: AssetPreviewCell {
             player?.pause()
         }
         if changeToolbar {
-            delegate?.previewCellSingleTap(self, shouldShowToolbar: !isPlaying)
+            delegate?.previewCell(self, shouldShowToolbar: !isPlaying)
         }
     }
     

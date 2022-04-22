@@ -55,9 +55,7 @@ public class VideoCompressManager {
         let id = kCMPersistentTrackID_Invalid
         
         guard let assetVideoTrack = avAsset.tracks(withMediaType: .video).first,
-              let assetAudioTrack = avAsset.tracks(withMediaType: .audio).first,
-              let videoCompositionTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: id),
-              let audioCompositionTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: id) else {
+              let videoCompositionTrack = composition.addMutableTrack(withMediaType: .video, preferredTrackID: id) else {
             error = .failedToLoadAsset
             return
         }
@@ -71,7 +69,6 @@ public class VideoCompressManager {
         
         videoCompositionTrack.preferredTransform = avAsset.preferredTransform
         try? videoCompositionTrack.insertTimeRange(timeRange, of: assetVideoTrack, at: .zero)
-        try? audioCompositionTrack.insertTimeRange(timeRange, of: assetAudioTrack, at: .zero)
         
         let videolayerInstruction = AVMutableVideoCompositionLayerInstruction(assetTrack: videoCompositionTrack)
         videolayerInstruction.setTransform(preferredTransform, at: .zero)
@@ -82,6 +79,13 @@ public class VideoCompressManager {
         
         videoComposition.renderSize = renderSize
         videoComposition.instructions = [videoCompositionInstrution]
+        
+        
+        if let assetAudioTrack = avAsset.tracks(withMediaType: .audio).first,
+           let audioCompositionTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: id) {
+            try? audioCompositionTrack.insertTimeRange(timeRange, of: assetAudioTrack, at: .zero)
+        }
+        
     }
     
     private func updateComposition() {
@@ -153,22 +157,27 @@ public class VideoCompressManager {
             assetReader.add(readerVideoOutput)
         }
         
-        let readerAudioOutput = AVAssetReaderAudioMixOutput(audioTracks: composition.tracks(withMediaType: .audio), audioSettings: nil)
-        readerAudioOutput.alwaysCopiesSampleData = false
-        if assetReader.canAdd(readerAudioOutput) {
-            assetReader.add(readerAudioOutput)
-        }
-        
         let assetWriterVideoInput = AVAssetWriterInput(mediaType: .video, outputSettings: videoWriterConfig())
         assetWriterVideoInput.expectsMediaDataInRealTime = true
         if assetWriter.canAdd(assetWriterVideoInput) {
             assetWriter.add(assetWriterVideoInput)
         }
         
-        let assetWriterAudioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioWriterConfig())
-        assetWriterAudioInput.expectsMediaDataInRealTime = true
-        if assetWriter.canAdd(assetWriterAudioInput) {
-            assetWriter.add(assetWriterAudioInput)
+        var readerAudioOutput: AVAssetReaderAudioMixOutput?
+        var assetWriterAudioInput: AVAssetWriterInput?
+        let audioTracks = composition.tracks(withMediaType: .audio)
+        if audioTracks.count > 0 {
+            readerAudioOutput = AVAssetReaderAudioMixOutput(audioTracks: composition.tracks(withMediaType: .audio), audioSettings: nil)
+            readerAudioOutput!.alwaysCopiesSampleData = false
+            if assetReader.canAdd(readerAudioOutput!) {
+                assetReader.add(readerAudioOutput!)
+            }
+            
+            assetWriterAudioInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioWriterConfig())
+            assetWriterAudioInput!.expectsMediaDataInRealTime = true
+            if assetWriter.canAdd(assetWriterAudioInput!) {
+                assetWriter.add(assetWriterAudioInput!)
+            }
         }
         
         assetReader.startReading()
@@ -195,17 +204,21 @@ public class VideoCompressManager {
             }
         }
         
-        dispatchGroup.enter()
-        assetWriterAudioInput.requestMediaDataWhenReady(on: audioQueue) {
-            while assetWriterAudioInput.isReadyForMoreMediaData {
-                guard let sampleBuffer = readerAudioOutput.copyNextSampleBuffer() else {
-                    assetWriterAudioInput.markAsFinished()
-                    dispatchGroup.leave()
-                    break
+        if let assetWriterAudioInput = assetWriterAudioInput,
+           let readerAudioOutput = readerAudioOutput{
+            dispatchGroup.enter()
+            assetWriterAudioInput.requestMediaDataWhenReady(on: audioQueue) {
+                while assetWriterAudioInput.isReadyForMoreMediaData {
+                    guard let sampleBuffer = readerAudioOutput.copyNextSampleBuffer() else {
+                        assetWriterAudioInput.markAsFinished()
+                        dispatchGroup.leave()
+                        break
+                    }
+                    assetWriterAudioInput.append(sampleBuffer)
                 }
-                assetWriterAudioInput.append(sampleBuffer)
             }
         }
+        
         let outputPath = self.outputPath
         dispatchGroup.notify(queue: DispatchQueue.main) { [weak self] in
             if let error = assetReader.error {

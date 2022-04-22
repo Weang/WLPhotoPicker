@@ -37,6 +37,13 @@ public struct PhotoEditCropRect {
                       width: size.width * width,
                       height: size.height * height)
     }
+    
+    mutating func fitCropBorder() {
+        x = min(1, max(0, x))
+        y = min(1, max(0, y))
+        width = min(1, max(0, width))
+        height = min(1, max(0, height))
+    }
 }
 
 extension PhotoEditCropRect: Equatable {

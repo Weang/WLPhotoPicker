@@ -8,12 +8,12 @@
 import UIKit
 
 protocol AssetPreviewCellDelegate: AnyObject {
-    func previewCellSingleTap(_ previewCell: AssetPreviewCell)
-    func previewCellSingleTap(_ previewCell: AssetPreviewCell, shouldShowToolbar isShow: Bool)
+    func previewCellDidSingleTap(_ previewCell: AssetPreviewCell)
+    func previewCell(_ previewCell: AssetPreviewCell, shouldShowToolbar isShow: Bool)
     
-    func previewCellSingleTapDidBeginPan(_ previewCell: AssetPreviewCell)
-    func previewCellSingleTap(_ previewCell: AssetPreviewCell, didPanScale scale: CGFloat)
-    func previewCellSingleTap(_ previewCell: AssetPreviewCell, didFinishPanDismiss dismiss: Bool)
+    func previewCellDidBeginPan(_ previewCell: AssetPreviewCell)
+    func previewCell(_ previewCell: AssetPreviewCell, didPanScale scale: CGFloat)
+    func previewCell(_ previewCell: AssetPreviewCell, didFinishPanDismiss dismiss: Bool)
 }
 
 class AssetPreviewCell: UICollectionViewCell {
@@ -132,7 +132,7 @@ class AssetPreviewCell: UICollectionViewCell {
     
     // MARK: Gesture
     @objc func handleSingleTapGesture() {
-        delegate?.previewCellSingleTap(self)
+        delegate?.previewCellDidSingleTap(self)
     }
     
     @objc func handleDoubleTapGesture(_ gesture: UITapGestureRecognizer) {
@@ -171,7 +171,7 @@ class AssetPreviewCell: UICollectionViewCell {
     }
     
     func beginPanGesture() {
-        delegate?.previewCellSingleTapDidBeginPan(self)
+        delegate?.previewCellDidBeginPan(self)
     }
     
     func changedPanGesture(translation: CGPoint) {
@@ -179,16 +179,16 @@ class AssetPreviewCell: UICollectionViewCell {
         contentScrollView.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
             .scaledBy(x: transForm, y: transForm)
         let scale = min(1 - translation.y / UIScreen.main.bounds.height * 2, 1)
-        delegate?.previewCellSingleTap(self, didPanScale: scale)
+        delegate?.previewCell(self, didPanScale: scale)
     }
     
     func finishPanGesture(dismiss: Bool) {
         if dismiss {
-            delegate?.previewCellSingleTap(self, didFinishPanDismiss: true)
+            delegate?.previewCell(self, didFinishPanDismiss: true)
         } else {
             UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, animations: {
                 self.contentScrollView.transform = .identity
-                self.delegate?.previewCellSingleTap(self, didFinishPanDismiss: false)
+                self.delegate?.previewCell(self, didFinishPanDismiss: false)
             })
         }
     }

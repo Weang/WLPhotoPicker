@@ -346,6 +346,7 @@ public class PhotoEditCropViewController: UIViewController {
 extension PhotoEditCropViewController: UIScrollViewDelegate {
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        bottomToolBar.isEnabled = false
         cropRectangleView.hideCover()
     }
     
@@ -368,6 +369,7 @@ extension PhotoEditCropViewController: UIScrollViewDelegate {
     }
     
     public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        bottomToolBar.isEnabled = false
         cropRectangleView.hideCover()
     }
     
@@ -408,10 +410,11 @@ extension PhotoEditCropViewController: PhotoEditCropToolBarDelegate {
     func toolBarDidClickDoneButton(_ toolBar: PhotoEditCropToolBar) {
         let imageViewSize = view.convert(contentImageView.frame, to: contentImageView).size
         let cropImageViewRect = view.convert(cropRectangleView.cropRect, to: contentImageView)
-        let cropImageRect = PhotoEditCropRect(x: cropImageViewRect.minX / imageViewSize.width,
+        var cropImageRect = PhotoEditCropRect(x: cropImageViewRect.minX / imageViewSize.width,
                                               y: cropImageViewRect.minY / imageViewSize.height,
                                               width: cropImageViewRect.width / imageViewSize.width,
                                               height: cropImageViewRect.height / imageViewSize.height)
+        cropImageRect.fitCropBorder()
         let image = currentPhoto.cropToRect(cropImageRect)
         cropedImage = image
         delegate?.cropViewController(self, didFinishCrop: image, cropRect: cropImageRect, orientation: cropOrientation)
