@@ -378,6 +378,7 @@ extension AssetPreviewViewController: AssetPreviewToolBarDelegate {
 extension AssetPreviewViewController: PhotoEditViewControllerDelegate {
     
     func editController(_ editController: PhotoEditViewController, didDidFinishEditAsset asset: AssetModel) {
+        editController.dismiss(animated: false, completion: nil)
         guard let index = assetFetchTool.albumModel?.assets.firstIndex(where: { $0.localIdentifier == asset.localIdentifier }) else {
             return
         }

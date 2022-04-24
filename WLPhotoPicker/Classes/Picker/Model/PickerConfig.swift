@@ -91,6 +91,7 @@ public class PickerConfig {
     public var jpgCompressionQuality: Double = 0.8
     
     // 点击确定是否自动关闭
+    // 如果置为false，需要在picker回调中手动dismiss
     public var dismissPickerAfterDone: Bool = true
     
     // 点击选择照片后是否保存编辑后的照片

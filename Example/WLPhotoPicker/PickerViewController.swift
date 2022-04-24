@@ -149,7 +149,7 @@ class PickerViewController: FormViewController {
         }
         
         <<< SwitchRow() { row in
-            row.title = "确定或者取消之后是否自动关闭"
+            row.title = "点击确定之后是否自动关闭"
             row.value = self.config.pickerConfig.dismissPickerAfterDone
         }.onChange { row in
             self.config.pickerConfig.dismissPickerAfterDone = (row.value ?? false)
@@ -191,6 +191,9 @@ class PickerViewController: FormViewController {
 extension PickerViewController: WLPhotoPickerControllerDelegate {
     
     func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [PhotoPickerResult]) {
+        if !self.config.pickerConfig.dismissPickerAfterDone {
+            pickerController.presentingViewController?.dismiss(animated: true, completion: nil)
+        }
         let vc = PickerResultViewController()
         vc.results = results
         navigationController?.pushViewController(vc, animated: true)

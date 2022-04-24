@@ -11,7 +11,6 @@ import SnapKit
 public protocol WLPhotoPickerControllerDelegate: AnyObject {
     
     // 点击取消
-    // 如果PickerConfig的dismissPickerAfterDone为false，那么控制器不会自动关闭
     func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController)
     
     // 点击完成按钮
@@ -76,21 +75,18 @@ public class WLPhotoPickerController: UINavigationController {
 extension WLPhotoPickerController: AssetPickerControllerDelegate {
     
     func pickerControllerDidCancel(_ pickerController: AssetPickerController) {
+        dismiss(animated: true, completion: nil)
         pickerDelegate?.pickerControllerDidCancel(self)
-        if config.pickerConfig.dismissPickerAfterDone {
-            dismiss(animated: true, completion: nil)
-        }
     }
     
     func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [PhotoPickerResult]) {
-        pickerDelegate?.pickerController(self, didSelectResult: results)
-        
+        let previewController = presentedViewController as? AssetPreviewViewController
+        previewController?.transitioningDelegate = nil
+        previewController?.modalPresentationStyle = .fullScreen
         if config.pickerConfig.dismissPickerAfterDone {
-            let previewController = presentedViewController as? AssetPreviewViewController
-            previewController?.transitioningDelegate = nil
-            previewController?.modalPresentationStyle = .fullScreen
             presentingViewController?.dismiss(animated: true, completion: nil)
         }
+        pickerDelegate?.pickerController(self, didSelectResult: results)
     }
     
 }

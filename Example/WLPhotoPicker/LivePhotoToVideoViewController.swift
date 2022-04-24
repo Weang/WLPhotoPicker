@@ -46,22 +46,18 @@ class LivePhotoToVideoViewController: FormViewController {
         config.pickerConfig.allowVideoSelectOriginal = true
         config.pickerConfig.allowsMultipleSelection = false
         config.pickerConfig.exportVideoURLWhenPick = true
+        config.pickerConfig.dismissPickerAfterDone = false
         let vc = WLPhotoPickerController(config: config)
         vc.pickerDelegate = self
         self.present(vc, animated: true, completion: nil)
     }
     
-}
-
-extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
-    
-    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [PhotoPickerResult]) {
+    func finishPickVideo(_ results: [PhotoPickerResult]) {
         guard let result = results.first,
               case .video(let videoResult) = result.result,
               let videoURL = videoResult.videoURL else {
             return
         }
-        
         LivePhotoGenerator.createLivePhotoFrom(videoURL, isMute: isMute, placeholder: placeholder) { progress in
             SVProgressHUD.showProgress(Float(progress))
         } completion: { result in
@@ -73,9 +69,14 @@ extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
             self.present(vc, animated: true)
         }
     }
+}
+
+extension LivePhotoToVideoViewController: WLPhotoPickerControllerDelegate {
     
-    func pickerControllerDidCancel(_ pickerController: WLPhotoPickerController) {
-        pickerController.dismiss(animated: true, completion: nil)
+    func pickerController(_ pickerController: WLPhotoPickerController, didSelectResult results: [PhotoPickerResult]) {
+        pickerController.presentingViewController?.dismiss(animated: true, completion: {
+            self.finishPickVideo(results)
+        })
     }
     
 }

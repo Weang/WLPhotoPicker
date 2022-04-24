@@ -85,16 +85,6 @@ extension SelectVideoViewController: WLPhotoPickerControllerDelegate {
         let vc = PickerResultViewController()
         vc.results = results
         navigationController?.pushViewController(vc, animated: true)
-        results.forEach { result in
-            switch result.result {
-            case .video(let result):
-                if let videoURL = result.videoURL {
-                    print(videoURL)
-                }
-            default:
-                break
-            }
-        }
     }
 
 }

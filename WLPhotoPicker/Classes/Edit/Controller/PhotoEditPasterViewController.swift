@@ -120,8 +120,8 @@ extension PhotoEditPasterViewController: UICollectionViewDelegate, UICollectionV
             image = UIImage(contentsOfFile: path)
         }
         guard let image = image else { return }
-        delegate?.pasterController(self, didSelectPasterImage: image)
         dismiss(animated: true, completion: nil)
+        delegate?.pasterController(self, didSelectPasterImage: image)
     }
 }
 

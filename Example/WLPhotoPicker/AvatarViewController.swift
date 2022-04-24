@@ -60,13 +60,7 @@ extension AvatarViewController: WLPhotoPickerControllerDelegate {
 
 extension AvatarViewController: PhotoEditCropViewControllerDelegate {
     
-    func cropViewControllerDidClickCancel(_ viewController: PhotoEditCropViewController) {
-        viewController.navigationController?.popViewController(animated: true)
-    }
-    
     func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, orientation: UIImage.Orientation) {
-        print(cropRect)
-        print(orientation)
         viewController.dismiss(animated: true)
         let vc = AvatarResultViewController()
         vc.imageView.image = image

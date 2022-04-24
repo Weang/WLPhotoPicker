@@ -9,7 +9,6 @@ import UIKit
 
 public protocol PhotoEditCropViewControllerDelegate: AnyObject {
     
-    func cropViewControllerDidClickCancel(_ viewController: PhotoEditCropViewController)
     func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, orientation: UIImage.Orientation)
     
 }
@@ -387,7 +386,11 @@ extension PhotoEditCropViewController: UIScrollViewDelegate {
 extension PhotoEditCropViewController: PhotoEditCropToolBarDelegate {
     
     func toolBarDidClickCancelButton(_ toolBar: PhotoEditCropToolBar) {
-        delegate?.cropViewControllerDidClickCancel(self)
+        if let navigationController = self.navigationController {
+            navigationController.popViewController(animated: true)
+        } else {
+            dismiss(animated: true, completion: nil)
+        }
     }
     
     func toolBarDidClickRotateLeftButton(_ toolBar: PhotoEditCropToolBar) {
@@ -418,11 +421,6 @@ extension PhotoEditCropViewController: PhotoEditCropToolBarDelegate {
         let image = currentPhoto.cropToRect(cropImageRect)
         cropedImage = image
         delegate?.cropViewController(self, didFinishCrop: image, cropRect: cropImageRect, orientation: cropOrientation)
-        if let _ = presentingViewController {
-            dismiss(animated: true, completion: nil)
-        } else {
-            navigationController?.popViewController(animated: true)
-        }
     }
     
 }

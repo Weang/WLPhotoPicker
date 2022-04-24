@@ -507,12 +507,14 @@ extension AssetPickerController: AssetPreviewViewControllerAnimateDataSource, As
 extension AssetPickerController: CaptureViewControllerDelegate {
     
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingPhoto photo: UIImage) {
+        viewController.presentingViewController?.dismiss(animated: true)
         AssetSaveManager.savePhoto(photo: photo) { [weak self] asset in
             self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
         }
     }
     
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingVideo videoUrl: URL) {
+        viewController.presentingViewController?.dismiss(animated: true)
         AssetSaveManager.saveVideo(videoURL: videoUrl) { [weak self] asset in
             self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
         }

@@ -157,14 +157,14 @@ class PhotoEditTextViewController: UIViewController {
     }
     
     @objc private func cancelButtonClick() {
-        delegate?.textController(self, didCancelImput: textMaskLayer)
         dismiss(animated: true, completion: nil)
+        delegate?.textController(self, didCancelImput: textMaskLayer)
     }
     
     @objc private func doneButtonClick() {
         if textLineRects.count == 0 {
-            delegate?.textController(self, didCancelImput: textMaskLayer)
             dismiss(animated: true, completion: nil)
+            delegate?.textController(self, didCancelImput: textMaskLayer)
             return
         }
         guard let image = drawTextImage() else {
@@ -183,8 +183,8 @@ class PhotoEditTextViewController: UIViewController {
                                               colorIndex: textColorIndex,
                                               maskImage: image)
         }
-        delegate?.textController(self, didFinishInput: textMask)
         dismiss(animated: true, completion: nil)
+        delegate?.textController(self, didFinishInput: textMask)
     }
     
     @objc private func kayboardChanged(_ notification: Notification) {

@@ -717,7 +717,6 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
             delegate?.editController(self, didDidFinishEditPhoto: editedPhoto)
         }
         
-        dismiss(animated: false, completion: nil)
     }
 }
 
@@ -763,11 +762,8 @@ extension PhotoEditViewController: PhotoEditTextViewControllerDelegate {
 // MARK: PhotoEditCropViewControllerDelegate
 extension PhotoEditViewController: PhotoEditCropViewControllerDelegate {
     
-    public func cropViewControllerDidClickCancel(_ viewController: PhotoEditCropViewController) {
-        viewController.dismiss(animated: true)
-    }
-    
     public func cropViewController(_ viewController: PhotoEditCropViewController, didFinishCrop image: UIImage, cropRect: PhotoEditCropRect, orientation: UIImage.Orientation) {
+        viewController.dismiss(animated: true)
         editManager.cropRect = cropRect
         editManager.cropOrientation = orientation
         layoutCropedImageView()

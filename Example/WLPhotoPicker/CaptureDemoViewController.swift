@@ -140,17 +140,28 @@ class CaptureDemoViewController: FormViewController {
         let controller = AVPlayerViewController()
         controller.player = AVPlayer(playerItem: playerItem)
         controller.modalPresentationStyle = .fullScreen
-        navigationController?.pushViewController(controller, animated: true)
+        present(controller, animated: true) {
+            controller.player?.play()
+        }
     }
     
 }
 
 extension CaptureDemoViewController: CaptureViewControllerDelegate {
-    
+    func captureViewController(_ viewController: CaptureViewController, didFinishTakingPhoto photo: UIImage) {
+        viewController.presentingViewController?.dismiss(animated: true, completion: {
+            let vc = PhotoPreviewViewController()
+            vc.imageView.image = photo
+            self.present(vc, animated: true)
+        })
+    }
     func captureViewController(_ viewController: CaptureViewController, didFinishTakingVideo videoUrl: URL) {
         if !addWaterMark {
-            showPlayer(videoUrl)
+            viewController.presentingViewController?.dismiss(animated: true, completion: {
+                self.showPlayer(videoUrl)
+            })
         } else {
+            viewController.presentingViewController?.dismiss(animated: true, completion: nil)
             SVProgressHUD.show()
             DispatchQueue.global().async {
                 let outputPath = NSTemporaryDirectory() + "video.mp4"

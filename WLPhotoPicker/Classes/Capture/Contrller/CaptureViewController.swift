@@ -169,12 +169,10 @@ extension CaptureViewController: WLCameraControlDelegate {
 extension CaptureViewController: CapturePreviewViewControllerDelegate {
     
     func previewViewController(_ controller: CapturePreviewViewController, didClickDoneButtonWithPhoto photo: UIImage) {
-        presentingViewController?.dismiss(animated: true, completion: nil)
         delegate?.captureViewController(self, didFinishTakingPhoto: photo)
     }
     
     func previewViewController(_ controller: CapturePreviewViewController, didClickDoneButtonWithVideoUrl url: URL) {
-        presentingViewController?.dismiss(animated: true, completion: nil)
         delegate?.captureViewController(self, didFinishTakingVideo: url)
     }
 }
@@ -186,7 +184,6 @@ extension CaptureViewController: PhotoEditViewControllerDelegate {
         guard let editedPhoto = photo else {
             return
         }
-        presentingViewController?.dismiss(animated: true, completion: nil)
         delegate?.captureViewController(self, didFinishTakingPhoto: editedPhoto)
     }
     

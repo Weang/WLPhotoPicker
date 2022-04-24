@@ -109,9 +109,9 @@ extension AlbumListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        dismiss(animated: true, completion: nil)
         delegate?.albumList(self, didSelect: albumsList[indexPath.row])
         delegate?.albumListDidDismiss(self)
-        dismiss(animated: true, completion: nil)
     }
     
 }
