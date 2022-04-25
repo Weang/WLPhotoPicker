@@ -121,9 +121,7 @@ class PhotoEditBottomToolBar: UIView {
             make.height.equalTo(40)
             make.right.equalTo(doneButton.snp.left).offset(-10)
         }
-    }
-    
-    private func setupGraffitiView() {
+        
         graffitiContentView.delegate = self
         graffitiContentView.isHidden = true
         addSubview(graffitiContentView)
@@ -132,9 +130,7 @@ class PhotoEditBottomToolBar: UIView {
             make.left.right.equalToSuperview()
             make.height.equalTo(graffitiContentViewHeight)
         }
-    }
-    
-    private func setupMosaicView() {
+        
         mosaicContentView.isHidden = true
         addSubview(mosaicContentView)
         mosaicContentView.snp.makeConstraints { make in
@@ -152,21 +148,17 @@ class PhotoEditBottomToolBar: UIView {
             make.right.equalTo(-16)
             make.centerY.equalToSuperview()
         }
-    }
-    
-    private func setupFiltersView() {
+        
         filtersContentView.delegate = self
         filtersContentView.isHidden = true
-        filtersContentView.selectFilterIndex(selectedFilterIndex)
+        filtersContentView.selectedFilterIndex = selectedFilterIndex
         addSubview(filtersContentView)
         filtersContentView.snp.makeConstraints { make in
             make.bottom.equalTo(contentView.snp.top)
             make.left.right.equalToSuperview()
             make.height.equalTo(filtersContentViewHeight)
         }
-    }
-    
-    private func setupAdjustView() {
+        
         adjustContentView.delegate = self
         adjustContentView.isHidden = true
         addSubview(adjustContentView)
@@ -186,22 +178,12 @@ class PhotoEditBottomToolBar: UIView {
         invalidateIntrinsicContentSize()
         
         if itemType == .graffiti {
-            setupGraffitiView()
             if let graffitiColor = graffitiContentView.currentColor {
                 delegate?.bottomToolBar(self, didSelectGraffitiColor: graffitiColor)
             }
         }
         
-        if itemType == .mosaic {
-            setupMosaicView()
-        }
-        
-        if itemType == .filter {
-            setupFiltersView()
-        }
-        
         if itemType == .adjust {
-            setupAdjustView()
             if let adjustMode = adjustContentView.currentAdjustMode {
                 delegate?.bottomToolBar(self, didSelectAdjustMode: adjustMode)
             }

@@ -22,6 +22,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         SVProgressHUD.setDefaultStyle(.dark)
         
+        #if DEBUG
+        UIApplication.shared.isIdleTimerDisabled = true
+        #endif
+        
         return true
     }
 }

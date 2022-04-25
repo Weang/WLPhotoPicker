@@ -63,6 +63,8 @@ public class PhotoEditViewController: UIViewController {
         }
     }
     
+    private var imageBeforeFilter: UIImage?
+    
     private var imageBeforeAdjust: UIImage?
     private var currentAdjustMode: PhotoEditAdjustMode?
     
@@ -92,8 +94,12 @@ public class PhotoEditViewController: UIViewController {
         
         setupView()
         setupGesture()
-        setupPhoto()
-        setupEditedImage()
+        
+        if assetModel?.hasEdit ?? false {
+            setupEditedImage()
+        } else {
+            setupPhoto(photo)
+        }
     }
     
     private func setupView() {
@@ -147,6 +153,7 @@ public class PhotoEditViewController: UIViewController {
             make.left.top.right.equalToSuperview()
         }
         
+        bottomToolBar.selectedFilterIndex = assetModel?.photoFilterIndex ?? 0
         bottomToolBar.delegate = self
         view.addSubview(bottomToolBar)
         bottomToolBar.snp.makeConstraints { make in
@@ -211,8 +218,37 @@ public class PhotoEditViewController: UIViewController {
         masksTapGesture.require(toFail: masksPanGesture)
     }
     
-    private func setupPhoto() {
-        contentImageView.image = assetModel?.editedPhoto ?? photo
+    private func setupEditedImage() {
+        guard let assetModel = self.assetModel,
+                assetModel.hasEdit,
+                let editPhoto = assetModel.editedPhoto else {
+            return
+        }
+        
+        contentImageView.image = editPhoto
+        imageContainerView.frame = AssetDisplayHelper.imageViewRectFrom(imageSize: editPhoto.size, mediaType: .photo)
+        contentImageView.frame = imageContainerView.bounds
+        updateContentImageViewMask()
+        
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+             
+            let mosaicImage = self.photo.mosaicImage(level: self.photoEditConfig.photoEditMosaicWidth)
+            let mosaicDrawedImage = self.editManager.editMosaicPath.drawMosaicImage(ornginalImage: self.photo, mosaicImage: mosaicImage)
+            let filterImage = self.editManager.photoFilter?.filter?(mosaicDrawedImage) ?? mosaicDrawedImage
+            let adjustedImage = filterImage?.adjustImageFrom(self.editManager.adjustValue)
+            
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.setupPhoto(adjustedImage ?? self.photo)
+                self.layoutCropedImageView()
+            }
+        }
+        
+    }
+    
+    private func setupPhoto(_ photo: UIImage) {
+        contentImageView.image = photo
         
         imageContainerView.frame = AssetDisplayHelper.imageViewRectFrom(imageSize: photo.size, mediaType: .photo)
         originalImageViewSize = imageContainerView.size
@@ -225,38 +261,21 @@ public class PhotoEditViewController: UIViewController {
         editManager.editGraffitiPath.contextSize = photo.size
         editManager.editGraffitiPath.drawedViewSize = imageContainerView.size
         graffitiDrawLayer.frame = imageContainerView.bounds
-        
-        editManager.editMosaicPath.drawedViewSize = imageContainerView.size
-        mosaicDrawLayer.frame = imageContainerView.bounds
-        
-        maskLayerContentView.frame = imageContainerView.bounds
-        
-        photoEditConfig.photoEditAdjustModes.forEach {
-            editManager.adjustValue[$0] = 0
-        }
-        
-        updateContentImageViewMask()
-    }
-    
-    private func setupEditedImage() {
-        guard let assetModel = self.assetModel, assetModel.hasEdit else { return }
-        bottomToolBar.selectedFilterIndex = assetModel.photoFilterIndex
-        
-        let mosaicImage = photo.mosaicImage(level: photoEditConfig.photoEditMosaicWidth)
-        let mosaicDrawedImage = editManager.editMosaicPath.drawMosaicImage(ornginalImage: photo, mosaicImage: mosaicImage)
-        let filterImage = editManager.photoFilter?.filter?(mosaicDrawedImage) ?? mosaicDrawedImage
-        let adjustedImage = filterImage?.adjustImageFrom(editManager.adjustValue)
-        contentImageView.image = adjustedImage
-        
         graffitiDrawLayer.contents = editManager.editGraffitiPath.draw()?.cgImage
         graffitiDrawLayer.removeAllAnimations()
         
-        for maskLayer in assetModel.maskLayers {
+        editManager.editMosaicPath.drawedViewSize = imageContainerView.size
+        mosaicDrawLayer.frame = imageContainerView.bounds
+        mosaicDrawLayer.removeAllAnimations()
+        
+        maskLayerContentView.frame = imageContainerView.bounds
+        for maskLayer in assetModel?.maskLayers ?? [] {
             let maskView = PhotoEditMaskView(maskLayer: maskLayer)
             maskView.updateMaskLayer(showActive: false)
-            self.maskLayerContentView.addSubview(maskView)
+            maskLayerContentView.addSubview(maskView)
         }
-        layoutCropedImageView()
+        
+        updateContentImageViewMask()
     }
     
     @objc private func contentViewSingleTap() {
@@ -316,11 +335,16 @@ extension PhotoEditViewController {
 extension PhotoEditViewController {
     
     private func prepareForMosaic() {
-        let mosaicImage = photo.mosaicImage(level: photoEditConfig.photoEditMosaicWidth)
-        let filterImage = editManager.photoFilter?.filter?(mosaicImage) ?? mosaicImage
-        let adjustedImage = filterImage.adjustImageFrom(editManager.adjustValue)
-        mosaicMaskImage = adjustedImage
-        mosaicDrawLayer.contents = mosaicMaskImage?.cgImage
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            let mosaicImage = self.photo.mosaicImage(level: self.photoEditConfig.photoEditMosaicWidth)
+            let filterImage = self.editManager.photoFilter?.filter?(mosaicImage) ?? mosaicImage
+            let adjustedImage = filterImage.adjustImageFrom(self.editManager.adjustValue)
+            DispatchQueue.main.async { [weak self] in
+                self?.mosaicMaskImage = adjustedImage
+                self?.mosaicDrawLayer.contents = adjustedImage.cgImage
+            }
+        }
     }
     
     private func drawMosaicImage()  {
@@ -552,11 +576,17 @@ extension PhotoEditViewController {
 // MARK: Filter
 extension PhotoEditViewController {
     
+    private func prepareForFilter() {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            let mosaicImage = self.photo.mosaicImage(level: self.photoEditConfig.photoEditMosaicWidth)
+            self.imageBeforeFilter = self.editManager.editMosaicPath.drawMosaicImage(ornginalImage: self.photo, mosaicImage: mosaicImage)
+        }
+    }
+    
     private func drawFilterImage(filter: PhotoEditFilterProvider) {
         editManager.photoFilter = filter
-        let mosaicImage = photo.mosaicImage(level: photoEditConfig.photoEditMosaicWidth)
-        let mosaicDrawedImage = editManager.editMosaicPath.drawMosaicImage(ornginalImage: photo, mosaicImage: mosaicImage)
-        let filterImage = editManager.photoFilter?.filter?(mosaicDrawedImage) ?? mosaicDrawedImage
+        let filterImage = editManager.photoFilter?.filter?(imageBeforeFilter) ?? imageBeforeFilter
         let adjustedImage = filterImage?.adjustImageFrom(editManager.adjustValue)
         contentImageView.image = adjustedImage
     }
@@ -571,10 +601,13 @@ extension PhotoEditViewController {
     }
     
     private func prepareForAdjust() {
-        let mosaicImage = photo.mosaicImage(level: photoEditConfig.photoEditMosaicWidth)
-        let mosaicDrawedImage = editManager.editMosaicPath.drawMosaicImage(ornginalImage: photo, mosaicImage: mosaicImage)
-        let filterImage = editManager.photoFilter?.filter?(mosaicDrawedImage) ?? mosaicDrawedImage
-        imageBeforeAdjust = filterImage
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            let mosaicImage = self.photo.mosaicImage(level: self.photoEditConfig.photoEditMosaicWidth)
+            let mosaicDrawedImage = self.editManager.editMosaicPath.drawMosaicImage(ornginalImage: self.photo, mosaicImage: mosaicImage)
+            let filterImage = self.editManager.photoFilter?.filter?(mosaicDrawedImage) ?? mosaicDrawedImage
+            self.imageBeforeAdjust = filterImage
+        }
     }
     
     private func changeAdjustValue(_ value: Double) {
@@ -663,6 +696,8 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
             })
         case .mosaic:
             prepareForMosaic()
+        case .filter:
+            prepareForFilter()
         case .adjust:
             prepareForAdjust()
         default:
@@ -693,9 +728,7 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
     func bottomToolBar(_ bottomToolBar: PhotoEditBottomToolBar, didSelectAdjustMode adjustMode: PhotoEditAdjustMode) {
         adjustSlideView.minimumValue = adjustMode.minimumValue
         currentAdjustMode = adjustMode
-        if let value = editManager.adjustValue[adjustMode] {
-            adjustSlideView.value = value
-        }
+        adjustSlideView.value = editManager.adjustValue[adjustMode] ?? 0
     }
     
     func bottomToolBarDidClickDoneButton(_ bottomToolBar: PhotoEditBottomToolBar) {

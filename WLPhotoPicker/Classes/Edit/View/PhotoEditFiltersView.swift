@@ -19,6 +19,15 @@ class PhotoEditFiltersView: UIView {
     
     private let photo: UIImage?
     private let photoEditConfig: PhotoEditConfig
+    private var filterPhotos: [UIImage?] = []
+    
+    var selectedFilterIndex: Int = 0 {
+        didSet {
+            if filterPhotos.count > selectedFilterIndex {
+                collectionView.selectItem(at: IndexPath(item: selectedFilterIndex, section: 0), animated: false, scrollPosition: .left)
+            }
+        }
+    }
     
     init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
         self.photo = photo
@@ -44,15 +53,22 @@ class PhotoEditFiltersView: UIView {
             make.left.equalTo(16)
             make.right.equalTo(-16)
         }
-        if photoEditConfig.photoEditFilters.count > 0 {
-            collectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .left)
+        
+        DispatchQueue.global().async { [weak self] in
+            for filter in photoEditConfig.photoEditFilters {
+                let filterPhoto = filter.filter?(photo) ?? photo
+                self?.filterPhotos.append(filterPhoto)
+            }
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.collectionView.reloadData()
+                if self.filterPhotos.count > self.selectedFilterIndex {
+                    let indexPath = IndexPath(item: self.selectedFilterIndex, section: 0)
+                    self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .left)
+                }
+            }
         }
-    }
-    
-    func selectFilterIndex(_ index: Int) {
-        if photoEditConfig.photoEditFilters.count > 0 {
-            collectionView.selectItem(at: IndexPath(item: index, section: 0), animated: false, scrollPosition: .left)
-        }
+        
     }
     
     required init?(coder: NSCoder) {
@@ -64,15 +80,13 @@ class PhotoEditFiltersView: UIView {
 extension PhotoEditFiltersView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photoEditConfig.photoEditFilters.count
+        return filterPhotos.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(PhotoEditFilterCollectionViewCell.self, for: indexPath)
-        let filter = photoEditConfig.photoEditFilters[indexPath.item]
-        let photo = photo?.thumbnailWith(60)
-        cell.imageView.image = filter.filter?(photo) ?? photo
-        cell.nameLabel.text = filter.name
+        cell.imageView.image = filterPhotos[indexPath.item]
+        cell.nameLabel.text = photoEditConfig.photoEditFilters[indexPath.item].name
         return cell
     }
     
