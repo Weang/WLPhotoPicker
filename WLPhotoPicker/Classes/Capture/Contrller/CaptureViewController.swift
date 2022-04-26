@@ -20,7 +20,7 @@ public extension CaptureViewControllerDelegate {
 
 public class CaptureViewController: UIViewController {
     
-    private var captureManager: CaptureManager!
+    private var captureManager: CaptureManager?
     private let controlView: CaptureControlView
     private let captureConfig: CaptureConfig
     private let photoEditConfig: PhotoEditConfig?
@@ -36,7 +36,6 @@ public class CaptureViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .fullScreen
         modalPresentationCapturesStatusBarAppearance = true
-        captureManager = CaptureManager(captureConfig: captureConfig, delegate: self)
     }
     
     required init?(coder: NSCoder) {
@@ -51,22 +50,25 @@ public class CaptureViewController: UIViewController {
         super.viewDidLoad()
         
         setupView()
-        setupManager()
+        
+        PermissionProvider.request([.camera, .microphone]) { [weak self] type, status in
+            guard status == .authorized else {
+                self?.showError(type == .camera ? .cameraPermissionDenied : .cameraPermissionDenied)
+                return
+            }
+            self?.setupManager()
+            self?.startRunning()
+        }
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        captureManager.starRunning()
-        controlView.showRunningAnimation()
-        controlView.showFocusAnimationAt(point: CGPoint(x: controlView.previewContentView.width * 0.5,
-                                                        y: controlView.previewContentView.height * 0.5))
+        startRunning()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        captureManager.stopRunning()
-        controlView.showStopRunningAnimation()
+        stopRunning()
     }
     
     private func setupView() {
@@ -83,9 +85,32 @@ public class CaptureViewController: UIViewController {
     }
     
     private func setupManager() {
-        captureManager.delegate = self
-        captureManager.starRunning()
-        captureManager.setupPreviewLayer(to: controlView.previewContentView)
+        captureManager = CaptureManager(captureConfig: captureConfig, delegate: self)
+        captureManager?.setupPreviewLayer(to: controlView.previewContentView)
+    }
+    
+    private func startRunning() {
+        if let _ = captureManager {
+            controlView.showRunningAnimation()
+            controlView.showFocusAnimationAt(point: CGPoint(x: controlView.previewContentView.width * 0.5,
+                                                            y: controlView.previewContentView.height * 0.5))
+        }
+        captureManager?.starRunning()
+    }
+    
+    private func stopRunning() {
+        if let _ = captureManager {
+            controlView.showStopRunningAnimation()
+        }
+        captureManager?.stopRunning()
+    }
+    
+    private func showError(_ error: CaptureError) {
+        let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: BundleHelper.localizedString(.Confirm), style: .cancel, handler: { [weak self] _ in
+            self?.dismiss(animated: true, completion: nil)
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
     
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -93,7 +118,7 @@ public class CaptureViewController: UIViewController {
     }
     
     deinit {
-        captureManager.stopRunning()
+        stopRunning()
     }
 }
 
@@ -101,11 +126,7 @@ public class CaptureViewController: UIViewController {
 extension CaptureViewController: CaptureManagerDelegate {
     
     public func captureManager(_ captureManager: CaptureManager, didOccurredError error: CaptureError) {
-        let alert = UIAlertController(title: nil, message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: BundleHelper.localizedString(.Confirm), style: .cancel, handler: { [weak self] _ in
-            self?.dismiss(animated: true, completion: nil)
-        }))
-        self.present(alert, animated: true, completion: nil)
+        showError(error)
     }
     
     public func captureManager(_ captureManager: CaptureManager, finishTakingPhoto photo: UIImage) {
@@ -136,31 +157,31 @@ extension CaptureViewController: WLCameraControlDelegate {
     }
     
     func cameraControlDidClickChangeCamera(_ controlView: CaptureControlView) {
-        captureManager.switchCamera()
+        captureManager?.switchCamera()
     }
     
     func cameraControl(_ controlView: CaptureControlView, didFocusAt point: CGPoint) {
-        captureManager.focusAt(point)
+        captureManager?.focusAt(point)
     }
     
     func controlViewDidTakePhoto(_ controlView: CaptureControlView) {
-        captureManager.capturePhoto()
+        captureManager?.capturePhoto()
     }
     
     func controlViewDidBeginTakingVideo(_ controlView: CaptureControlView) {
-        captureManager.startRecordingVideo()
+        captureManager?.startRecordingVideo()
     }
     
     func controlViewDidEndTakingVideo(_ controlView: CaptureControlView) {
-        captureManager.stopRecordingVideo()
+        captureManager?.stopRecordingVideo()
     }
     
     func cameraControlDidPrepareForZoom(_ controlView: CaptureControlView) {
-        captureManager.prepareForZoom()
+        captureManager?.prepareForZoom()
     }
     
     func controlView(_ controlView: CaptureControlView, didChangeVideoZoom zoomScale: Double) {
-        captureManager.zoom(zoomScale)
+        captureManager?.zoom(zoomScale)
     }
     
 }

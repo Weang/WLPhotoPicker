@@ -144,7 +144,7 @@ class AssetPickerController: UIViewController {
     
     private func requestPermission() {
         assetFetchTool.selectedIdentifiers = selectedIdentifiers
-        PermissionProvider.request(.photoLibrary) { [weak self] status in
+        PermissionProvider.request(.photoLibrary) { [weak self] _, status in
             guard let self = self else { return }
             switch status {
             case .authorized:

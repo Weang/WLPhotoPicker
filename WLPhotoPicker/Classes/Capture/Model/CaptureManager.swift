@@ -27,9 +27,8 @@ public class CaptureManager: NSObject {
     weak var delegate: CaptureManagerDelegate?
     
     private let sessionQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Session")
-    private let videoDataOutputQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Video")
-    private let audioDataOutputQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Audio")
-    private let assetWriterQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Writer")
+    private let movieFileOutputQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Movie")
+    private let photoOutputQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.CameraManager.Photo")
     
     private let captureSession = AVCaptureSession()
     
@@ -54,25 +53,14 @@ public class CaptureManager: NSObject {
         self.delegate = delegate
         super.init()
         
-        try? AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .videoRecording, options: .mixWithOthers)
         try? AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
         
-        PermissionProvider.request(.camera) { [unowned self] status in
-            guard status == .authorized else {
-                self.delegate?.captureManager(self, didOccurredError: .cameraPermissionDenied)
-                return
-            }
-            PermissionProvider.request(.camera) { [unowned self] status in
-                guard status == .authorized else {
-                    self.delegate?.captureManager(self, didOccurredError: .microphonePermissionDenied)
-                    return
-                }
-                self.orientationManager.delegate = self
-                self.sessionQueue.async {
-                    self.setupCapture()
-                    self.focusAt(CGPoint(x: 0.5, y: 0.5))
-                }
-            }
+        orientationManager.delegate = self
+        
+        sessionQueue.async { [weak self] in
+            self?.setupCapture()
+            self?.starRunning()
+            self?.focusAt(CGPoint(x: 0.5, y: 0.5))
         }
     }
     
@@ -204,23 +192,34 @@ public class CaptureManager: NSObject {
 public extension CaptureManager {
     
     func capturePhoto() {
-        let settings = AVCapturePhotoSettings()
-        settings.flashMode = captureConfig.captureFlashMode.avFlashMode
-        settings.isAutoStillImageStabilizationEnabled = photoOutput.isStillImageStabilizationSupported
-        photoOutput.capturePhoto(with: settings, delegate: self)
+        photoOutputQueue.async { [weak self] in
+            guard let self = self else { return }
+            let settings = AVCapturePhotoSettings()
+            settings.flashMode = self.captureConfig.captureFlashMode.avFlashMode
+            settings.isAutoStillImageStabilizationEnabled = self.photoOutput.isStillImageStabilizationSupported
+            self.photoOutput.capturePhoto(with: settings, delegate: self)
+        }
     }
     
     func startRecordingVideo() {
-        let videoPath = FileHelper.createCaptureVideoPath(fileType: captureConfig.captureFileType)
-        let fileUrl = URL(fileURLWithPath: videoPath)
-        let connection = movieFileOutput.connection(with: .video)
-        connection?.videoOrientation = currentOrientation.captureVideoOrientation
-        movieFileOutput.startRecording(to: fileUrl, recordingDelegate: self)
+        movieFileOutputQueue.async { [weak self] in
+            guard let self = self else { return }
+            let videoPath = FileHelper.createCaptureVideoPath(fileType: self.captureConfig.captureFileType)
+            let fileUrl = URL(fileURLWithPath: videoPath)
+            let connection = self.movieFileOutput.connection(with: .video)
+            connection?.videoOrientation = self.currentOrientation.captureVideoOrientation
+            self.movieFileOutput.startRecording(to: fileUrl, recordingDelegate: self)
+        }
     }
     
     func stopRecordingVideo() {
-        LoadingHUD.shared.showLoading()
-        movieFileOutput.stopRecording()
+        movieFileOutputQueue.async { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoadingHUD.shared.showLoading()
+            }
+            self.movieFileOutput.stopRecording()
+        }
     }
 }
 

@@ -123,7 +123,6 @@ class CaptureControlView: UIView {
     }
     
     func showRunningAnimation() {
-        self.previewContentView.isHidden = false
         previewContentView.layer.opacity = 1
         let animation = CABasicAnimation(keyPath: "opacity")
         animation.duration = 0.6
@@ -133,8 +132,7 @@ class CaptureControlView: UIView {
     }
     
     func showStopRunningAnimation() {
-        self.previewContentView.layer.opacity = 0
-        self.previewContentView.isHidden = true
+        previewContentView.layer.opacity = 0
     }
     
     @objc func hideTipLabel() {
