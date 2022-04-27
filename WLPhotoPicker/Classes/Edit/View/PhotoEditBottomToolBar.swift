@@ -64,7 +64,11 @@ class PhotoEditBottomToolBar: UIView {
     private let photo: UIImage?
     private let photoEditConfig: PhotoEditConfig
     private var currentItemType: PhotoEditItemType?
-    var selectedFilterIndex: Int = 0
+    var selectedFilterIndex: Int = 0 {
+        didSet {
+            filtersContentView.selectedFilterIndex = selectedFilterIndex
+        }
+    }
     
     init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
         self.photo = photo
@@ -151,7 +155,6 @@ class PhotoEditBottomToolBar: UIView {
         
         filtersContentView.delegate = self
         filtersContentView.isHidden = true
-        filtersContentView.selectedFilterIndex = selectedFilterIndex
         addSubview(filtersContentView)
         filtersContentView.snp.makeConstraints { make in
             make.bottom.equalTo(contentView.snp.top)

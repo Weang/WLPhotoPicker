@@ -722,6 +722,7 @@ extension PhotoEditViewController: PhotoEditBottomToolBarDelegate {
     
     func bottomToolBar(_ bottomToolBar: PhotoEditBottomToolBar, didSelectFilter filter: PhotoEditFilterProvider, index: Int) {
         editManager.selectedFilterIndex = index
+        editManager.photoFilter = filter
         drawFilterImage(filter: filter)
     }
     
