@@ -383,6 +383,7 @@ extension AssetPreviewViewController: PhotoEditViewControllerDelegate {
             return
         }
         assetFetchTool.selectedAsset(asset: asset)
+        bottomToolBar.updateAsset(asset)
         deleagte?.imageBrowser(self, didFinishEditImageAt: IndexPath(item: index, section: 0))
         collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
     }

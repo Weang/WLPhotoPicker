@@ -161,7 +161,6 @@
 		9760DCC9A11340DC2E74E00007F9D3DF /* Eureka-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E1FE41BBF15E058441C3A1B43667F2F /* Eureka-dummy.m */; };
 		98D34A18FF8F9F9B99C78311D769E52B /* AssetPreviewLivePhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CCCBCBA09F77AFAA146A3A27A9FAF4 /* AssetPreviewLivePhotoView.swift */; };
 		995A8A4C2445BD86C2DC375B14394682 /* ListCheckRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC87D2FF45EF3A273F68273A2C00F8EA /* ListCheckRow.swift */; };
-		9C285131BCD4CC9060865990FF6F47E1 /* PhotoEditFadeFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0BA9421607A951EC3C9242AAF31EB9 /* PhotoEditFadeFilter.swift */; };
 		9C99A693373BB2EA1C43AA61C1735425 /* PhotoEditMaskTrashCanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80C14B6A94D1F987B5EC335C59F5D3A /* PhotoEditMaskTrashCanView.swift */; };
 		9E35E96CA59C0C6EC1B5455AFB16C2E3 /* Pods-WLPhotoPicker_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 402DFE737F1823E88CFCD45F07561E32 /* Pods-WLPhotoPicker_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9FF2F7C3AB3DCF478124C169BDA4FBF7 /* PhotoEditMosaicPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FBD9A1FE22296DFB7F9F9FB438975C /* PhotoEditMosaicPath.swift */; };
@@ -206,6 +205,8 @@
 		C15B3F89E6F83DC9CCB14903FC5D80C5 /* SVProgressHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = 034FE48632D30C8C362520B6BB40AB17 /* SVProgressHUD.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2030CB72808230300B902EB /* LocalizedKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2030CB62808230300B902EB /* LocalizedKey.swift */; };
 		C241A011154907D4A4B377DB529E9C9D /* DoublePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3724840F64AB024DFAF0401F25FA3D /* DoublePickerRow.swift */; };
+		C2438DD8281930B000505F4F /* PhotoEditCIFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2438DD7281930B000505F4F /* PhotoEditCIFilter.swift */; };
+		C2438DDA281936C100505F4F /* PhotoEditToasterFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2438DD9281936C100505F4F /* PhotoEditToasterFilter.swift */; };
 		C259B81F280D7AAB008BA48F /* CGRect+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259B81E280D7AAB008BA48F /* CGRect+Extensions.swift */; };
 		C259B821280D87F8008BA48F /* PhotoEditNashvilleFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259B820280D87F8008BA48F /* PhotoEditNashvilleFilter.swift */; };
 		C259B823280D896B008BA48F /* PhotoEdit1977Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C259B822280D896B008BA48F /* PhotoEdit1977Filter.swift */; };
@@ -558,6 +559,8 @@
 		C1EF2029021342545815C993EF4DBAE0 /* MultipleSelectorViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MultipleSelectorViewController.swift; path = Source/Rows/Controllers/MultipleSelectorViewController.swift; sourceTree = "<group>"; };
 		C2030CB62808230300B902EB /* LocalizedKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedKey.swift; sourceTree = "<group>"; };
 		C21C425D1A97665C8880B56F20F8795D /* CaptureManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CaptureManager.swift; sourceTree = "<group>"; };
+		C2438DD7281930B000505F4F /* PhotoEditCIFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditCIFilter.swift; sourceTree = "<group>"; };
+		C2438DD9281936C100505F4F /* PhotoEditToasterFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditToasterFilter.swift; sourceTree = "<group>"; };
 		C259B81E280D7AAB008BA48F /* CGRect+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Extensions.swift"; sourceTree = "<group>"; };
 		C259B820280D87F8008BA48F /* PhotoEditNashvilleFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditNashvilleFilter.swift; sourceTree = "<group>"; };
 		C259B822280D896B008BA48F /* PhotoEdit1977Filter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEdit1977Filter.swift; sourceTree = "<group>"; };
@@ -622,7 +625,6 @@
 		E8190AD4F97A195BDAD88141D8A25D0E /* UIScrollView+Extensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extensions.swift"; sourceTree = "<group>"; };
 		E8473647F1BA56D1510F5747327C99C3 /* AssetPreviewVideoCell.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssetPreviewVideoCell.swift; sourceTree = "<group>"; };
 		E97D43C46A45EE515A4DA3AF94398441 /* SVProgressHUD.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SVProgressHUD.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EA0BA9421607A951EC3C9242AAF31EB9 /* PhotoEditFadeFilter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PhotoEditFadeFilter.swift; sourceTree = "<group>"; };
 		EA2E2C376F23EDFAB4AC83B3ADC3851F /* WLPhotoPicker.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; path = WLPhotoPicker.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		EB3053BE551CC3913A6403279E492808 /* WLPhotoPicker.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = WLPhotoPicker.modulemap; sourceTree = "<group>"; };
 		EBDBB6873889DC8D086C57356B3B6A47 /* SliderRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SliderRow.swift; path = Source/Rows/SliderRow.swift; sourceTree = "<group>"; };
@@ -988,7 +990,8 @@
 				C259B822280D896B008BA48F /* PhotoEdit1977Filter.swift */,
 				C259B820280D87F8008BA48F /* PhotoEditNashvilleFilter.swift */,
 				46A786AFE5E46446084BEA8186806C0F /* PhotoEditClarendonFilter.swift */,
-				EA0BA9421607A951EC3C9242AAF31EB9 /* PhotoEditFadeFilter.swift */,
+				C2438DD7281930B000505F4F /* PhotoEditCIFilter.swift */,
+				C2438DD9281936C100505F4F /* PhotoEditToasterFilter.swift */,
 				E5554CA4FFBF5248C61144E6D26F0287 /* PhotoEditOriginalFilter.swift */,
 			);
 			path = Filters;
@@ -1786,6 +1789,7 @@
 				E19838D632F5AAFC7BBC9213FEE7BD60 /* AssetFetchTool+GIF.swift in Sources */,
 				65EA6D83BF452E4551A2EAB2F71E3A17 /* AssetFetchTool+Image.swift in Sources */,
 				81E29968DBEBB7869AEF006DCFF61412 /* AssetFetchTool+ImageData.swift in Sources */,
+				C2438DDA281936C100505F4F /* PhotoEditToasterFilter.swift in Sources */,
 				B0CF6834BA20B28BC58BC8B24BE5C96D /* AssetFetchTool+LivePhoto.swift in Sources */,
 				ED1F193FEFAB547747497A96E1319171 /* AssetFetchTool+Observer.swift in Sources */,
 				5E8E7B74D0D17A9F6B9B72E9A24B602C /* AssetFetchTool+Operation.swift in Sources */,
@@ -1805,6 +1809,7 @@
 				B332B8B7EC5C83577505BE3E2A6F7C46 /* AssetPreviewLivePhotoCell.swift in Sources */,
 				98D34A18FF8F9F9B99C78311D769E52B /* AssetPreviewLivePhotoView.swift in Sources */,
 				C946702F5A2021C9753783ECE0758CB8 /* AssetPreviewNavigationBar.swift in Sources */,
+				C2438DD8281930B000505F4F /* PhotoEditCIFilter.swift in Sources */,
 				65E355BF288252F53A394351BD71E8EE /* AssetPreviewPhotoCell.swift in Sources */,
 				D43E09B1652806B4AFEB11C0E5929CE8 /* AssetPreviewThumbnailCell.swift in Sources */,
 				19D95499CCE1BF038A7F3A439D475A87 /* AssetPreviewToolBar.swift in Sources */,
@@ -1869,7 +1874,6 @@
 				3FD2D1E6A90D9A2C8E194A3DE0D4D4C8 /* PhotoEditCropRectangleView.swift in Sources */,
 				2B767720B7022C61CE2E43752A381131 /* PhotoEditCropToolBar.swift in Sources */,
 				1809C58FA672C8CFAB3B9194663B9E43 /* PhotoEditCropViewController.swift in Sources */,
-				9C285131BCD4CC9060865990FF6F47E1 /* PhotoEditFadeFilter.swift in Sources */,
 				3E1A2BD6F75DF95CF4233487754330BD /* PhotoEditFilter.swift in Sources */,
 				C2030CB72808230300B902EB /* LocalizedKey.swift in Sources */,
 				5CA29E3C5B11E94279ED08D0019BBD45 /* PhotoEditFilterCollectionViewCell.swift in Sources */,

@@ -18,22 +18,25 @@ class PhotoEditFiltersView: UIView {
     private var collectionView: UICollectionView!
     
     private let photo: UIImage?
+    private let selectedFilterIndex: Int
     private let photoEditConfig: PhotoEditConfig
+    
+    private var photoEditFilters: [PhotoEditFilterProvider] = []
     private var filterPhotos: [UIImage?] = []
     
-    var selectedFilterIndex: Int = 0 {
-        didSet {
-            if filterPhotos.count > selectedFilterIndex {
-                collectionView.selectItem(at: IndexPath(item: selectedFilterIndex, section: 0), animated: false, scrollPosition: .left)
-            }
-        }
-    }
+    private let filterQueue = DispatchQueue(label: "com.WLPhotoPicker.DispatchQueue.Filter")
     
-    init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
+    init(photo: UIImage?, selectedFilterIndex: Int, photoEditConfig: PhotoEditConfig) {
         self.photo = photo
+        self.selectedFilterIndex = selectedFilterIndex
         self.photoEditConfig = photoEditConfig
         super.init(frame: .zero)
         
+        setupView()
+        setupPhotos()
+    }
+    
+    func setupView() {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 12
         layout.minimumInteritemSpacing = 0
@@ -53,18 +56,26 @@ class PhotoEditFiltersView: UIView {
             make.left.equalTo(16)
             make.right.equalTo(-16)
         }
+    }
+    
+    func setupPhotos() {
+        let photo = self.photo?.thumbnailWith(60)
         
-        DispatchQueue.global().async { [weak self] in
-            for filter in photoEditConfig.photoEditFilters {
+        photoEditFilters = photoEditConfig.photoEditFilters
+        photoEditFilters.insert(PhotoEditOriginalFilter(), at: 0)
+        filterPhotos = [UIImage?].init(repeating: nil, count: photoEditFilters.count)
+        
+        for (index, filter) in self.photoEditFilters.enumerated() {
+            filterQueue.async { [weak self] in
                 let filterPhoto = filter.filter?(photo) ?? photo
-                self?.filterPhotos.append(filterPhoto)
-            }
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.collectionView.reloadData()
-                if self.filterPhotos.count > self.selectedFilterIndex {
-                    let indexPath = IndexPath(item: self.selectedFilterIndex, section: 0)
-                    self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .left)
+                self?.filterPhotos[index] = filterPhoto
+                DispatchQueue.main.sync {
+                    guard let self = self else { return }
+                    self.collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
+                    if index == self.selectedFilterIndex {
+                        let indexPath = IndexPath(item: self.selectedFilterIndex, section: 0)
+                        self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+                    }
                 }
             }
         }
@@ -86,7 +97,7 @@ extension PhotoEditFiltersView: UICollectionViewDelegateFlowLayout, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(PhotoEditFilterCollectionViewCell.self, for: indexPath)
         cell.imageView.image = filterPhotos[indexPath.item]
-        cell.nameLabel.text = photoEditConfig.photoEditFilters[indexPath.item].name
+        cell.nameLabel.text = photoEditFilters[indexPath.item].name
         return cell
     }
     
@@ -98,7 +109,7 @@ extension PhotoEditFiltersView: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        delegate?.filtersView(self, didSelectFilter: photoEditConfig.photoEditFilters[indexPath.item], index: indexPath.item)
+        delegate?.filtersView(self, didSelectFilter: photoEditFilters[indexPath.item], index: indexPath.item)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

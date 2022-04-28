@@ -32,14 +32,21 @@ class PhotoEditFilterHelper {
 
 public class PhotoEditDefaultFilter {
     
-    static public var all: [PhotoEditFilterProvider] {
-        [original, fade, clarendon, nashville, apply1977]
-    }
+    static let original = PhotoEditOriginalFilter()
     
-    static public let original = PhotoEditOriginalFilter()
-    static public let fade = PhotoEditFadeFilter()
+    static public let fade = PhotoEditCIFilter(name: "Fade", filterName: "CIPhotoEffectFade")
+    static public let chrome = PhotoEditCIFilter(name: "Chrome", filterName: "CIPhotoEffectChrome")
+    static public let transfer = PhotoEditCIFilter(name: "Transfer", filterName: "CIPhotoEffectTransfer")
+    static public let mono = PhotoEditCIFilter(name: "Mono", filterName: "CIPhotoEffectMono")
+    static public let noir = PhotoEditCIFilter(name: "Noir", filterName: "CIPhotoEffectNoir")
+    static public let tonal = PhotoEditCIFilter(name: "Tonal", filterName: "CIPhotoEffectTonal")
     static public let clarendon = PhotoEditClarendonFilter()
     static public let nashville = PhotoEditNashvilleFilter()
     static public let apply1977 = PhotoEdit1977Filter()
+    static public let toaster = PhotoEditToasterFilter()
+    
+    static public var all: [PhotoEditFilterProvider] {
+        [fade, chrome, transfer, mono, noir, tonal, clarendon, nashville, apply1977, toaster]
+    }
     
 }

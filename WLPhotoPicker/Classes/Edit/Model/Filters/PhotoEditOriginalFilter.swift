@@ -7,7 +7,7 @@
 
 import UIKit
 
-public class PhotoEditOriginalFilter: PhotoEditFilterProvider {
+class PhotoEditOriginalFilter: PhotoEditFilterProvider {
     
     public var name: String {
         "Original"

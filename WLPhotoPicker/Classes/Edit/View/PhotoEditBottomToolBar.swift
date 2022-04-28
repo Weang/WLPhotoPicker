@@ -54,7 +54,7 @@ class PhotoEditBottomToolBar: UIView {
     }()
     
     private lazy var filtersContentView: PhotoEditFiltersView = {
-        return PhotoEditFiltersView(photo: photo, photoEditConfig: photoEditConfig)
+        return PhotoEditFiltersView(photo: photo, selectedFilterIndex: selectedFilterIndex, photoEditConfig: photoEditConfig)
     }()
     
     private lazy var adjustContentView: PhotoEditAdjustView = {
@@ -64,11 +64,7 @@ class PhotoEditBottomToolBar: UIView {
     private let photo: UIImage?
     private let photoEditConfig: PhotoEditConfig
     private var currentItemType: PhotoEditItemType?
-    var selectedFilterIndex: Int = 0 {
-        didSet {
-            filtersContentView.selectedFilterIndex = selectedFilterIndex
-        }
-    }
+    var selectedFilterIndex: Int = 0
     
     init(photo: UIImage?, photoEditConfig: PhotoEditConfig) {
         self.photo = photo
@@ -126,6 +122,9 @@ class PhotoEditBottomToolBar: UIView {
             make.right.equalTo(doneButton.snp.left).offset(-10)
         }
         
+    }
+    
+    private func setupGraffitiView() {
         graffitiContentView.delegate = self
         graffitiContentView.isHidden = true
         addSubview(graffitiContentView)
@@ -134,7 +133,9 @@ class PhotoEditBottomToolBar: UIView {
             make.left.right.equalToSuperview()
             make.height.equalTo(graffitiContentViewHeight)
         }
-        
+    }
+    
+    private func setupMosaicView() {
         mosaicContentView.isHidden = true
         addSubview(mosaicContentView)
         mosaicContentView.snp.makeConstraints { make in
@@ -152,16 +153,21 @@ class PhotoEditBottomToolBar: UIView {
             make.right.equalTo(-16)
             make.centerY.equalToSuperview()
         }
-        
+    }
+    
+    private func setupFiltersView() {
         filtersContentView.delegate = self
         filtersContentView.isHidden = true
+       
         addSubview(filtersContentView)
         filtersContentView.snp.makeConstraints { make in
             make.bottom.equalTo(contentView.snp.top)
             make.left.right.equalToSuperview()
             make.height.equalTo(filtersContentViewHeight)
         }
-        
+    }
+    
+    private func setupAdjustView() {
         adjustContentView.delegate = self
         adjustContentView.isHidden = true
         addSubview(adjustContentView)
@@ -181,12 +187,22 @@ class PhotoEditBottomToolBar: UIView {
         invalidateIntrinsicContentSize()
         
         if itemType == .graffiti {
+            setupGraffitiView()
             if let graffitiColor = graffitiContentView.currentColor {
                 delegate?.bottomToolBar(self, didSelectGraffitiColor: graffitiColor)
             }
         }
         
+        if itemType == .mosaic {
+            setupMosaicView()
+        }
+        
+        if itemType == .filter {
+            setupFiltersView()
+        }
+        
         if itemType == .adjust {
+            setupAdjustView()
             if let adjustMode = adjustContentView.currentAdjustMode {
                 delegate?.bottomToolBar(self, didSelectAdjustMode: adjustMode)
             }
@@ -197,7 +213,6 @@ class PhotoEditBottomToolBar: UIView {
         filtersContentView.isHidden = itemType != .filter
         adjustContentView.isHidden = itemType != .adjust
     }
-    
     @objc private func doneButtonClick() {
         delegate?.bottomToolBarDidClickDoneButton(self)
     }
