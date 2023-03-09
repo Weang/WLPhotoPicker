@@ -149,6 +149,13 @@ class PickerViewController: FormViewController {
         }
         
         <<< SwitchRow() { row in
+            row.title = "是否实时更新相册"
+            row.value = self.config.pickerConfig.registerPhotoLibraryChangeObserver
+        }.onChange { row in
+            self.config.pickerConfig.registerPhotoLibraryChangeObserver = (row.value ?? false)
+        }
+        
+        <<< SwitchRow() { row in
             row.title = "点击确定之后是否自动关闭"
             row.value = self.config.pickerConfig.dismissPickerAfterDone
         }.onChange { row in

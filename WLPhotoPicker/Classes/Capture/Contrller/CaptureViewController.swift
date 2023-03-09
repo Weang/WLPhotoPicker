@@ -53,7 +53,7 @@ public class CaptureViewController: UIViewController {
         
         PermissionProvider.request([.camera, .microphone]) { [weak self] type, status in
             guard status == .authorized else {
-                self?.showError(type == .camera ? .cameraPermissionDenied : .cameraPermissionDenied)
+                self?.showError(type == .camera ? .cameraPermissionDenied : .microphonePermissionDenied)
                 return
             }
             self?.setupManager()

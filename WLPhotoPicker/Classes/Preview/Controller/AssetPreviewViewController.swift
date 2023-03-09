@@ -39,7 +39,7 @@ class AssetPreviewViewController: UIViewController {
     }
     
     let assetFetchTool: AssetFetchTool
-    private let config: WLPhotoConfig
+    let config: WLPhotoConfig
     
     init(config: WLPhotoConfig, assetFetchTool: AssetFetchTool) {
         self.config = config

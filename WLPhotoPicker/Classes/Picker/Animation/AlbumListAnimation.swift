@@ -10,83 +10,104 @@ import UIKit
 extension AlbumListViewController: UIViewControllerTransitioningDelegate {
     
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return AlbumListShowTransitioning()
+        let parameters = UISpringTimingParameters(dampingRatio: 1, initialVelocity: .zero)
+        let animator = UIViewPropertyAnimator.init(duration: 0.5 , timingParameters: parameters)
+        return AlbumListShowTransitioning(animator: animator)
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return AlbumListDismissTransitioning()
+        let parameters = UISpringTimingParameters(dampingRatio: 1, initialVelocity: .zero)
+        let animator = UIViewPropertyAnimator.init(duration: 0.3 , timingParameters: parameters)
+        return AlbumListDismissTransitioning(animator: animator)
     }
     
 }
 
 private class AlbumListShowTransitioning: NSObject,  UIViewControllerAnimatedTransitioning {
     
+    let animator: UIViewPropertyAnimator
+    
+    init(animator: UIViewPropertyAnimator) {
+        self.animator = animator
+    }
+    
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toVC = transitionContext.viewController(forKey: .to) as? AlbumListViewController else {
             transitionContext.completeTransition(false)
             return
         }
-        let topMargin = keyWindowSafeAreaInsets.top + 44
+        let fromVC = transitionContext.viewController(forKey: .from) as? UINavigationController
+        let topMargin = keyWindowSafeAreaInsets.top + (fromVC?.navigationBar.bounds.size.height ?? 0)
         toVC.view.frame = CGRect(x: 0, y: topMargin, width: UIScreen.width, height: UIScreen.height - topMargin)
         let container = transitionContext.containerView
         container.addGestureRecognizer(toVC.dismissTapGesture)
         container.addSubview(toVC.view)
         
-        let duration = transitionDuration(using: transitionContext)
-        toVC.showAnimation(duration: duration) { completion in
+        toVC.showAnimation(animator: animator) { completion in
             transitionContext.completeTransition(completion)
         }
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.4
+        return animator.duration
     }
 }
 
 private class AlbumListDismissTransitioning: NSObject,  UIViewControllerAnimatedTransitioning {
+    
+    let animator: UIViewPropertyAnimator
+    
+    init(animator: UIViewPropertyAnimator) {
+        self.animator = animator
+    }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toVC = transitionContext.viewController(forKey: .from) as? AlbumListViewController else {
             transitionContext.completeTransition(false)
             return
         }
-        let duration = transitionDuration(using: transitionContext)
-        toVC.dismissAnimation(duration: duration) { completion in
+        toVC.dismissAnimation(animator: animator) { completion in
             transitionContext.completeTransition(completion)
         }
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.3
+        return animator.duration
     }
 }
 
 extension AlbumListViewController {
     
-    fileprivate func showAnimation(duration: Double, completion: @escaping (Bool) -> ()) {
-        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 5, options: .curveEaseInOut, animations: {
+    fileprivate func showAnimation(animator: UIViewPropertyAnimator, completion: @escaping (Bool) -> ()) {
+        animator.addAnimations {
             self.tableViewContentView.snp.remakeConstraints { make in
                 make.left.top.right.equalToSuperview()
                 make.height.equalTo(self.tableView.snp.height)
             }
             self.view.backgroundColor = UIColor(white: 0, alpha: 0.6)
             self.view.layoutIfNeeded()
-        }) { (completed) in
-            completion(completed)
         }
+        animator.addCompletion { position in
+            completion(position == .end)
+        }
+        
+        animator.startAnimation()
     }
     
-    fileprivate func dismissAnimation(duration: Double, completion: @escaping (Bool) -> ()) {
-        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+    fileprivate func dismissAnimation(animator: UIViewPropertyAnimator, completion: @escaping (Bool) -> ()) {
+        animator.addAnimations {
             self.tableViewContentView.snp.remakeConstraints { make in
                 make.left.top.right.equalToSuperview()
                 make.height.equalTo(0)
             }
             self.view.backgroundColor = .clear
             self.view.layoutIfNeeded()
-        }) { (completed) in
-            completion(completed)
         }
+        animator.addCompletion { position in
+            completion(position == .end)
+        }
+        
+        animator.startAnimation()
     }
     
 }

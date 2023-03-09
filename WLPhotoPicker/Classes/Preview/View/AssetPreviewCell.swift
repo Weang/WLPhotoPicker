@@ -29,7 +29,7 @@ class AssetPreviewCell: UICollectionViewCell {
     
     let singleTapGesture = UITapGestureRecognizer()
     let doubleTapGesture = UITapGestureRecognizer()
-    let panGesture = UIPanGestureRecognizer()
+    let dismissPanGesture = UIPanGestureRecognizer()
     
     var isShowToolBar: Bool = false
     
@@ -74,9 +74,9 @@ class AssetPreviewCell: UICollectionViewCell {
         doubleTapGesture.numberOfTapsRequired = 2
         contentScrollView.addGestureRecognizer(doubleTapGesture)
         
-        panGesture.delegate = self
-        panGesture.addTarget(self, action: #selector(handlePanGesture(_:)))
-        contentScrollView.addGestureRecognizer(panGesture)
+        dismissPanGesture.delegate = self
+        dismissPanGesture.addTarget(self, action: #selector(handlePanGesture(_:)))
+        contentScrollView.addGestureRecognizer(dismissPanGesture)
         
         singleTapGesture.require(toFail: doubleTapGesture)
     }
@@ -162,7 +162,7 @@ class AssetPreviewCell: UICollectionViewCell {
             let translation = gesture.translation(in: self)
             changedPanGesture(translation: translation)
         default:
-            if contentScrollView.frame.origin.y > 80 || gesture.velocity(in: self).y > 500 {
+            if contentScrollView.frame.origin.y > 80 || gesture.velocity(in: self).y > 500 || contentScrollView.frame.origin.y < -80 || gesture.velocity(in: self).y < -500 {
                 finishPanGesture(dismiss: true)
             } else {
                 finishPanGesture(dismiss: false)
@@ -172,13 +172,14 @@ class AssetPreviewCell: UICollectionViewCell {
     
     func beginPanGesture() {
         delegate?.previewCellDidBeginPan(self)
+        activityIndicator.alpha = 0
     }
     
     func changedPanGesture(translation: CGPoint) {
-        let transForm = min(1 - translation.y / UIScreen.main.bounds.height, 1)
+        let scaleTransForm = min(1 - abs(translation.y) / UIScreen.main.bounds.height, 1)
         contentScrollView.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
-            .scaledBy(x: transForm, y: transForm)
-        let scale = min(1 - translation.y / UIScreen.main.bounds.height * 2, 1)
+            .scaledBy(x: scaleTransForm, y: scaleTransForm)
+        let scale = min(1 - abs(translation.y) / UIScreen.main.bounds.height * 2, 1)
         delegate?.previewCell(self, didPanScale: scale)
     }
     
@@ -186,6 +187,7 @@ class AssetPreviewCell: UICollectionViewCell {
         if dismiss {
             delegate?.previewCell(self, didFinishPanDismiss: true)
         } else {
+            activityIndicator.alpha = 1
             UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 10, animations: {
                 self.contentScrollView.transform = .identity
                 self.delegate?.previewCell(self, didFinishPanDismiss: false)
@@ -228,14 +230,20 @@ extension AssetPreviewCell: UIScrollViewDelegate {
 extension AssetPreviewCell: UIGestureRecognizerDelegate {
     
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        guard gestureRecognizer == self.panGesture else {
+        guard gestureRecognizer == dismissPanGesture else {
             return true
         }
-        let velocity = panGesture.velocity(in: self)
-        if velocity.y < 0 || abs(Int(velocity.x)) > Int(velocity.y) || contentScrollView.contentOffset.y > 0 {
+        let velocity = dismissPanGesture.velocity(in: self)
+        guard abs(velocity.x) < abs(velocity.y) else {
             return false
         }
-        return true
+        if velocity.y > 0 && contentScrollView.contentOffset.y <= 0 {
+            return true
+        }
+        if velocity.y < 0 && contentScrollView.contentOffset.y >= contentScrollView.contentSize.height - contentScrollView.height - 1 {
+            return true
+        }
+        return false
     }
     
 }

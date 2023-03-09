@@ -32,6 +32,7 @@ public class PickerConfig {
     public var selectableType: PickerSelectionType = .all
     
     // 是否显示隐藏相册
+    // iOS16.1之后，显示隐藏相册和最近删除相册功能被限制
     public var showHiddenAlbum: Bool = false
     
     // 是否显示最近删除的相册
@@ -84,7 +85,8 @@ public class PickerConfig {
     // TODO: 视频编辑
     // public var allowEditVideo: Bool = true
     
-    // 预览尺寸、非原图尺寸
+    // 图片预览尺寸
+    // 未选择“原图”时导出的图片短边尺寸
     public var maximumPreviewSize: CGFloat = 900
     
     // 导出图片保存到本地时的jpg压缩参数
@@ -124,8 +126,11 @@ public class PickerConfig {
     public var allowTakingVideo: Bool = true
     
     // 是否使用系统UIImagePickerController拍摄
-    // 如果使用系统相机进行拍摄，下面的参数将会失效
+    // 如果使用系统相机进行拍摄，拍摄视频的参数将会失效
     public var useSystemImagePickerController: Bool = false
+    
+    // 是否注册图片更新的通知，如果注册，会实时更新相册的图片
+    public var registerPhotoLibraryChangeObserver: Bool = true
     
 }
 

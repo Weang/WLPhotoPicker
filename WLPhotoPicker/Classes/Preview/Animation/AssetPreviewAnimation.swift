@@ -76,9 +76,13 @@ extension AssetPreviewViewController {
     
     fileprivate func showAnimation(animator: UIViewPropertyAnimator, completion: @escaping (Bool) -> ()) {
         if let currentIndex = self.currentIndex,
+           let currentAsset = assetFetchTool.albumModel?.assets[currentIndex],
            let sourceImageView = animateDataSource?.imageBrowser(self, sourceViewFor: currentIndex),
-           let image = sourceImageView.image,
+           let image = currentAsset.displayingPhoto ?? sourceImageView.image,
            let imageOrginFrame = sourceImageView.superview?.convert(sourceImageView.frame, to: view.window) {
+            
+            sourceImageView.isHidden = true
+            collectionView.isHidden = true
             
             let animateImageView = UIImageView()
             animateImageView.contentMode = .scaleAspectFill
@@ -89,20 +93,31 @@ extension AssetPreviewViewController {
             animateImageView.layer.cornerRadius = sourceImageView.layer.cornerRadius
             view.addSubview(animateImageView)
             
-            sourceImageView.isHidden = true
-            collectionView.isHidden = true
-            
-            let mediaType = assetFetchTool.albumModel?.assets[currentIndex].mediaType ?? .photo
+            let mediaType = currentAsset.mediaType
             let animateImageViewToFrame = AssetDisplayHelper.imageViewRectFrom(imageSize: image.size, mediaType: mediaType)
+            
             animator.addAnimations {
                 animateImageView.layer.cornerRadius = 0
                 animateImageView.frame = animateImageViewToFrame
+            }
+            
+            var assetRequest: AssetFetchRequest?
+            if currentAsset.displayingPhoto == nil {
+                let options = AssetFetchOptions()
+                options.sizeOption = .specify(config.pickerConfig.maximumPreviewSize)
+                options.imageDeliveryMode = .highQualityFormat
+                assetRequest = AssetFetchTool.requestPhoto(for: currentAsset.asset, options: options) { result, _ in
+                    if case let .success(response) = result {
+                        animateImageView.image = response.photo
+                    }
+                }
             }
             
             animator.addCompletion { [unowned self] _ in
                 animateImageView.removeFromSuperview()
                 sourceImageView.isHidden = false
                 self.collectionView.isHidden = false
+                assetRequest?.cancel()
             }
             
             toolbars.forEach {

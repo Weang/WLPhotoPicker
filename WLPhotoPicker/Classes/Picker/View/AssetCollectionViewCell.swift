@@ -70,8 +70,8 @@ class AssetCollectionViewCell: UICollectionViewCell {
         
         cancelCurrentRequest()
         
-        if let displayingImage = model.displayingPhoto {
-            assetImageView.image = displayingImage
+        if let displayingPhoto = model.displayingPhoto {
+            assetImageView.image = displayingPhoto
         } else {
             let options = AssetFetchOptions()
             let targetSize = pickerConfig.photoCollectionViewItemSize.width * UIScreen.main.scale

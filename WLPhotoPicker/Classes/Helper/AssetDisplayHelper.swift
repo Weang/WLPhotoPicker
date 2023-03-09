@@ -29,15 +29,13 @@ class AssetDisplayHelper {
             return imageViewRect
         }
         
+        imageViewRect.origin.x = 0
         imageViewRect.size.width = viewWidth
-        if imageRatio > viewRatio {
-            imageViewRect.size.height = viewWidth / imageRatio
-            imageViewRect.origin.x = 0
+        imageViewRect.size.height = (viewWidth / imageRatio).rounded()
+        if imageRatio > viewRatio { // 横图，宽高比大于屏幕宽高比
             imageViewRect.origin.y = (viewHeight - imageViewRect.size.height) * 0.5
         } else {
-            imageViewRect.size.height = viewWidth / imageRatio
             imageViewRect.origin.y = 0
-            imageViewRect.origin.x = 0
         }
         return imageViewRect
     }

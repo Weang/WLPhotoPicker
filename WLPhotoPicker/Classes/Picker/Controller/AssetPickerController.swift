@@ -147,14 +147,10 @@ class AssetPickerController: UIViewController {
         PermissionProvider.request(.photoLibrary) { [weak self] _, status in
             guard let self = self else { return }
             switch status {
-            case .authorized:
-                self.assetFetchTool.register()
-                self.assetFetchTool.fetchCameraRollAlbum()
-                self.assetFetchTool.fetchAllAlbums()
-            case .limited:
-                self.assetFetchTool.register()
-                self.isLimitedPermission = true
-                self.bottomToolBar.isLimitedPermission = true
+            case .authorized, .limited:
+                if self.config.pickerConfig.registerPhotoLibraryChangeObserver {
+                    self.assetFetchTool.register()
+                }
                 self.assetFetchTool.fetchCameraRollAlbum()
                 self.assetFetchTool.fetchAllAlbums()
             default:
@@ -162,6 +158,9 @@ class AssetPickerController: UIViewController {
                 self.collectionView.isHidden = true
                 self.bottomToolBar.isHidden = true
             }
+            
+            self.isLimitedPermission = status == .limited
+            self.bottomToolBar.isLimitedPermission = status == .limited
         }
     }
     
@@ -250,7 +249,9 @@ class AssetPickerController: UIViewController {
             present(vc, animated: true, completion: nil)
             albumController = vc
         } else {
-            albumController?.dismiss(animated: true, completion: nil)
+            albumController?.dismiss(animated: true, completion: { [weak self] in
+                self?.albumController = nil
+            })
         }
     }
     
