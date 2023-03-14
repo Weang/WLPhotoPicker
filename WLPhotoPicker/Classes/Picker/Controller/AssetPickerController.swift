@@ -96,7 +96,7 @@ class AssetPickerController: UIViewController {
     
     private func setupView() {
         let cancelButton = UIButton()
-        cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         cancelButton.setTitle(BundleHelper.localizedString(.Cancel), for: .normal)
         cancelButton.setTitleColor(WLPhotoUIConfig.default.color.textColor, for: .normal)
         cancelButton.addTarget(self, action: #selector(cancelButtonClick), for: .touchUpInside)

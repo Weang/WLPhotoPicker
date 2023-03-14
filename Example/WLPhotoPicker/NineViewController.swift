@@ -76,7 +76,19 @@ extension NineViewController: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard indexPath.item == results.count else  { return }
+        guard indexPath.item == results.count else  {
+            if let photo = results[indexPath.item].photo {
+                let config = PhotoEditConfig()
+                config.dismissWithAnimation = true
+                let editVC = PhotoEditViewController(photo: photo, photoEditConfig: config)
+                if let cell = collectionView.cellForItem(at: indexPath) as? NineCollectionViewCell {
+                    editVC.animationSourceImageView = cell.imageView
+                }
+//                editVC.delegate = self
+                present(editVC, animated: true, completion: nil)
+            }
+            return
+        }
         let config = WLPhotoConfig()
         config.pickerConfig.selectableType = [.photo]
         let vc = WLPhotoPickerController(config: config)

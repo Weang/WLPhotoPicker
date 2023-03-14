@@ -39,15 +39,16 @@ class AlbumTitleButton: UIControl {
         arrowImageView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.height.width.equalTo(12)
-            make.right.equalTo(-12)
+            make.right.equalTo(-10)
         }
         
+        titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .medium)
         titleLabel.isUserInteractionEnabled = false
         titleLabel.textColor = WLPhotoUIConfig.default.color.textColor
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.left.equalTo(12)
+            make.left.equalTo(10)
             make.right.equalTo(arrowImageView.snp.left).offset(-6)
         }
         

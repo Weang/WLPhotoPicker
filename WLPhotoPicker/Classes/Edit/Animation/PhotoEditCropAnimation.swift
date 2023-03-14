@@ -10,16 +10,26 @@ import UIKit
 extension PhotoEditCropViewController: UIViewControllerTransitioningDelegate {
     
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PhotoEditCropShowTransitioning()
+        let parameters = UISpringTimingParameters(dampingRatio: 1, initialVelocity: .zero)
+        let animator = UIViewPropertyAnimator.init(duration: 0.6 , timingParameters: parameters)
+        return PhotoEditCropShowTransitioning(animator: animator)
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PhotoEditCropDismissTransitioning()
+        let parameters = UISpringTimingParameters(dampingRatio: 1, initialVelocity: .zero)
+        let animator = UIViewPropertyAnimator.init(duration: 0.6 , timingParameters: parameters)
+        return PhotoEditCropDismissTransitioning(animator: animator)
     }
     
 }
 
 private class PhotoEditCropShowTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
+    
+    let animator: UIViewPropertyAnimator
+    
+    init(animator: UIViewPropertyAnimator) {
+        self.animator = animator
+    }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toVC = transitionContext.viewController(forKey: .to) as? PhotoEditCropViewController,
@@ -36,12 +46,18 @@ private class PhotoEditCropShowTransitioning: NSObject, UIViewControllerAnimated
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.6
+        return animator.duration
     }
     
 }
 
 private class PhotoEditCropDismissTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
+    
+    let animator: UIViewPropertyAnimator
+    
+    init(animator: UIViewPropertyAnimator) {
+        self.animator = animator
+    }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let fromVC = transitionContext.viewController(forKey: .from) as? PhotoEditCropViewController,
@@ -56,7 +72,7 @@ private class PhotoEditCropDismissTransitioning: NSObject, UIViewControllerAnima
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.6
+        return animator.duration
     }
     
 }

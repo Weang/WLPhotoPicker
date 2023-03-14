@@ -22,7 +22,7 @@ public class PhotoEditViewController: UIViewController {
     
     weak var delegate: PhotoEditViewControllerDelegate?
     
-    private let photo: UIImage
+    let photo: UIImage
     private let assetModel: AssetModel?
     private let photoEditConfig: PhotoEditConfig
     private var currentEditItemType: PhotoEditItemType?
@@ -68,6 +68,18 @@ public class PhotoEditViewController: UIViewController {
     private var imageBeforeAdjust: UIImage?
     private var currentAdjustMode: PhotoEditAdjustMode?
     
+    public var animationSourceImageView: UIImageView? {
+        didSet {
+            if animationSourceImageView != nil {
+                modalPresentationStyle = .custom
+                transitioningDelegate = self
+            } else {
+                modalPresentationStyle = .fullScreen
+                transitioningDelegate = nil
+            }
+        }
+    }
+    
     let editManager: EditManager
     
     public override var prefersStatusBarHidden: Bool {
@@ -103,7 +115,7 @@ public class PhotoEditViewController: UIViewController {
     }
     
     private func setupView() {
-        view.backgroundColor = .black
+        view.backgroundColor = .clear
         
         editContentView.backgroundColor = .black
         view.addSubview(editContentView)
@@ -663,7 +675,7 @@ extension PhotoEditViewController: UIGestureRecognizerDelegate {
 extension PhotoEditViewController: PhotoEditTopToolBarDelegate {
     
     func topToolBarDidClickCancelButton(_ topToolBar: PhotoEditTopToolBar) {
-        dismiss(animated: false, completion: nil)
+        dismiss(animated: photoEditConfig.dismissWithAnimation, completion: nil)
     }
     
 }

@@ -204,6 +204,7 @@
 		C11DBC286F46067EFC0E4C15FF014CC6 /* RuleRegExp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBBCE8019AB3C50936A1CAF4F072CB1 /* RuleRegExp.swift */; };
 		C15B3F89E6F83DC9CCB14903FC5D80C5 /* SVProgressHUD.h in Headers */ = {isa = PBXBuildFile; fileRef = 034FE48632D30C8C362520B6BB40AB17 /* SVProgressHUD.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C2030CB72808230300B902EB /* LocalizedKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2030CB62808230300B902EB /* LocalizedKey.swift */; };
+		C212205529BF211F009CE78D /* PhotoEditAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C212205429BF211F009CE78D /* PhotoEditAnimation.swift */; };
 		C241A011154907D4A4B377DB529E9C9D /* DoublePickerRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3724840F64AB024DFAF0401F25FA3D /* DoublePickerRow.swift */; };
 		C2438DD8281930B000505F4F /* PhotoEditCIFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2438DD7281930B000505F4F /* PhotoEditCIFilter.swift */; };
 		C2438DDA281936C100505F4F /* PhotoEditToasterFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2438DD9281936C100505F4F /* PhotoEditToasterFilter.swift */; };
@@ -558,6 +559,7 @@
 		C19C21EA29E8AFABC2D95AFB13F50B22 /* Eureka.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Eureka.modulemap; sourceTree = "<group>"; };
 		C1EF2029021342545815C993EF4DBAE0 /* MultipleSelectorViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MultipleSelectorViewController.swift; path = Source/Rows/Controllers/MultipleSelectorViewController.swift; sourceTree = "<group>"; };
 		C2030CB62808230300B902EB /* LocalizedKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedKey.swift; sourceTree = "<group>"; };
+		C212205429BF211F009CE78D /* PhotoEditAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditAnimation.swift; sourceTree = "<group>"; };
 		C21C425D1A97665C8880B56F20F8795D /* CaptureManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CaptureManager.swift; sourceTree = "<group>"; };
 		C2438DD7281930B000505F4F /* PhotoEditCIFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditCIFilter.swift; sourceTree = "<group>"; };
 		C2438DD9281936C100505F4F /* PhotoEditToasterFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEditToasterFilter.swift; sourceTree = "<group>"; };
@@ -920,6 +922,7 @@
 		41CC755CFF853B6D9F432AF7F14FF7A3 /* Animation */ = {
 			isa = PBXGroup;
 			children = (
+				C212205429BF211F009CE78D /* PhotoEditAnimation.swift */,
 				1AFC215B7D409ED19AE0BDF0A8A7B99A /* PhotoEditPasterAnimation.swift */,
 				7B5D68DDCBCAC14FEFC1F1275CC7DF2F /* PhotoEditCropAnimation.swift */,
 			);
@@ -1826,6 +1829,7 @@
 				D4E3161730D9D8FCB370465FD52B9D0C /* CaptureCameraButton.swift in Sources */,
 				AF85E09C4FE76030FA56CC1C44B46F2E /* CaptureConfig.swift in Sources */,
 				E9712F3D7D471DEAF8D291E2A9253A1B /* CaptureControlView.swift in Sources */,
+				C212205529BF211F009CE78D /* PhotoEditAnimation.swift in Sources */,
 				55938C4EE005E2332585E5E9BB1DA9E6 /* CaptureError.swift in Sources */,
 				F2764F50C432A505AC9040D672A88D8F /* CaptureFlashMode.swift in Sources */,
 				1D45E7DE3E60EECB573FF3E920C75E1E /* CaptureManager.swift in Sources */,

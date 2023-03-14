@@ -44,4 +44,6 @@ public class PhotoEditConfig {
     // 照片调整功能选项
     public var photoEditAdjustModes: [PhotoEditAdjustMode] = [.brightness, .contrast, .saturability]
     
+    // 是否显示dismiss动画
+    public var dismissWithAnimation: Bool = false
 }
