@@ -18,12 +18,12 @@ public extension AssetSaveManager {
             request.addResource(with: .pairedVideo, fileURL: videoURL, options: nil)
             localIdentifier = request.placeholderForCreatedAsset?.localIdentifier ?? ""
         }
-        PHPhotoLibrary.shared().performChanges(changes) { _, _ in
+        PHPhotoLibrary.shared().performChanges(changes) { _, error in
             DispatchQueue.main.async {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
                     success?(asset)
                 } else {
-                    failure?()
+                    failure?(error)
                 }
             }
         }

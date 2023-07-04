@@ -254,7 +254,7 @@ public class VideoCompressManager {
             AVVideoCompressionPropertiesKey: [
                 AVVideoProfileLevelKey: profileLevel,
                 AVVideoAverageBitRateKey: bitRate
-            ]
+            ] as [String : Any]
         ]
     }
     

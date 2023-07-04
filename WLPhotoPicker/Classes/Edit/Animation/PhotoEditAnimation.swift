@@ -11,13 +11,13 @@ extension PhotoEditViewController: UIViewControllerTransitioningDelegate {
     
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         let parameters = UISpringTimingParameters(dampingRatio: 1, initialVelocity: .zero)
-        let animator = UIViewPropertyAnimator.init(duration: 0.5 , timingParameters: parameters)
+        let animator = UIViewPropertyAnimator.init(duration: 0.35 , timingParameters: parameters)
         return PhotoEditShowTransitioning(animator: animator)
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         let parameters = UISpringTimingParameters(dampingRatio: 1, initialVelocity: .zero)
-        let animator = UIViewPropertyAnimator.init(duration: 0.5 , timingParameters: parameters)
+        let animator = UIViewPropertyAnimator.init(duration: 0.35 , timingParameters: parameters)
         return PhotoEditDismissTransitioning(animator: animator)
     }
     
@@ -125,12 +125,46 @@ extension PhotoEditViewController {
     }
     
     fileprivate func dismissAnimation(animator: UIViewPropertyAnimator, completion: @escaping (Bool) -> ()) {
-        animator.addAnimations { [unowned self] in
-            self.view.alpha = 0
+        if let sourceImageView = animationSourceImageView,
+           let imageFromFrame = contentImageView.superview?.convert(contentImageView.frame, to: view.window),
+           let imageToFrame = sourceImageView.superview?.convert(sourceImageView.frame, to: view.window) {
+            
+            let animateImageView = UIImageView()
+            animateImageView.contentMode = .scaleAspectFill
+            animateImageView.clipsToBounds = true
+            animateImageView.isHidden = false
+            animateImageView.image = photo
+            animateImageView.frame = imageFromFrame
+            animateImageView.layer.cornerRadius = sourceImageView.layer.cornerRadius
+            view.addSubview(animateImageView)
+            
+            contentImageView.isHidden = true
+            sourceImageView.isHidden = true
+            
+            animator.addAnimations { [unowned self] in
+                animateImageView.layer.cornerRadius = sourceImageView.layer.cornerRadius
+                animateImageView.frame = imageToFrame
+                self.editContentView.backgroundColor = .clear
+                self.topToolBar.alpha = 0
+                self.bottomToolBar.alpha = 0
+            }
+            
+            animator.addCompletion { [unowned self] _ in
+                animateImageView.removeFromSuperview()
+                sourceImageView.isHidden = false
+                self.contentImageView.isHidden = false
+            }
+            
+        } else {
+            animator.addAnimations { [unowned self] in
+                self.view.alpha = 0
+            }
         }
+        
         animator.addCompletion { position in
             completion(position == .end)
         }
+        
         animator.startAnimation()
     }
     

@@ -37,7 +37,7 @@ private class AlbumListShowTransitioning: NSObject,  UIViewControllerAnimatedTra
             return
         }
         let fromVC = transitionContext.viewController(forKey: .from) as? UINavigationController
-        let topMargin = keyWindowSafeAreaInsets.top + (fromVC?.navigationBar.bounds.size.height ?? 0)
+        let topMargin = UIApplication.shared.statusBarFrame.height + (fromVC?.navigationBar.bounds.size.height ?? 0)
         toVC.view.frame = CGRect(x: 0, y: topMargin, width: UIScreen.width, height: UIScreen.height - topMargin)
         let container = transitionContext.containerView
         container.addGestureRecognizer(toVC.dismissTapGesture)

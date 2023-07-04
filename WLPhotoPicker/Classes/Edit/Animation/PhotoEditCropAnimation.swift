@@ -10,73 +10,70 @@ import UIKit
 extension PhotoEditCropViewController: UIViewControllerTransitioningDelegate {
     
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        let parameters = UISpringTimingParameters(dampingRatio: 1, initialVelocity: .zero)
-        let animator = UIViewPropertyAnimator.init(duration: 0.6 , timingParameters: parameters)
-        return PhotoEditCropShowTransitioning(animator: animator)
+        return PhotoEditCropShowTransitioning()
     }
     
     public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        let parameters = UISpringTimingParameters(dampingRatio: 1, initialVelocity: .zero)
-        let animator = UIViewPropertyAnimator.init(duration: 0.6 , timingParameters: parameters)
-        return PhotoEditCropDismissTransitioning(animator: animator)
+        return PhotoEditCropDismissTransitioning()
     }
     
 }
 
 private class PhotoEditCropShowTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
     
-    let animator: UIViewPropertyAnimator
-    
-    init(animator: UIViewPropertyAnimator) {
-        self.animator = animator
-    }
-    
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let toVC = transitionContext.viewController(forKey: .to) as? PhotoEditCropViewController,
-              let fromVC = transitionContext.viewController(forKey: .from) as? PhotoEditViewController else {
-                  transitionContext.completeTransition(false)
-                  return
-              }
+              let fromVC = transitionContext.viewController(forKey: .from) else {
+            transitionContext.completeTransition(false)
+            return
+        }
         
         transitionContext.containerView.addSubview(toVC.view)
         let duration = transitionDuration(using: transitionContext)
-        toVC.showAnimation(duration: duration, from: fromVC) { completion in
-            transitionContext.completeTransition(completion)
+        if let editViewController = fromVC as? PhotoEditViewController {
+            toVC.showAnimation(duration: duration, from: editViewController) { completion in
+                transitionContext.completeTransition(completion)
+            }
+        } else {
+            toVC.showAnimation(duration: duration, from: fromVC) { completion in
+                transitionContext.completeTransition(completion)
+            }
         }
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return animator.duration
+        return 10
     }
     
 }
 
 private class PhotoEditCropDismissTransitioning: NSObject, UIViewControllerAnimatedTransitioning {
     
-    let animator: UIViewPropertyAnimator
-    
-    init(animator: UIViewPropertyAnimator) {
-        self.animator = animator
-    }
-    
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard let fromVC = transitionContext.viewController(forKey: .from) as? PhotoEditCropViewController,
-              let toVC = transitionContext.viewController(forKey: .to) as? PhotoEditViewController else {
-                  transitionContext.completeTransition(false)
-                  return
-              }
+              let toVC = transitionContext.viewController(forKey: .to) else {
+            transitionContext.completeTransition(false)
+            return
+        }
         let duration = transitionDuration(using: transitionContext)
-        fromVC.dismissAnimation(duration: duration, to: toVC) { completion in
-            transitionContext.completeTransition(completion)
+        if let editViewController = toVC as? PhotoEditViewController {
+            fromVC.dismissAnimation(duration: duration, to: editViewController) { completion in
+                transitionContext.completeTransition(completion)
+            }
+        } else {
+            fromVC.dismissAnimation(duration: duration, to: toVC) { completion in
+                transitionContext.completeTransition(completion)
+            }
         }
     }
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return animator.duration
+        return 0.6
     }
     
 }
 
+// 从编辑页面跳转裁剪页面动画
 extension PhotoEditCropViewController {
     
     fileprivate func showAnimation(duration: Double, from editViewController: PhotoEditViewController, completion: @escaping (Bool) -> ()) {
@@ -148,6 +145,72 @@ extension PhotoEditCropViewController {
             animateImageView.removeFromSuperview()
             editViewController.maskLayerContentView.isHidden = false
             editViewController.contentImageView.isHidden = false
+            completion(completed)
+        }
+    }
+    
+}
+
+// 指定animationSourceImageView之后从其他页面跳转动画
+extension PhotoEditCropViewController {
+    
+    fileprivate func showAnimation(duration: Double, from viewController: UIViewController, completion: @escaping (Bool) -> ()) {
+        guard let animationSourceImageView = animationSourceImageView else {
+            completion(false)
+            return
+        }
+        
+        let photo = photo.rotate(orientation: cropOrientation).cropToRect(cropRect)
+        
+        let animateImageView = UIImageView()
+        animateImageView.image = photo
+        animateImageView.frame = animationSourceImageView.superview?.convert(animationSourceImageView.frame, to: viewController.view) ?? .zero
+        viewController.view.addSubview(animateImageView)
+        
+        let animateToFrame: CGRect
+        if cropRect == .identity && cropOrientation == .up  {
+            animateToFrame = contentScrollView.convert(contentImageView.frame, to: view)
+        } else {
+            animateToFrame = adjustDisplayRect(photo.size)
+        }
+        
+        view.backgroundColor = .clear
+        
+        UIView.animate(withDuration: duration * 0.6, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 5, options: .curveEaseInOut, animations: { [unowned self] in
+            animateImageView.frame = animateToFrame
+            view.backgroundColor = .black
+        })
+        
+        UIView.animate(withDuration: duration * 0.4, delay: duration * 0.6, animations: {
+            self.view.alpha = 1
+        }) { (completed) in
+            animateImageView.removeFromSuperview()
+            completion(completed)
+        }
+    }
+    
+    fileprivate func dismissAnimation(duration: Double, to viewController: UIViewController, completion: @escaping (Bool) -> ()) {
+        guard let animationSourceImageView = animationSourceImageView else {
+            completion(false)
+            return
+        }
+        
+        let image = cropedImage ?? photo
+        let fromRect = adjustDisplayRect(image.size)
+        
+        let animateImageView = UIImageView()
+        animateImageView.image = image
+        animateImageView.frame = fromRect
+        viewController.view.addSubview(animateImageView)
+        
+        UIView.animate(withDuration: 0.05, delay: 0, animations: {
+            self.view.alpha = 0
+        })
+        
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            animateImageView.frame = animationSourceImageView.superview?.convert(animationSourceImageView.frame, to: viewController.view) ?? .zero
+        }) { (completed) in
+            animateImageView.removeFromSuperview()
             completion(completed)
         }
     }

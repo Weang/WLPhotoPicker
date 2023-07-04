@@ -80,11 +80,13 @@ extension NineViewController: UICollectionViewDataSource, UICollectionViewDelega
             if let photo = results[indexPath.item].photo {
                 let config = PhotoEditConfig()
                 config.dismissWithAnimation = true
-                let editVC = PhotoEditViewController(photo: photo, photoEditConfig: config)
+                let c = PhotoEditConfig()
+                c.dismissWithAnimation = true
+//                let editVC = PhotoEditViewController(photo: photo, photoEditConfig: c)
+                let editVC = PhotoEditCropViewController(photo: photo, photoEditCropRatios: .ratio_1_1)
                 if let cell = collectionView.cellForItem(at: indexPath) as? NineCollectionViewCell {
                     editVC.animationSourceImageView = cell.imageView
                 }
-//                editVC.delegate = self
                 present(editVC, animated: true, completion: nil)
             }
             return

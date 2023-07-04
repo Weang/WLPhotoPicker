@@ -16,12 +16,12 @@ extension AssetSaveManager {
             let request = PHAssetChangeRequest.creationRequestForAsset(from: photo)
             localIdentifier = request.placeholderForCreatedAsset?.localIdentifier ?? ""
         }
-        PHPhotoLibrary.shared().performChanges(changes) { _, _ in
+        PHPhotoLibrary.shared().performChanges(changes) { _, error in
             DispatchQueue.main.async {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
                     success?(asset)
                 } else {
-                    failure?()
+                    failure?(error)
                 }
             }
         }
@@ -31,17 +31,17 @@ extension AssetSaveManager {
         var localIdentifier: String = ""
         let changes = {
             guard let request = PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: photoURL) else {
-                failure?()
+                failure?(nil)
                 return
             }
             localIdentifier = request.placeholderForCreatedAsset?.localIdentifier ?? ""
         }
-        PHPhotoLibrary.shared().performChanges(changes) { _, _ in
+        PHPhotoLibrary.shared().performChanges(changes) { _, error in
             DispatchQueue.main.async {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
                     success?(asset)
                 } else {
-                    failure?()
+                    failure?(error)
                 }
             }
         }
