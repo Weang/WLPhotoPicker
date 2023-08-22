@@ -35,6 +35,11 @@ extension AssetFetchTool {
                         completionHandle(.failure(error))
                     }
                     if resultArray.count == assets.count {
+                        resultArray = resultArray.sorted(by: { lhs, rhs -> Bool in
+                            let lhsIndex = self.selectedAssets.firstIndex(where: { $0.localIdentifier == lhs.asset.localIdentifier }) ?? 0
+                            let rhsIndex = self.selectedAssets.firstIndex(where: { $0.localIdentifier == rhs.asset.localIdentifier }) ?? 0
+                            return lhsIndex < rhsIndex
+                        })
                         completionHandle(.success(resultArray))
                     }
                 }
