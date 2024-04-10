@@ -9,14 +9,21 @@ import UIKit
 import Photos
 import MobileCoreServices
 
-protocol AssetPickerControllerDelegate: AnyObject {
+public protocol AssetPickerControllerDelegate: AnyObject {
     func pickerControllerDidCancel(_ pickerController: AssetPickerController)
+    func pickerController(_ pickerController: AssetPickerController, didSelectAsset count: Int)
     func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [PhotoPickerResult])
 }
 
-class AssetPickerController: UIViewController {
+public extension AssetPickerControllerDelegate {
     
-    weak var delegate: AssetPickerControllerDelegate?
+    func pickerController(_ pickerController: AssetPickerController, didSelectAsset count: Int) { }
+    
+}
+
+open class AssetPickerController: UIViewController {
+    
+    public weak var delegate: AssetPickerControllerDelegate?
     
     private var collectionView: UICollectionView!
     private let titleButton = AlbumTitleButton()
@@ -75,7 +82,7 @@ class AssetPickerController: UIViewController {
         }
     }
     
-    init(config: WLPhotoConfig) {
+    public init(config: WLPhotoConfig) {
         self.config = config
         bottomToolBar = AssetPickerToolBar(pickerConfig: config.pickerConfig)
         assetFetchTool = AssetFetchTool(config: config)
@@ -83,11 +90,11 @@ class AssetPickerController: UIViewController {
         assetFetchTool.addDelegate(self)
     }
     
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
         
         setupView()
@@ -189,8 +196,8 @@ class AssetPickerController: UIViewController {
             guard let albumModel = assetFetchTool.albumModel,
                   let indexPath = collectionView.indexPath(for: cell),
                   let cell = cell as? AssetCollectionViewCell else {
-                      continue
-                  }
+                continue
+            }
             let newIndexPath = IndexPath(item: assetIndexFromCell(indexPath.item), section: 0)
             cell.update(albumModel.assets[newIndexPath.item], animated: animateIndex == newIndexPath.item)
         }
@@ -223,7 +230,7 @@ class AssetPickerController: UIViewController {
         return index
     }
     
-    private func requestSelectedAssets(assets: [AssetModel]) {
+    private func requestAssets(assets: [AssetModel]) {
         LoadingHUD.shared.showLoading()
         assetFetchTool.requestAssets(assets: assets) { [weak self] result in
             guard let self = self else { return }
@@ -235,6 +242,10 @@ class AssetPickerController: UIViewController {
                 self.showErrorAlert(error.localizedDescription)
             }
         }
+    }
+    
+    public func requestSelectedAssets() {
+        requestAssets(assets: assetFetchTool.selectedAssets)
     }
     
     @objc private func cancelButtonClick() {
@@ -293,7 +304,7 @@ class AssetPickerController: UIViewController {
         vc.present(alert, animated: true, completion: nil)
     }
     
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         collectionView.contentInset.bottom = bottomToolBar.height - keyWindowSafeAreaInsets.bottom
         collectionView.scrollIndicatorInsets.bottom = collectionView.contentInset.bottom
@@ -304,7 +315,7 @@ class AssetPickerController: UIViewController {
 // MARK: UICollectionViewDelegate & UICollectionViewDataSource
 extension AssetPickerController: UICollectionViewDelegate, UICollectionViewDataSource {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         var count = assetFetchTool.albumModel?.count ?? 0
         if showsCameraItem {
             count += 1
@@ -315,7 +326,7 @@ extension AssetPickerController: UICollectionViewDelegate, UICollectionViewDataS
         return count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath == cameraItemIndexPath {
             return collectionView.dequeueReusableCell(AssetCameraCollectionViewCell.self, for: indexPath)
         }
@@ -332,16 +343,16 @@ extension AssetPickerController: UICollectionViewDelegate, UICollectionViewDataS
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         guard let cell = cell as? AssetCollectionViewCell,
               let albumModel = assetFetchTool.albumModel else {
-                  return
-              }
+            return
+        }
         let indexPath = IndexPath(item: assetIndexFromCell(indexPath.item), section: 0)
         cell.update(albumModel.assets[indexPath.item], animated: false)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath == cameraItemIndexPath {
             openCaptureController()
             return
@@ -365,7 +376,7 @@ extension AssetPickerController: UICollectionViewDelegate, UICollectionViewDataS
             vc.currentIndex = indexPath.item
             present(vc, animated: true, completion: nil)
         } else {
-            requestSelectedAssets(assets: [assetModel])
+            requestAssets(assets: [assetModel])
         }
     }
 }
@@ -376,8 +387,8 @@ extension AssetPickerController: AssetCollectionViewCellDelegate {
     func cell(_ cell: AssetCollectionViewCell, didChangeSelectedStatus selected: Bool) {
         guard let albumModel = assetFetchTool.albumModel,
               let indexPath = collectionView.indexPath(for: cell)  else {
-                  return
-              }
+            return
+        }
         let newIndexPath = IndexPath(item: assetIndexFromCell(indexPath.item), section: 0)
         let asset = albumModel.assets[newIndexPath.item]
         if selected {
@@ -428,6 +439,7 @@ extension AssetPickerController: AssetFetchToolDelegate {
         }
         updateVisibleCells(index)
         bottomToolBar.isEnabled = assetFetchTool.selectedAssets.count > 0
+        delegate?.pickerController(self, didSelectAsset: assetFetchTool.selectedAssets.count)
     }
     
     func assetFetchToolSelectUpToLimited(_ fetchTool: AssetFetchTool) {
@@ -448,7 +460,7 @@ extension AssetPickerController: AssetPickerToolBarDelegate {
     }
     
     func pickerToolBarDidClickDoneButton(_ toolBar: AssetPickerToolBar) {
-        requestSelectedAssets(assets: assetFetchTool.selectedAssets)
+        requestSelectedAssets()
     }
     
 }
@@ -490,7 +502,7 @@ extension AssetPickerController: AssetPreviewViewControllerAnimateDataSource, As
     }
     
     func imageBrowser(_ imageBrowser: AssetPreviewViewController, didClickDoneWithAssets assets: [AssetModel]) {
-        requestSelectedAssets(assets: assets)
+        requestAssets(assets: assets)
     }
     
     func imageBrowser(_ imageBrowser: AssetPreviewViewController, didChangeIsOriginal isOriginal: Bool) {
@@ -507,14 +519,14 @@ extension AssetPickerController: AssetPreviewViewControllerAnimateDataSource, As
 // MARK: CaptureViewControllerDelegate
 extension AssetPickerController: CaptureViewControllerDelegate {
     
-    func captureViewController(_ viewController: CaptureViewController, didFinishTakingPhoto photo: UIImage) {
+    public func captureViewController(_ viewController: CaptureViewController, didFinishTakingPhoto photo: UIImage) {
         viewController.presentingViewController?.dismiss(animated: true)
         AssetSaveManager.savePhoto(photo: photo) { [weak self] asset in
             self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
         }
     }
     
-    func captureViewController(_ viewController: CaptureViewController, didFinishTakingVideo videoUrl: URL) {
+    public func captureViewController(_ viewController: CaptureViewController, didFinishTakingVideo videoUrl: URL) {
         viewController.presentingViewController?.dismiss(animated: true)
         AssetSaveManager.saveVideo(videoURL: videoUrl) { [weak self] asset in
             self?.assetFetchTool.captureLocalIdentifier = asset.localIdentifier
@@ -526,7 +538,7 @@ extension AssetPickerController: CaptureViewControllerDelegate {
 // MARK: UIImagePickerControllerDelegate & UINavigationControllerDelegate
 extension AssetPickerController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+    public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         picker.dismiss(animated: true, completion: nil)
         guard let mediaType = info[.mediaType] as? String else {
             return

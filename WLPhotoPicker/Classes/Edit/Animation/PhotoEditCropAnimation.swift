@@ -35,9 +35,9 @@ private class PhotoEditCropShowTransitioning: NSObject, UIViewControllerAnimated
                 transitionContext.completeTransition(completion)
             }
         } else {
-//            toVC.showAnimation(duration: duration, from: fromVC) { completion in
-//                transitionContext.completeTransition(completion)
-//            }
+            toVC.showAnimation(duration: duration, from: fromVC) { completion in
+                transitionContext.completeTransition(completion)
+            }
         }
     }
     
@@ -61,9 +61,9 @@ private class PhotoEditCropDismissTransitioning: NSObject, UIViewControllerAnima
                 transitionContext.completeTransition(completion)
             }
         } else {
-//            fromVC.dismissAnimation(duration: duration, to: toVC) { completion in
-//                transitionContext.completeTransition(completion)
-//            }
+            fromVC.dismissAnimation(duration: duration, to: toVC) { completion in
+                transitionContext.completeTransition(completion)
+            }
         }
     }
     
@@ -154,65 +154,65 @@ extension PhotoEditCropViewController {
 // 指定animationSourceImageView之后从其他页面跳转动画
 extension PhotoEditCropViewController {
     
-//    fileprivate func showAnimation(duration: Double, from viewController: UIViewController, completion: @escaping (Bool) -> ()) {
-//        guard let animationSourceImageView = animationSourceImageView else {
-//            completion(false)
-//            return
-//        }
-//        
-//        let photo = photo.rotate(orientation: cropOrientation).cropToRect(cropRect)
-//        
-//        let animateImageView = UIImageView()
-//        animateImageView.image = photo
-//        animateImageView.frame = animationSourceImageView.superview?.convert(animationSourceImageView.frame, to: viewController.view) ?? .zero
-//        viewController.view.addSubview(animateImageView)
-//        
-//        let animateToFrame: CGRect
-//        if cropRect == .identity && cropOrientation == .up  {
-//            animateToFrame = contentScrollView.convert(contentImageView.frame, to: view)
-//        } else {
-//            animateToFrame = adjustDisplayRect(photo.size)
-//        }
-//        
-//        view.backgroundColor = .clear
-//        
-//        UIView.animate(withDuration: duration * 0.6, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 5, options: .curveEaseInOut, animations: { [unowned self] in
-//            animateImageView.frame = animateToFrame
-//            view.backgroundColor = .black
-//        })
-//        
-//        UIView.animate(withDuration: duration * 0.4, delay: duration * 0.6, animations: {
-//            self.view.alpha = 1
-//        }) { (completed) in
-//            animateImageView.removeFromSuperview()
-//            completion(completed)
-//        }
-//    }
-//    
-//    fileprivate func dismissAnimation(duration: Double, to viewController: UIViewController, completion: @escaping (Bool) -> ()) {
-//        guard let animationSourceImageView = animationSourceImageView else {
-//            completion(false)
-//            return
-//        }
-//        
-//        let image = cropedImage ?? photo
-//        let fromRect = adjustDisplayRect(image.size)
-//        
-//        let animateImageView = UIImageView()
-//        animateImageView.image = image
-//        animateImageView.frame = fromRect
-//        viewController.view.addSubview(animateImageView)
-//        
-//        UIView.animate(withDuration: 0.05, delay: 0, animations: {
-//            self.view.alpha = 0
-//        })
-//        
-//        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-//            animateImageView.frame = animationSourceImageView.superview?.convert(animationSourceImageView.frame, to: viewController.view) ?? .zero
-//        }) { (completed) in
-//            animateImageView.removeFromSuperview()
-//            completion(completed)
-//        }
-//    }
+    fileprivate func showAnimation(duration: Double, from viewController: UIViewController, completion: @escaping (Bool) -> ()) {
+        guard let animationSourceImageView = animationSourceImageView else {
+            completion(false)
+            return
+        }
+        
+        let photo = photo.rotate(orientation: cropOrientation).cropToRect(cropRect)
+        
+        let animateImageView = UIImageView()
+        animateImageView.image = photo
+        animateImageView.frame = animationSourceImageView.superview?.convert(animationSourceImageView.frame, to: viewController.view) ?? .zero
+        viewController.view.addSubview(animateImageView)
+        
+        let animateToFrame: CGRect
+        if cropRect == .identity && cropOrientation == .up  {
+            animateToFrame = contentScrollView.convert(contentImageView.frame, to: view)
+        } else {
+            animateToFrame = adjustDisplayRect(photo.size)
+        }
+        
+        view.backgroundColor = .clear
+        
+        UIView.animate(withDuration: duration * 0.6, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 5, options: .curveEaseInOut, animations: { [unowned self] in
+            animateImageView.frame = animateToFrame
+            view.backgroundColor = .black
+        })
+        
+        UIView.animate(withDuration: duration * 0.4, delay: duration * 0.6, animations: {
+            self.view.alpha = 1
+        }) { (completed) in
+            animateImageView.removeFromSuperview()
+            completion(completed)
+        }
+    }
+    
+    fileprivate func dismissAnimation(duration: Double, to viewController: UIViewController, completion: @escaping (Bool) -> ()) {
+        guard let animationSourceImageView = animationSourceImageView else {
+            completion(false)
+            return
+        }
+        
+        let image = cropedImage ?? photo
+        let fromRect = adjustDisplayRect(image.size)
+        
+        let animateImageView = UIImageView()
+        animateImageView.image = image
+        animateImageView.frame = fromRect
+        viewController.view.addSubview(animateImageView)
+        
+        UIView.animate(withDuration: 0.05, delay: 0, animations: {
+            self.view.alpha = 0
+        })
+        
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            animateImageView.frame = animationSourceImageView.superview?.convert(animationSourceImageView.frame, to: viewController.view) ?? .zero
+        }) { (completed) in
+            animateImageView.removeFromSuperview()
+            completion(completed)
+        }
+    }
     
 }

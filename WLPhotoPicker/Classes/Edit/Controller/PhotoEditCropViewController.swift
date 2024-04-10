@@ -30,17 +30,17 @@ public class PhotoEditCropViewController: UIViewController {
     let cropRectangleView: PhotoEditCropRectangleView
     let bottomToolBar = PhotoEditCropToolBar()
     
-//    public var animationSourceImageView: UIImageView? {
-//        didSet {
-//            if animationSourceImageView != nil {
-//                modalPresentationStyle = .custom
-//                transitioningDelegate = self
-//            } else {
-//                modalPresentationStyle = .fullScreen
-//                transitioningDelegate = nil
-//            }
-//        }
-//    }
+    public var animationSourceImageView: UIImageView? {
+        didSet {
+            if animationSourceImageView != nil {
+                modalPresentationStyle = .custom
+                transitioningDelegate = self
+            } else {
+                modalPresentationStyle = .fullScreen
+                transitioningDelegate = nil
+            }
+        }
+    }
     
     var currentImageViewsize: CGSize = .zero
     let originalContentInset = UIEdgeInsets(top: keyWindowSafeAreaInsets.top + 20, left: 12, bottom: 20, right: 12)

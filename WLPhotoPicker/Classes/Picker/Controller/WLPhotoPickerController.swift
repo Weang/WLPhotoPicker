@@ -74,12 +74,12 @@ public class WLPhotoPickerController: UINavigationController {
 // MARK: AssetPickerControllerDelegate
 extension WLPhotoPickerController: AssetPickerControllerDelegate {
     
-    func pickerControllerDidCancel(_ pickerController: AssetPickerController) {
+    public func pickerControllerDidCancel(_ pickerController: AssetPickerController) {
         dismiss(animated: true, completion: nil)
         pickerDelegate?.pickerControllerDidCancel(self)
     }
     
-    func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [PhotoPickerResult]) {
+    public func pickerController(_ pickerController: AssetPickerController, didSelectResult results: [PhotoPickerResult]) {
         let previewController = presentedViewController as? AssetPreviewViewController
         previewController?.transitioningDelegate = nil
         previewController?.modalPresentationStyle = .fullScreen
