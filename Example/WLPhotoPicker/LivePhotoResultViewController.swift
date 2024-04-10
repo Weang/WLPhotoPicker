@@ -67,7 +67,7 @@ class LivePhotoResultViewController: UIViewController {
     @objc func saveLivePhoto() {
         AssetSaveManager.saveLivePhoto(photoURL: result.imageURL, videoURL: result.videoURL) { _ in
             SVProgressHUD.showSuccess(withStatus: "保存成功")
-        } failure: {
+        } failure: { _ in 
             SVProgressHUD.showError(withStatus: "保存失败")
         }
     }
