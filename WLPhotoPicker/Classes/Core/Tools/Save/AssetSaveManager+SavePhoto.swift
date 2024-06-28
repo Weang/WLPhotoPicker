@@ -8,7 +8,7 @@
 import UIKit
 import Photos
 
-extension AssetSaveManager {
+public extension AssetSaveManager {
     
     static func savePhoto(photo: UIImage, success: AssetSaveSuccess? = nil, failure: AssetSaveFailure? = nil) {
         var localIdentifier: String = ""
