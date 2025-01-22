@@ -30,7 +30,13 @@ extension AssetFetchTool {
     func fetchCameraRollAlbum() {
         AssetFetchTool.albumQueue.async { [weak self] in
             guard let self = self else { return }
+            
+            #if compiler(>=6)
+            let assetCollections = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .any, options: nil)
+            #else
             let assetCollections = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: nil)
+            #endif
+            
             let collections = assetCollections.objects.filter {
                 $0.estimatedAssetCount > 0 && $0.isCameraRollAlbum
             }
@@ -64,12 +70,23 @@ extension AssetFetchTool {
             var albumArray: [AlbumModel] = []
             var collections: [PHAssetCollection] = []
             
+            #if compiler(>=6)
+            let subtypes: [PHAssetCollectionSubtype] = [
+                .albumMyPhotoStream,
+                .albumSyncedAlbum,
+                .albumCloudShared,
+                .albumRegular,
+                .any
+            ]
+            #else
             let subtypes: [PHAssetCollectionSubtype] = [
                 .albumMyPhotoStream,
                 .albumSyncedAlbum,
                 .albumCloudShared,
                 .albumRegular
             ]
+            #endif
+            
             let smartAlbumCollections = subtypes
                 .map { PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: $0, options: nil)  }
                 .map { $0.objects }
