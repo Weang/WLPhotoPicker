@@ -8,23 +8,23 @@
 import UIKit
 import Photos
 
-extension AssetSaveManager {
+public extension AssetSaveManager {
     
     static func saveVideo(videoURL: URL, success: AssetSaveSuccess? = nil, failure: AssetSaveFailure? = nil) {
         var localIdentifier: String = ""
         let changes = {
             guard let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: videoURL) else {
-                failure?()
+                failure?(nil)
                 return
             }
             localIdentifier = request.placeholderForCreatedAsset?.localIdentifier ?? ""
         }
-        PHPhotoLibrary.shared().performChanges(changes) { _, _ in
+        PHPhotoLibrary.shared().performChanges(changes) { _, error in
             DispatchQueue.main.async {
                 if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: nil).firstObject {
                     success?(asset)
                 } else {
-                    failure?()
+                    failure?(error)
                 }
             }
         }
